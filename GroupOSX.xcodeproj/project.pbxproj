@@ -18,7 +18,7 @@
 		F144E191186A5CD100C42636 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E170186A5CD100C42636 /* Cocoa.framework */; };
 		F144E199186A5CD100C42636 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F144E197186A5CD100C42636 /* InfoPlist.strings */; };
 		F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E19A186A5CD100C42636 /* GroupOSXTests.m */; };
-		F1B3D8F2186B7AA5009DD5C9 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B3D8F1186B7AA5009DD5C9 /* SocketRocket.framework */; };
+		F1B3D8F2186B7AA5009DD5C9 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B3D8F1186B7AA5009DD5C9 /* SocketRocket.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
