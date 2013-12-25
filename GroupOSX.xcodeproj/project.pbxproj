@@ -1,0 +1,480 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F144E171186A5CD100C42636 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E170186A5CD100C42636 /* Cocoa.framework */; };
+		F144E17B186A5CD100C42636 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F144E179186A5CD100C42636 /* InfoPlist.strings */; };
+		F144E17D186A5CD100C42636 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E17C186A5CD100C42636 /* main.m */; };
+		F144E181186A5CD100C42636 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = F144E17F186A5CD100C42636 /* Credits.rtf */; };
+		F144E184186A5CD100C42636 /* DNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E183186A5CD100C42636 /* DNAppDelegate.m */; };
+		F144E187186A5CD100C42636 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = F144E185186A5CD100C42636 /* MainMenu.xib */; };
+		F144E189186A5CD100C42636 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F144E188186A5CD100C42636 /* Images.xcassets */; };
+		F144E190186A5CD100C42636 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E18F186A5CD100C42636 /* XCTest.framework */; };
+		F144E191186A5CD100C42636 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E170186A5CD100C42636 /* Cocoa.framework */; };
+		F144E199186A5CD100C42636 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F144E197186A5CD100C42636 /* InfoPlist.strings */; };
+		F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E19A186A5CD100C42636 /* GroupOSXTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F144E192186A5CD100C42636 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F144E165186A5CD100C42636 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F144E16C186A5CD100C42636;
+			remoteInfo = GroupOSX;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F144E16D186A5CD100C42636 /* GroupOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroupOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F144E170186A5CD100C42636 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		F144E173186A5CD100C42636 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		F144E174186A5CD100C42636 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		F144E175186A5CD100C42636 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		F144E178186A5CD100C42636 /* GroupOSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GroupOSX-Info.plist"; sourceTree = "<group>"; };
+		F144E17A186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F144E17C186A5CD100C42636 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F144E17E186A5CD100C42636 /* GroupOSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GroupOSX-Prefix.pch"; sourceTree = "<group>"; };
+		F144E180186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		F144E182186A5CD100C42636 /* DNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DNAppDelegate.h; sourceTree = "<group>"; };
+		F144E183186A5CD100C42636 /* DNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DNAppDelegate.m; sourceTree = "<group>"; };
+		F144E186186A5CD100C42636 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		F144E188186A5CD100C42636 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroupOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F144E18F186A5CD100C42636 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		F144E196186A5CD100C42636 /* GroupOSXTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GroupOSXTests-Info.plist"; sourceTree = "<group>"; };
+		F144E198186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F144E19A186A5CD100C42636 /* GroupOSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupOSXTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F144E16A186A5CD100C42636 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E171186A5CD100C42636 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F144E18B186A5CD100C42636 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E191186A5CD100C42636 /* Cocoa.framework in Frameworks */,
+				F144E190186A5CD100C42636 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F144E164186A5CD100C42636 = {
+			isa = PBXGroup;
+			children = (
+				F144E176186A5CD100C42636 /* GroupOSX */,
+				F144E194186A5CD100C42636 /* GroupOSXTests */,
+				F144E16F186A5CD100C42636 /* Frameworks */,
+				F144E16E186A5CD100C42636 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F144E16E186A5CD100C42636 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F144E16D186A5CD100C42636 /* GroupOSX.app */,
+				F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F144E16F186A5CD100C42636 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F144E170186A5CD100C42636 /* Cocoa.framework */,
+				F144E18F186A5CD100C42636 /* XCTest.framework */,
+				F144E172186A5CD100C42636 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F144E172186A5CD100C42636 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F144E173186A5CD100C42636 /* AppKit.framework */,
+				F144E174186A5CD100C42636 /* CoreData.framework */,
+				F144E175186A5CD100C42636 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		F144E176186A5CD100C42636 /* GroupOSX */ = {
+			isa = PBXGroup;
+			children = (
+				F144E182186A5CD100C42636 /* DNAppDelegate.h */,
+				F144E183186A5CD100C42636 /* DNAppDelegate.m */,
+				F144E185186A5CD100C42636 /* MainMenu.xib */,
+				F144E188186A5CD100C42636 /* Images.xcassets */,
+				F144E177186A5CD100C42636 /* Supporting Files */,
+			);
+			path = GroupOSX;
+			sourceTree = "<group>";
+		};
+		F144E177186A5CD100C42636 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F144E178186A5CD100C42636 /* GroupOSX-Info.plist */,
+				F144E179186A5CD100C42636 /* InfoPlist.strings */,
+				F144E17C186A5CD100C42636 /* main.m */,
+				F144E17E186A5CD100C42636 /* GroupOSX-Prefix.pch */,
+				F144E17F186A5CD100C42636 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F144E194186A5CD100C42636 /* GroupOSXTests */ = {
+			isa = PBXGroup;
+			children = (
+				F144E19A186A5CD100C42636 /* GroupOSXTests.m */,
+				F144E195186A5CD100C42636 /* Supporting Files */,
+			);
+			path = GroupOSXTests;
+			sourceTree = "<group>";
+		};
+		F144E195186A5CD100C42636 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F144E196186A5CD100C42636 /* GroupOSXTests-Info.plist */,
+				F144E197186A5CD100C42636 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F144E16C186A5CD100C42636 /* GroupOSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSX" */;
+			buildPhases = (
+				F144E169186A5CD100C42636 /* Sources */,
+				F144E16A186A5CD100C42636 /* Frameworks */,
+				F144E16B186A5CD100C42636 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GroupOSX;
+			productName = GroupOSX;
+			productReference = F144E16D186A5CD100C42636 /* GroupOSX.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F144E18D186A5CD100C42636 /* GroupOSXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSXTests" */;
+			buildPhases = (
+				F144E18A186A5CD100C42636 /* Sources */,
+				F144E18B186A5CD100C42636 /* Frameworks */,
+				F144E18C186A5CD100C42636 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F144E193186A5CD100C42636 /* PBXTargetDependency */,
+			);
+			name = GroupOSXTests;
+			productName = GroupOSXTests;
+			productReference = F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F144E165186A5CD100C42636 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = DN;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Dovizu Network";
+				TargetAttributes = {
+					F144E18D186A5CD100C42636 = {
+						TestTargetID = F144E16C186A5CD100C42636;
+					};
+				};
+			};
+			buildConfigurationList = F144E168186A5CD100C42636 /* Build configuration list for PBXProject "GroupOSX" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F144E164186A5CD100C42636;
+			productRefGroup = F144E16E186A5CD100C42636 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F144E16C186A5CD100C42636 /* GroupOSX */,
+				F144E18D186A5CD100C42636 /* GroupOSXTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F144E16B186A5CD100C42636 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E17B186A5CD100C42636 /* InfoPlist.strings in Resources */,
+				F144E189186A5CD100C42636 /* Images.xcassets in Resources */,
+				F144E181186A5CD100C42636 /* Credits.rtf in Resources */,
+				F144E187186A5CD100C42636 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F144E18C186A5CD100C42636 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E199186A5CD100C42636 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F144E169186A5CD100C42636 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E184186A5CD100C42636 /* DNAppDelegate.m in Sources */,
+				F144E17D186A5CD100C42636 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F144E18A186A5CD100C42636 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F144E193186A5CD100C42636 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F144E16C186A5CD100C42636 /* GroupOSX */;
+			targetProxy = F144E192186A5CD100C42636 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F144E179186A5CD100C42636 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F144E17A186A5CD100C42636 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		F144E17F186A5CD100C42636 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F144E180186A5CD100C42636 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		F144E185186A5CD100C42636 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F144E186186A5CD100C42636 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		F144E197186A5CD100C42636 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F144E198186A5CD100C42636 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F144E19C186A5CD100C42636 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		F144E19D186A5CD100C42636 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		F144E19F186A5CD100C42636 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		F144E1A0186A5CD100C42636 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		F144E1A2186A5CD100C42636 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GroupOSX.app/Contents/MacOS/GroupOSX";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		F144E1A3186A5CD100C42636 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GroupOSX.app/Contents/MacOS/GroupOSX";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F144E168186A5CD100C42636 /* Build configuration list for PBXProject "GroupOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F144E19C186A5CD100C42636 /* Debug */,
+				F144E19D186A5CD100C42636 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F144E19F186A5CD100C42636 /* Debug */,
+				F144E1A0186A5CD100C42636 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F144E1A2186A5CD100C42636 /* Debug */,
+				F144E1A3186A5CD100C42636 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F144E165186A5CD100C42636 /* Project object */;
+}
