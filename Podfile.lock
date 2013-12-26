@@ -1,0 +1,13 @@
+PODS:
+  - NXOAuth2Client (1.2.4)
+  - SocketRocket (0.3.1-beta2)
+
+DEPENDENCIES:
+  - NXOAuth2Client (~> 1.2.4)
+  - SocketRocket (~> 0.3.1-beta2)
+
+SPEC CHECKSUMS:
+  NXOAuth2Client: 4666d0d73ba7689181ef4597e1b1beda3978c724
+  SocketRocket: 7ac946bcce46287a791dfff3c1f8daa692821dae
+
+COCOAPODS: 0.29.0
