@@ -28,7 +28,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="quitButtonPressed:" target="-2" id="Ova-NW-s81"/>
+                            <action selector="quitButtonPressed:" target="-2" id="d4F-J7-PiX"/>
                         </connections>
                     </button>
                 </subviews>

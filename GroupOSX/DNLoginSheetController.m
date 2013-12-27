@@ -60,7 +60,7 @@
 
 - (IBAction)quitButtonPressed:(id)sender
 {
-    [NSApp endSheet:self.mainWindowController.window];
+    [self.mainWindowController.window endSheet:self.window];
 }
 
 @end
