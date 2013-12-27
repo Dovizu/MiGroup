@@ -2,10 +2,12 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="3338"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DNLoginSheetController">
             <connections>
+                <outlet property="loginWebView" destination="kpv-Of-6Xc" id="Doh-DW-w62"/>
                 <outlet property="window" destination="1" id="3"/>
             </connections>
         </customObject>
@@ -31,6 +33,13 @@
                             <action selector="quitButtonPressed:" target="-2" id="d4F-J7-PiX"/>
                         </connections>
                     </button>
+                    <webView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kpv-Of-6Xc">
+                        <rect key="frame" x="0.0" y="61" width="386" height="395"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                            <nil key="identifier"/>
+                        </webPreferences>
+                    </webView>
                 </subviews>
             </view>
         </window>

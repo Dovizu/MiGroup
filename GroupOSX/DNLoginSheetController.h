@@ -7,10 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import <WebKit/WebKit.h>
 @class DNMainWindowController, DNServerInterface;
 
-@interface DNLoginSheetController : NSWindowController
+@interface DNLoginSheetController : NSWindowController{
+    IBOutlet WebView *loginWebView;
+}
 
 @property DNMainWindowController *mainWindowController;
 @property DNServerInterface *server;

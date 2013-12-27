@@ -45,18 +45,14 @@
 
 - (void)promptForLoginWithPreparedURL:(NSURL *)url
 {
-    [self.mainWindowController.window beginSheet:self.window
-                                       completionHandler:^void (NSModalResponse returnCode){
-                                           NSLog(@"Login Sheet Displayed");
-                                       }];
+    [self.mainWindowController.window beginSheet:self.window completionHandler:^void (NSModalResponse returnCode){}];
+    [[loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 - (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
     [sheet orderOut:self];
 }
-
-#pragma mark - Button Actions
 
 - (IBAction)quitButtonPressed:(id)sender
 {

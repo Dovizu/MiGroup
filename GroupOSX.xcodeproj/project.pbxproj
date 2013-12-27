@@ -29,6 +29,7 @@
 		F18BF644186BB7B0007B2DCA /* DNSocketDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */; };
 		F1A3C7FE186BCB0B00E97B4D /* DNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E183186A5CD100C42636 /* DNAppDelegate.m */; };
 		F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */; };
+		F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F5C5EF186D2A6600C407A3 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNSocketDelegate.m; path = GroupOSX/Backend/DNSocketDelegate.m; sourceTree = "<group>"; };
 		F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainWindowController.h; path = GroupOSX/DNMainWindowController.h; sourceTree = "<group>"; };
 		F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainWindowController.m; path = GroupOSX/DNMainWindowController.m; sourceTree = "<group>"; };
+		F1F5C5EF186D2A6600C407A3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */,
 				F144E171186A5CD100C42636 /* Cocoa.framework in Frameworks */,
 				F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */,
 				49716C5732F74222B106673B /* libPods.a in Frameworks */,
@@ -111,6 +114,7 @@
 				F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */,
 			);
 			name = Backend;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		F144E164186A5CD100C42636 = {
@@ -118,9 +122,6 @@
 			children = (
 				F18BF640186BA9C1007B2DCA /* Podfile */,
 				F144E176186A5CD100C42636 /* GroupOSX */,
-				F1A3C802186BF3AC00E97B4D /* Interface */,
-				F1A3C7FF186BEF1E00E97B4D /* Controllers */,
-				F12A0314186B8A14008C8BA5 /* Backend */,
 				F144E194186A5CD100C42636 /* GroupOSXTests */,
 				F144E16F186A5CD100C42636 /* Frameworks */,
 				F144E16E186A5CD100C42636 /* Products */,
@@ -140,6 +141,7 @@
 		F144E16F186A5CD100C42636 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F1F5C5EF186D2A6600C407A3 /* WebKit.framework */,
 				F12A0322186BA1F0008C8BA5 /* Security.framework */,
 				F144E170186A5CD100C42636 /* Cocoa.framework */,
 				F144E18F186A5CD100C42636 /* XCTest.framework */,
@@ -166,6 +168,9 @@
 				F144E182186A5CD100C42636 /* DNAppDelegate.h */,
 				F144E183186A5CD100C42636 /* DNAppDelegate.m */,
 				F144E188186A5CD100C42636 /* Images.xcassets */,
+				F12A0314186B8A14008C8BA5 /* Backend */,
+				F1A3C802186BF3AC00E97B4D /* MainWindow */,
+				F1F5C5F2186D2C0600C407A3 /* LoginSheet */,
 				F144E177186A5CD100C42636 /* Supporting Files */,
 			);
 			path = GroupOSX;
@@ -202,24 +207,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F1A3C7FF186BEF1E00E97B4D /* Controllers */ = {
+		F1A3C802186BF3AC00E97B4D /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
 				F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */,
 				F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */,
+				F144E185186A5CD100C42636 /* MainMenu.xib */,
+			);
+			name = MainWindow;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		F1F5C5F2186D2C0600C407A3 /* LoginSheet */ = {
+			isa = PBXGroup;
+			children = (
+				F15BFF28186C1B34003BE76D /* LoginSheet.xib */,
 				F15BFF26186C1B34003BE76D /* DNLoginSheetController.h */,
 				F15BFF27186C1B34003BE76D /* DNLoginSheetController.m */,
 			);
-			name = Controllers;
-			sourceTree = "<group>";
-		};
-		F1A3C802186BF3AC00E97B4D /* Interface */ = {
-			isa = PBXGroup;
-			children = (
-				F144E185186A5CD100C42636 /* MainMenu.xib */,
-				F15BFF28186C1B34003BE76D /* LoginSheet.xib */,
-			);
-			name = Interface;
+			name = LoginSheet;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
