@@ -7,27 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SocketRocket/SRWebSocket.h>
+#import <NXOAuth2.h>
 
-//This server model manages an internal socket, a delegate of SocketRocket
-@interface DNSocketDelegate : NSObject <SRWebSocketDelegate>
-
-//Interfaces for delegation for SRWebSocket
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message;
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket;
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean;
-@end
+#import "DNSocketDelegate.h"
+@class DNLoginSheetController;
 
 @interface DNServerInterface : NSObject
 {
     //Variables
     SRWebSocket *socket;
     DNSocketDelegate *socketDelegate;
+    BOOL authenticated;
 }
 
-//Internal methods
--(id)init;
--(BOOL)connectToServer;
+@property DNLoginSheetController *loginSheetController;
 
+//Internal methods
+- (id)init;
+- (BOOL)loggedIn;
+- (void)authenticate;
 @end

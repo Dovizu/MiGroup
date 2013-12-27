@@ -8,8 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class DNServerInterface, DNLoginSheetController, DNMainWindowController;
+
 @interface DNAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+@property IBOutlet NSWindow *window;
+
+@property DNServerInterface *server;
+@property DNLoginSheetController *loginSheetController;
+@property DNMainWindowController<NSWindowDelegate> *mainWindowController;
+
+
 
 @end

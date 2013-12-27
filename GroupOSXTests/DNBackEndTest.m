@@ -33,9 +33,13 @@
 }
 
 
-- (void)testExample
+-(void)testAuthentication
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    [server authenticateWithUsername:@"donnywith@gmail.com" password:@"WsCxD86110089g"];
+    for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
+        NSLog(@"%@", account);
+    };
+    
 }
 
 @end
