@@ -9,14 +9,14 @@
 //Basic stuff
 #import <Foundation/Foundation.h>
 #include "GlobalConstants.h"
-#import "NSString+NXOAuth2.h"
+#import <AFNetworking.h>
 #import "NSURL+NXOAuth2.h"
-#import "NSURLConnection+Tagged.h"
+
 //App headers
 #import "DNSocketDelegate.h"
 @class DNLoginSheetController;
 
-@interface DNServerInterface : NSObject <NSURLConnectionDelegate>
+@interface DNServerInterface : NSObject
 
 @property DNLoginSheetController *loginSheetController;
 

@@ -15,7 +15,7 @@ extern NSString* const DNOAuth2ClientID;
 extern NSString * const DNOAuth2AuthorizationURL;
 extern NSString * const DNOAuth2TokenURL;
 extern NSString * const DNOAuth2RedirectURL;
-extern NSString * const DNOauth2TokenArgKey;
+extern NSString * const DNOAuth2TokenArgumentKey;
 extern NSString * const DNRESTAPIBaseAddress;
 
 //RESTful constants

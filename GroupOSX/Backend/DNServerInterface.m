@@ -17,15 +17,11 @@
     DNSocketDelegate *socketDelegate;
     BOOL authenticated;
     NSString *userToken;
-    
-    //Connection Types Constants
-    DNConnectionType *TypeGetUserInfo;
-    DNConnectionType *TypeIndexGroups;
+    AFHTTPRequestOperationManager *HTTPRequestManager;
 }
 
 - (void)authenticatedOn;
 - (void)authenticatedOff;
-- (void)startConnectionType:(DNConnectionType*)connectionType withBody:(NSDictionary*)bodyDict andParameters:(NSDictionary*)parameters;
 
 @end
 
@@ -39,71 +35,28 @@
     if (self){
         //Configure server interface and instantiate SocketRocket
         socketDelegate = [[DNSocketDelegate alloc] init];
-        [self initializeConnectionTypes];
+        HTTPRequestManager = [AFHTTPRequestOperationManager manager];
     }
     return self;
 }
 
-- (void)initializeConnectionTypes
-{
-    TypeGetUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"/users/me", partialURL,
-                       @"GET", HTTPMethod,
-                       @"TypeGetUserInfo", connectionTag,
-                       nil];
-    
-    TypeIndexGroups = [NSDictionary dictionaryWithObjectsAndKeys:
-                       @"/groups", partialURL,
-                       @"GET", HTTPMethod,
-                       @"TypeIndexGroups", connectionTag,
-                       nil];
-}
 
 #pragma mark - Requests and Connection Logic
 
-
-
-- (void)startConnectionType:(DNConnectionType*)connectionType withBody:(NSDictionary*)bodyDict andParameters:(NSDictionary*)parameters
+- (NSDictionary*)getUserInformation
 {
-    //Construct URL
-    NSString *URLWithoutParams = [NSString stringWithFormat:@"%@%@",
-                                      DNRESTAPIBaseAddress,
-                                      [[connectionType objectForKey:partialURL] nxoauth2_URLEncodedString]];
-    //Add token and parameters if necessary
-    if (parameters) {
-        [parameters setValue:userToken forKey:URLTokenParamKey];
-    }else{
-        parameters = [NSDictionary dictionaryWithObjectsAndKeys:userToken, URLTokenParamKey, nil];
-    }
-    
-    //Create request with this URL
-    NSURL *URL = [[NSURL URLWithString:URLWithoutParams] nxoauth2_URLByAddingParameters:parameters];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-    [request setHTTPMethod:[connectionType objectForKey:HTTPMethod]];
-
-    //Add JSON data if necessary
-    if (bodyDict) {
-        NSError *error = [[NSError alloc] init];
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:bodyDict options:0 error:&error];
-        if (JSONData) {
-            NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
-            [request setHTTPBody:JSONData];
-            [request setValue:[NSString stringWithFormat:@"%u", (unsigned int)[JSONData length]]
-                       forKey:JSONRequestContentLengthKey];
-            [request setValue:JSONRequestContentTypeValue forKey:JSONRequestContentTypeKey];
-        }else{
-            DebugLog(@"JSONSerialization Error occured: %@", [error description]);
-        }
-    }
-    
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request
-                                                                  delegate:self
-                                                          startImmediately:NO
-                                                                       tag:[connectionType objectForKey:connectionTag]];
-    if (connection) {
-        DebugLog(@"Connection ready: %@", [connection description]);
-        [connection start];
-    }
+    NSDictionary* userInfo;
+    [HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, @"/users/me"]
+                 parameters:[NSDictionary dictionaryWithObjectsAndKeys:userToken, URLTokenParamKey, nil]
+                    success:^(AFHTTPRequestOperation *operation, id responseObject){
+                        DebugLog(@"%@", responseObject);
+                        NSError *error = [[NSError alloc] init];
+                        __block NSDictionary *userInfo = [NSJSONSerialization JSONObjectWithData:(NSData*)responseObject options:0 error:&error];
+                    }
+                    failure:^(AFHTTPRequestOperation *operation, NSError *error){
+                        DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error);
+                    }];
+    return userInfo;
 }
 
 #pragma mark - Authentication/Token Retrieval
@@ -125,7 +78,7 @@
 - (void)didReceiveURL:(NSURL*)url
 {
     DebugLog(@"Server received URL: %@", [url absoluteString]);
-    NSString *token = [url nxoauth2_valueForQueryParameterKey:DNOauth2TokenArgKey];
+    NSString *token = [url nxoauth2_valueForQueryParameterKey:DNOAuth2TokenArgumentKey];
     
     if (token) {
         [self authenticatedOn];
@@ -133,7 +86,7 @@
         DebugLog(@"Server successfully authenticated with token: %@", token);
         //save user setting right here
         userToken = token;
-
+        [self getUserInformation];
     }else{
         DebugLog(@"Server failed to retrieve token, authentication restart...");
         [self authenticatedOff]; //just to be sure

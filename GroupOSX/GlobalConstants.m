@@ -13,7 +13,7 @@ NSString * const DNOAuth2ClientID = @"ZKKrd820vbBu0wHiizLuq9XcKLTGueKr3FFTudjsL9
 NSString * const DNOAuth2AuthorizationURL = @"https://api.groupme.com/oauth/authorize";
 NSString * const DNOAuth2TokenURL = @"gosx://token/";
 NSString * const DNOAuth2RedirectURL = @"gosx://token/";
-NSString * const DNOAuth2TokenArgKey = @"access_token";
+NSString * const DNOAuth2TokenArgumentKey = @"access_token";
 NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
 
 //RESTful constants
