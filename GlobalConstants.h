@@ -9,12 +9,22 @@
 #ifndef GroupOSX_Constants_h
 #define GroupOSX_Constants_h
 
-//Application-Wide Constants
+typedef NSDictionary DNConnectionType;
+//Authentication Constants
 extern NSString* const DNOAuth2ClientID;
-//extern NSString * const DNOAuth2ClientSecret;
 extern NSString * const DNOAuth2AuthorizationURL;
 extern NSString * const DNOAuth2TokenURL;
 extern NSString * const DNOAuth2RedirectURL;
-//extern NSString * const DNOAuth2ClientAccountType;
+extern NSString * const DNOauth2TokenArgKey;
+extern NSString * const DNRESTAPIBaseAddress;
+
+//RESTful constants
+extern NSString * const HTTPMethod;
+extern NSString * const partialURL;
+extern NSString * const URLTokenParamKey;
+extern NSString * const JSONRequestContentTypeValue;
+extern NSString * const JSONRequestContentTypeKey;
+extern NSString * const JSONRequestContentLengthKey;
+extern NSString * const connectionTag;
 
 #endif

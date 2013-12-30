@@ -30,6 +30,7 @@
     //set up server
     self.server.loginSheetController = self.loginSheetController;
 
+
     //set up URI Scheme
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
                                                        andSelector:@selector(handleAppleEvent:withReplyEvent:)
@@ -38,11 +39,12 @@
     [self.mainWindowController start];
 }
 
+//This function should only be used for handling authentication URL redirect's, for now
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event
           withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
     NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
-    NSLog(@"Apple event received: %@", urlString);
+    DebugLog(@"Apple event received: %@", urlString);
     [self.server didReceiveURL:[NSURL URLWithString:urlString]];
 }
 

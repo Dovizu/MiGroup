@@ -27,7 +27,6 @@
 
 #pragma mark Query String Helpers
 
-//take a parameters dictionary and return a string contains correctly formated query arguments
 + (NSString *)nxoauth2_stringWithEncodedQueryParameters:(NSDictionary *)parameters;
 {
     

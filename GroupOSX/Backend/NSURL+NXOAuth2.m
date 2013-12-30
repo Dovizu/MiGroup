@@ -12,6 +12,7 @@
 //
 
 #import "NSString+NXOAuth2.h"
+
 #import "NSURL+NXOAuth2.h"
 
 
@@ -30,6 +31,7 @@
     } else {
         absoluteString = [NSString stringWithFormat:@"%@&%@", absoluteString, newParameterString];
     }
+    
 
     return [NSURL URLWithString:absoluteString];
 }

@@ -6,22 +6,17 @@
 //  Copyright (c) 2013 Dovizu Network. All rights reserved.
 //
 
+//Basic stuff
 #import <Foundation/Foundation.h>
-#import <NXOAuth2.h>
 #include "GlobalConstants.h"
 #import "NSString+NXOAuth2.h"
 #import "NSURL+NXOAuth2.h"
-
+#import "NSURLConnection+Tagged.h"
+//App headers
 #import "DNSocketDelegate.h"
 @class DNLoginSheetController;
 
-@interface DNServerInterface : NSObject
-{
-    //Variables
-    SRWebSocket *socket;
-    DNSocketDelegate *socketDelegate;
-    BOOL authenticated;
-}
+@interface DNServerInterface : NSObject <NSURLConnectionDelegate>
 
 @property DNLoginSheetController *loginSheetController;
 

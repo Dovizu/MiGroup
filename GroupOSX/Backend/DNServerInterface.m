@@ -9,57 +9,102 @@
 #import "DNServerInterface.h"
 
 #import "DNLoginSheetController.h"
+
+
+@interface DNServerInterface ()
+{
+    SRWebSocket *socket;
+    DNSocketDelegate *socketDelegate;
+    BOOL authenticated;
+    NSString *userToken;
+    
+    //Connection Types Constants
+    DNConnectionType *TypeGetUserInfo;
+    DNConnectionType *TypeIndexGroups;
+}
+
+- (void)authenticatedOn;
+- (void)authenticatedOff;
+- (void)startConnectionType:(DNConnectionType*)connectionType withBody:(NSDictionary*)bodyDict andParameters:(NSDictionary*)parameters;
+
+@end
+
 @implementation DNServerInterface
 
 
 #pragma mark - Server Initialization Logic
--(id)init
+- (id)init
 {
     self = [super init];
     if (self){
-        //Initialize LoginSheetController to enable login mechanism
-        
-        
-        
-        //Configure OAuth2Client to have correct client data in order to connect to GroupMe
-        
-//        [[NXOAuth2AccountStore sharedStore] setClientID:DNOAuth2ClientID
-//                                                 secret:DNOAuth2ClientSecret
-//                                       authorizationURL:[NSURL URLWithString:DNOAuth2ClientAuthorizationURL]
-//                                               tokenURL:[NSURL URLWithString:DNOAuth2ClientTokenURL]
-//                                            redirectURL:[NSURL URLWithString:DNOAuth2ClientRedirectURL]
-//                                         forAccountType:DNOAuth2ClientAccountType];
-        
-//        [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreAccountsDidChangeNotification
-//                                                          object:[NXOAuth2AccountStore sharedStore]
-//                                                           queue:nil
-//                                                      usingBlock:^(NSNotification *aNotification){
-//                                                          NSLog(@"Successfully authenticated");
-//                                                          [self authenticatedOn];
-//                                                          [self.loginSheetController closeLoginSheet];
-//                                                      }];
-//        
-//        [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
-//                                                          object:[NXOAuth2AccountStore sharedStore]
-//                                                           queue:nil
-//                                                      usingBlock:^(NSNotification *aNotification){
-//                                                          NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
-//                                                          NSLog(@"Failed to authenticate, error: %@", error);
-//                                                          [self authenticatedOff]; //to be sure
-//                                                          [self authenticate];
-//                                                      }];
-        
-        
         //Configure server interface and instantiate SocketRocket
-        //        socketDelegate = [[DNSocketDelegate alloc] init];
-        //        socket = [[SRWebSocket alloc] initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"blah"]]];
-        //        [socket setDelegate:socketDelegate];
-        
-        
+        socketDelegate = [[DNSocketDelegate alloc] init];
+        [self initializeConnectionTypes];
     }
     return self;
 }
 
+- (void)initializeConnectionTypes
+{
+    TypeGetUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                       @"/users/me", partialURL,
+                       @"GET", HTTPMethod,
+                       @"TypeGetUserInfo", connectionTag,
+                       nil];
+    
+    TypeIndexGroups = [NSDictionary dictionaryWithObjectsAndKeys:
+                       @"/groups", partialURL,
+                       @"GET", HTTPMethod,
+                       @"TypeIndexGroups", connectionTag,
+                       nil];
+}
+
+#pragma mark - Requests and Connection Logic
+
+
+
+- (void)startConnectionType:(DNConnectionType*)connectionType withBody:(NSDictionary*)bodyDict andParameters:(NSDictionary*)parameters
+{
+    //Construct URL
+    NSString *URLWithoutParams = [NSString stringWithFormat:@"%@%@",
+                                      DNRESTAPIBaseAddress,
+                                      [[connectionType objectForKey:partialURL] nxoauth2_URLEncodedString]];
+    //Add token and parameters if necessary
+    if (parameters) {
+        [parameters setValue:userToken forKey:URLTokenParamKey];
+    }else{
+        parameters = [NSDictionary dictionaryWithObjectsAndKeys:userToken, URLTokenParamKey, nil];
+    }
+    
+    //Create request with this URL
+    NSURL *URL = [[NSURL URLWithString:URLWithoutParams] nxoauth2_URLByAddingParameters:parameters];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+    [request setHTTPMethod:[connectionType objectForKey:HTTPMethod]];
+
+    //Add JSON data if necessary
+    if (bodyDict) {
+        NSError *error = [[NSError alloc] init];
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:bodyDict options:0 error:&error];
+        if (JSONData) {
+            NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+            [request setHTTPBody:JSONData];
+            [request setValue:[NSString stringWithFormat:@"%u", (unsigned int)[JSONData length]]
+                       forKey:JSONRequestContentLengthKey];
+            [request setValue:JSONRequestContentTypeValue forKey:JSONRequestContentTypeKey];
+        }else{
+            DebugLog(@"JSONSerialization Error occured: %@", [error description]);
+        }
+    }
+    
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request
+                                                                  delegate:self
+                                                          startImmediately:NO
+                                                                       tag:[connectionType objectForKey:connectionTag]];
+    if (connection) {
+        DebugLog(@"Connection ready: %@", [connection description]);
+        [connection start];
+    }
+}
 
 #pragma mark - Authentication/Token Retrieval
 
@@ -68,34 +113,29 @@
 - (void)authenticate
 {
     if (![self isLoggedIn]) {
-//        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:DNOAuth2ClientAccountType
-//                                       withPreparedAuthorizationURLHandler:^(NSURL *preparedURL){
-//                                           [self.loginSheetController promptForLoginWithPreparedURL:preparedURL];
-//                                       }];
-        [self.loginSheetController promptForLoginWithPreparedURL:[self prepareAuthenticationURL]];
+        NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                           DNOAuth2ClientID, @"client_id",
+                                           nil];
+        NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
+        DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
+        [self.loginSheetController promptForLoginWithPreparedURL:preparedAuthorizationURL];
     }
-}
-
-- (NSURL*)prepareAuthenticationURL
-{
-    NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                       DNOAuth2ClientID, @"client_id",
-                                       nil];
-    
-    return [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
 }
 
 - (void)didReceiveURL:(NSURL*)url
 {
-    NSLog(@"Server received URL: %@", [url absoluteString]);
-//    [[NXOAuth2AccountStore sharedStore] handleRedirectURL:[NSURL URLWithString:urlString]];
+    DebugLog(@"Server received URL: %@", [url absoluteString]);
+    NSString *token = [url nxoauth2_valueForQueryParameterKey:DNOauth2TokenArgKey];
     
-    NSString *token = [url nxoauth2_valueForQueryParameterKey:@"access_token"];
     if (token) {
-        NSLog(@"Server successfully authenticated with token: %@", token);
         [self authenticatedOn];
         [self.loginSheetController closeLoginSheet];
+        DebugLog(@"Server successfully authenticated with token: %@", token);
+        //save user setting right here
+        userToken = token;
+
     }else{
+        DebugLog(@"Server failed to retrieve token, authentication restart...");
         [self authenticatedOff]; //just to be sure
         [self.loginSheetController closeLoginSheet];
         [self authenticate]; //do it again
@@ -116,4 +156,5 @@
 {
     return authenticated;
 }
+
 @end

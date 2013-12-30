@@ -20,14 +20,14 @@
 {
     self = [super initWithWindow:window];
     if (self) {
-        NSLog(@"initWithWindow has been called");
+        DebugLog(@"initWithWindow has been called");
     }
     return self;
 }
 
 - (void)awakeFromNib
 {
-    NSLog(@"DNMainWindowController loaded");
+    DebugLog(@"DNMainWindowController loaded");
 }
 
 - (void)start

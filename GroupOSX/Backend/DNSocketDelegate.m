@@ -12,23 +12,46 @@
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message
 {
-    NSLog(@"Received \"%@\"", message);
+    DebugLog(@"[%@] received \"%@\"", webSocket, message);
 }
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket
 {
-    NSLog(@"Websocket Connected");
+    DebugLog(@"[%@] Connected", webSocket);
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
 {
-    NSLog(@":( Websocket Failed With Error %@", error);
+    DebugLog(@"[%@] Failed With Error %@", webSocket, error);
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
 {
-    NSLog(@"WebSocket closed");
+    DebugLog(@"[%@] closed", webSocket);
 }
 
+- (void)establishSockets
+{
+    //Close current connections if they are any
+    if (messageSocket) {
+        [messageSocket close];
+        DebugLog(@"[%@] closed.", messageSocket);
+    }
+    if (groupSocket) {
+        [groupSocket close];
+        DebugLog(@"[%@] closed.", groupSocket);
+    }
+    
+    //Get requests made
+    NSURLRequest *messageSubscriptionRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"blah"]];
+    messageSocket = [[SRWebSocket alloc] initWithURLRequest:messageSubscriptionRequest];
+    [messageSocket setDelegate:self];
+
+    NSURLRequest *groupSubscriptionRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:@"blah"]];
+    groupSocket = [[SRWebSocket alloc] initWithURLRequest:groupSubscriptionRequest];
+    [groupSocket setDelegate:self];
+    
+    
+}
 
 @end

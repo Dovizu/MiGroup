@@ -10,12 +10,18 @@
 #import <SRWebSocket.h>
 
 @interface DNSocketDelegate : NSObject <SRWebSocketDelegate>
+{
+    SRWebSocket *messageSocket;
+    SRWebSocket *groupSocket;
+}
 
-//Interfaces for delegation for SRWebSocket
-
+//Interface for delegation for SRWebSocket
 -(void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message;
 -(void)webSocketDidOpen:(SRWebSocket *)webSocket;
 -(void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
 -(void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean;
+
+//Interface for server
+- (void)establishSockets;
 
 @end

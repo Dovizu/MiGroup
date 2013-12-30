@@ -4,11 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pods-NXOAuth2Client.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods-SocketRocket.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -22,17 +17,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>054BBB3C6F104807BC129DC0</key>
+		<key>686A2B18393D401AAFD6CB48</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A1DA178C3A8C4C7DA7D531DB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C6A219F0045B471F95D3CF1E</key>
+		<key>ECA775A1343449FB853816A4</key>
 		<dict>
 			<key>primary</key>
 			<true/>

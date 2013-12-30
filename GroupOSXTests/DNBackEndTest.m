@@ -33,13 +33,6 @@
 }
 
 
--(void)testAuthentication
-{
-    [server authenticateWithUsername:@"donnywith@gmail.com" password:@"WsCxD86110089g"];
-    for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
-        NSLog(@"%@", account);
-    };
-    
-}
+
 
 @end
