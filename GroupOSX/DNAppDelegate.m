@@ -20,17 +20,30 @@
     self.mainWindowController = (DNMainWindowController*) [self.window delegate];
     self.loginSheetController = [[DNLoginSheetController alloc] init]; //init with xib
     
-    //setup login sheet controller
+    //set up login sheet controller
     self.loginSheetController.server = self.server;
     self.loginSheetController.mainWindowController = self.mainWindowController;
     
-    //setup mainWindowController
+    //set up mainWindowController
     self.mainWindowController.server = self.server;
     
-    //setup server
+    //set up server
     self.server.loginSheetController = self.loginSheetController;
-    
+
+    //set up URI Scheme
+    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
+                                                       andSelector:@selector(handleAppleEvent:withReplyEvent:)
+                                                     forEventClass:kInternetEventClass
+                                                        andEventID:kAEGetURL];
     [self.mainWindowController start];
+}
+
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event
+          withReplyEvent:(NSAppleEventDescriptor *)replyEvent
+{
+    NSString *urlString = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
+    NSLog(@"Apple event received: %@", urlString);
+    [self.server didReceiveURL:[NSURL URLWithString:urlString]];
 }
 
 - (void)awakeFromNib

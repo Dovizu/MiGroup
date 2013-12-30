@@ -17,6 +17,8 @@
 @property DNMainWindowController *mainWindowController;
 @property DNServerInterface *server;
 
+- (id)init;
 - (void)promptForLoginWithPreparedURL:(NSURL *)url;
+- (void)closeLoginSheet;
 
 @end

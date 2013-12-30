@@ -32,7 +32,7 @@
 
 - (void)start
 {
-    if (![self.server loggedIn]) {
+    if (![self.server isLoggedIn]) {
         [self.server authenticate];
     }
 }

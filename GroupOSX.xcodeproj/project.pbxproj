@@ -25,11 +25,14 @@
 		F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E19A186A5CD100C42636 /* GroupOSXTests.m */; };
 		F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F15BFF27186C1B34003BE76D /* DNLoginSheetController.m */; };
 		F15BFF2A186C1B34003BE76D /* LoginSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = F15BFF28186C1B34003BE76D /* LoginSheet.xib */; };
+		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
+		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
 		F18BF644186BB7B0007B2DCA /* DNSocketDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */; };
 		F1A3C7FE186BCB0B00E97B4D /* DNAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E183186A5CD100C42636 /* DNAppDelegate.m */; };
 		F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */; };
 		F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F5C5EF186D2A6600C407A3 /* WebKit.framework */; };
+		F1F5C5F8186D594800C407A3 /* GlobalConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5F7186D594800C407A3 /* GlobalConstants.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +51,7 @@
 		F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNServerInterface.h; path = GroupOSX/Backend/DNServerInterface.h; sourceTree = "<group>"; };
 		F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNServerInterface.m; path = GroupOSX/Backend/DNServerInterface.m; sourceTree = "<group>"; };
 		F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNBackEndTest.m; sourceTree = "<group>"; };
-		F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = GroupOSX.entitlements; sourceTree = "<group>"; };
+		F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = GroupOSX.entitlements; path = GroupOSX/GroupOSX.entitlements; sourceTree = "<group>"; };
 		F12A0322186BA1F0008C8BA5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		F144E16D186A5CD100C42636 /* GroupOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroupOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F144E170186A5CD100C42636 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -72,12 +75,18 @@
 		F15BFF26186C1B34003BE76D /* DNLoginSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNLoginSheetController.h; path = GroupOSX/DNLoginSheetController.h; sourceTree = "<group>"; };
 		F15BFF27186C1B34003BE76D /* DNLoginSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNLoginSheetController.m; path = GroupOSX/DNLoginSheetController.m; sourceTree = "<group>"; };
 		F15BFF28186C1B34003BE76D /* LoginSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoginSheet.xib; path = GroupOSX/LoginSheet.xib; sourceTree = "<group>"; };
+		F18314131870E95900930D5E /* NSString+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+NXOAuth2.h"; path = "Pods/NXOAuth2Client/Sources/NSString+NXOAuth2.h"; sourceTree = "<group>"; };
+		F18314141870E95900930D5E /* NSString+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+NXOAuth2.m"; path = "Pods/NXOAuth2Client/Sources/NSString+NXOAuth2.m"; sourceTree = "<group>"; };
+		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "Pods/NXOAuth2Client/Sources/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
+		F18314161870E95900930D5E /* NSURL+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+NXOAuth2.m"; path = "Pods/NXOAuth2Client/Sources/NSURL+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		F18BF642186BB7B0007B2DCA /* DNSocketDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNSocketDelegate.h; path = GroupOSX/Backend/DNSocketDelegate.h; sourceTree = "<group>"; };
 		F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNSocketDelegate.m; path = GroupOSX/Backend/DNSocketDelegate.m; sourceTree = "<group>"; };
 		F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainWindowController.h; path = GroupOSX/DNMainWindowController.h; sourceTree = "<group>"; };
 		F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainWindowController.m; path = GroupOSX/DNMainWindowController.m; sourceTree = "<group>"; };
 		F1F5C5EF186D2A6600C407A3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		F1F5C5F6186D592900C407A3 /* GlobalConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalConstants.h; sourceTree = "<group>"; };
+		F1F5C5F7186D594800C407A3 /* GlobalConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GlobalConstants.m; path = GroupOSX/GlobalConstants.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +121,7 @@
 				F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */,
 				F18BF642186BB7B0007B2DCA /* DNSocketDelegate.h */,
 				F18BF643186BB7B0007B2DCA /* DNSocketDelegate.m */,
+				F18314191870EADC00930D5E /* Augmented NSString & NSURL */,
 			);
 			name = Backend;
 			path = ..;
@@ -121,6 +131,9 @@
 			isa = PBXGroup;
 			children = (
 				F18BF640186BA9C1007B2DCA /* Podfile */,
+				F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */,
+				F1F5C5F6186D592900C407A3 /* GlobalConstants.h */,
+				F1F5C5F7186D594800C407A3 /* GlobalConstants.m */,
 				F144E176186A5CD100C42636 /* GroupOSX */,
 				F144E194186A5CD100C42636 /* GroupOSXTests */,
 				F144E16F186A5CD100C42636 /* Frameworks */,
@@ -164,7 +177,6 @@
 		F144E176186A5CD100C42636 /* GroupOSX */ = {
 			isa = PBXGroup;
 			children = (
-				F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */,
 				F144E182186A5CD100C42636 /* DNAppDelegate.h */,
 				F144E183186A5CD100C42636 /* DNAppDelegate.m */,
 				F144E188186A5CD100C42636 /* Images.xcassets */,
@@ -205,6 +217,17 @@
 				F144E197186A5CD100C42636 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F18314191870EADC00930D5E /* Augmented NSString & NSURL */ = {
+			isa = PBXGroup;
+			children = (
+				F18314131870E95900930D5E /* NSString+NXOAuth2.h */,
+				F18314141870E95900930D5E /* NSString+NXOAuth2.m */,
+				F18314151870E95900930D5E /* NSURL+NXOAuth2.h */,
+				F18314161870E95900930D5E /* NSURL+NXOAuth2.m */,
+			);
+			name = "Augmented NSString & NSURL";
 			sourceTree = "<group>";
 		};
 		F1A3C802186BF3AC00E97B4D /* MainWindow */ = {
@@ -404,10 +427,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1F5C5F8186D594800C407A3 /* GlobalConstants.m in Sources */,
 				F144E184186A5CD100C42636 /* DNAppDelegate.m in Sources */,
+				F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */,
 				F144E17D186A5CD100C42636 /* main.m in Sources */,
 				F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */,
 				F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */,
+				F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */,
 				F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */,
 				F18BF644186BB7B0007B2DCA /* DNSocketDelegate.m in Sources */,
 			);

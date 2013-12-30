@@ -12,7 +12,7 @@
 @interface DNLoginSheetController ()
 
 //Methods listed here are "private"
-
+- (IBAction)quitButtonPressed:(id)sender;
 
 @end
 
@@ -49,14 +49,24 @@
     [[loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
-- (void)didEndSheet:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+- (void)closeLoginSheet
 {
-    [sheet orderOut:self];
+    [self.mainWindowController.window endSheet:self.window];
 }
 
 - (IBAction)quitButtonPressed:(id)sender
 {
-    [self.mainWindowController.window endSheet:self.window];
+    [self closeLoginSheet];
 }
+
+#pragma mark - Authentication Catch
+
+//- (void)webView:(WebView *)sender willPerformClientRedirectToURL:(NSURL *)URL
+//          delay:(NSTimeInterval)seconds
+//       fireDate:(NSDate *)date
+//       forFrame:(WebFrame *)frame
+//{
+//    NSLog(@"Redirect: %@", URL);
+//}
 
 @end

@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <NXOAuth2.h>
+#include "GlobalConstants.h"
+#import "NSString+NXOAuth2.h"
+#import "NSURL+NXOAuth2.h"
 
 #import "DNSocketDelegate.h"
 @class DNLoginSheetController;
@@ -22,8 +25,8 @@
 
 @property DNLoginSheetController *loginSheetController;
 
-//Internal methods
 - (id)init;
-- (BOOL)loggedIn;
+- (BOOL)isLoggedIn;
 - (void)authenticate;
+- (void)didReceiveURL:(NSString*)urlString;
 @end

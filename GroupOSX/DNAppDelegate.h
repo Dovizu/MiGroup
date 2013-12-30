@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include "GlobalConstants.h"
 
 @class DNServerInterface, DNLoginSheetController, DNMainWindowController;
 
