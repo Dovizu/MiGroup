@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-SocketRocket.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -22,17 +17,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>43C67BF2B34B44869D9C770A</key>
+		<key>61949B9A14A24D9E8111F886</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>E2152A9034C84521A6DCB552</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>ECFD9FFEAD2B46069FB80DFA</key>
+		<key>EFE46E9DE43A4FAE9A1D06F4</key>
 		<dict>
 			<key>primary</key>
 			<true/>

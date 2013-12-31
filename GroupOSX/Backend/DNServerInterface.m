@@ -22,8 +22,8 @@
 
 @interface DNServerInterface ()
 {
-    SRWebSocket *socket;
-    DNSocketDelegate *socketDelegate;
+//    SRWebSocket *socket;
+//    DNSocketDelegate *socketDelegate;
     BOOL authenticated;
     BOOL connected;
     AFHTTPRequestOperationManager *HTTPRequestManager;
@@ -43,7 +43,7 @@
 {
     self = [super init];
     if (self){
-        socketDelegate = [[DNSocketDelegate alloc] init];
+//        socketDelegate = [[DNSocketDelegate alloc] init];
         HTTPRequestManager = [AFHTTPRequestOperationManager manager];
         [self establishObserversForNetworkEvents];
     }

@@ -15,14 +15,11 @@ PODS:
   - AFNetworking/Reachability (2.0.3)
   - AFNetworking/Security (2.0.3)
   - AFNetworking/Serialization (2.0.3)
-  - SocketRocket (0.3.1-beta2)
 
 DEPENDENCIES:
   - AFNetworking (~> 2.0)
-  - SocketRocket (~> 0.3.1-beta2)
 
 SPEC CHECKSUMS:
   AFNetworking: e499052cbf3d743e9bb727bb37adb9dc2547ba15
-  SocketRocket: 7ac946bcce46287a791dfff3c1f8daa692821dae
 
 COCOAPODS: 0.29.0

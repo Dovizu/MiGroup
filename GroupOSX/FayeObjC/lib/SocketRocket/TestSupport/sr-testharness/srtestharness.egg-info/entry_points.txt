@@ -1,0 +1,5 @@
+
+      # -*- Entry points: -*-
+      [console_scripts]
+      sr-testharness = srtestharness.runner:main
+      

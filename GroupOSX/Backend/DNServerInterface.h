@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
 #import "NSURL+NXOAuth2.h"
-#import "DNSocketDelegate.h"
+
 @class DNLoginSheetController;
 
 #ifdef DEBUG

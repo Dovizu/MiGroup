@@ -12,6 +12,8 @@
 	<dict>
 		<key>8356F55E-2875-40AB-B40F-053F381A134E</key>
 		<string>ssh://github.com/dovizu/GroupOSX.git</string>
+		<key>E77C0334-4884-48A2-967B-F4F0AF3536F5</key>
+		<string>https://github.com/pcrawfor/FayeObjC.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>GroupOSX.xcworkspace</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>8356F55E-2875-40AB-B40F-053F381A134E</key>
 		<string>..</string>
+		<key>E77C0334-4884-48A2-967B-F4F0AF3536F5</key>
+		<string>../../FayeObjCRepo</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/dovizu/GroupOSX.git</string>
@@ -28,6 +32,14 @@
 	<string>8356F55E-2875-40AB-B40F-053F381A134E</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E77C0334-4884-48A2-967B-F4F0AF3536F5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FayeObjCRepo</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
