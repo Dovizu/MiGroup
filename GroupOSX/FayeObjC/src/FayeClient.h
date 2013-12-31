@@ -60,6 +60,7 @@ typedef void(^FayeClientMessageHandler)(NSDictionary *);
 - (void)fayeClientError:(NSError *)error;
 
 // Delegation implementation of Faye extensions
+@optional
 - (void)fayeClientWillReceiveMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback;
 - (void)fayeClientWillSendMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback;
 

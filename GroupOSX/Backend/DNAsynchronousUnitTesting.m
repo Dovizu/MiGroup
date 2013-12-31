@@ -8,6 +8,7 @@
 
 #import "DNAsynchronousUnitTesting.h"
 #import "DNServerInterface.h"
+#import "DNSocketManager.h"
 
 @implementation DNAsynchronousUnitTesting
 + (void)testAllAsynchronousUnits:(DNServerInterface*)server
@@ -40,6 +41,11 @@
             DebugLog(@"GroupsFormer failed");
         }
     }];
+}
+
++ (void)testAllSockets:(DNSocketManager*)socketManager
+{
+    [socketManager establishMessageSocketWithUserID:@"11201713"];
 }
 
 @end

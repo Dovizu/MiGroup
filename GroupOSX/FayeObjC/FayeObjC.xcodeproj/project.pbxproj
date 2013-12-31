@@ -62,7 +62,7 @@
 		8DF0559216ED99F2000A0035 /* NSString+Serialize.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DF03A9216ED9862000A0035 /* NSString+Serialize.m */; };
 		8DF0559816ED9B0A000A0035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0761F516ED29C5002D5F3D /* Foundation.framework */; };
 		8DF0559916ED9B2B000A0035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0761F516ED29C5002D5F3D /* Foundation.framework */; };
-		F11C406F1872AF84004820A7 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DF0555216ED9877000A0035 /* SocketRocket.framework */; };
+		F1AE2F671872B265009C8851 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DF0555216ED9877000A0035 /* SocketRocket.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3454,7 +3454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F11C406F1872AF84004820A7 /* SocketRocket.framework in Frameworks */,
+				F1AE2F671872B265009C8851 /* SocketRocket.framework in Frameworks */,
 				8DF0559816ED9B0A000A0035 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

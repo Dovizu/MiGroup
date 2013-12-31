@@ -56,9 +56,10 @@
 
 
 @implementation FayeClient {
-  NSMutableSet *queuedSubscriptions;
-  NSMutableSet *pendingSubscriptions;
-  NSMutableSet *openSubscriptions;
+    NSMutableSet *queuedSubscriptions;
+    NSMutableSet *pendingSubscriptions;
+    NSMutableSet *openSubscriptions;
+    int current_id;
 }
 
 @synthesize fayeURLString;
@@ -72,21 +73,22 @@
 // ws://localhost:8000/faye
 - (id) initWithURLString:(NSString *)aFayeURLString channel:(NSString *)channel
 {
-  self = [super init];
-  if (self != nil) {
-    self.fayeURLString = aFayeURLString;
-    fayeConnected = NO;
-    queuedSubscriptions = [[NSMutableSet alloc] init];
-    pendingSubscriptions = [[NSMutableSet alloc] init];
-    openSubscriptions = [[NSMutableSet alloc] init];
-    if(nil != channel) {
-      if(![queuedSubscriptions containsObject:channel]) {
-        [queuedSubscriptions addObject:channel];
-      }
+    self = [super init];
+    if (self != nil) {
+        current_id = 0;
+        self.fayeURLString = aFayeURLString;
+        fayeConnected = NO;
+        queuedSubscriptions = [[NSMutableSet alloc] init];
+        pendingSubscriptions = [[NSMutableSet alloc] init];
+        openSubscriptions = [[NSMutableSet alloc] init];
+        if(nil != channel) {
+            if(![queuedSubscriptions containsObject:channel]) {
+                [queuedSubscriptions addObject:channel];
+            }
+        }
+        self.connectionInitiated = NO;
     }
-    self.connectionInitiated = NO;    
-  }
-  return self;
+    return self;
 }
 
 #pragma mark -
@@ -96,57 +98,57 @@
 // handshake with the server
 // establish a faye connection
 - (void) connectToServer {
-  if(!connectionInitiated) {
-    [self openWebSocketConnection];
-  }
+    if(!connectionInitiated) {
+        [self openWebSocketConnection];
+    }
 }
 
 - (void) connectToServerWithExt:(NSDictionary *)extension {
-  self.connectionExtension = extension;  
-  [self connectToServer];
+    self.connectionExtension = extension;
+    [self connectToServer];
 }
 
-- (void) disconnectFromServer {  
-  [self disconnect];  
+- (void) disconnectFromServer {
+    [self disconnect];
 }
 
 - (void) sendMessage:(NSDictionary *)messageDict onChannel:(NSString *)channel {
-  [self publish:messageDict channel:channel withExt:nil];
+    [self publish:messageDict channel:channel withExt:nil];
 }
 
 - (void) sendMessage:(NSDictionary *)messageDict onChannel:(NSString *)channel withExt:(NSDictionary *)extension {
-  [self publish:messageDict channel:channel withExt:extension];
+    [self publish:messageDict channel:channel withExt:extension];
 }
 
 - (void) subscribeToChannel:(NSString *)channel {
-  if([pendingSubscriptions containsObject:channel] || [openSubscriptions containsObject:channel]) return;
-  
-  if(fayeConnected) {
-    [self subscribe:channel];
-  } else {
-    [queuedSubscriptions addObject:channel];
-  }
+    if([pendingSubscriptions containsObject:channel] || [openSubscriptions containsObject:channel]) return;
+    
+    if(fayeConnected) {
+        [self subscribe:channel];
+    } else {
+        [queuedSubscriptions addObject:channel];
+    }
 }
 
 - (void) unsubscribeFromChannel:(NSString *)channel {
-  [queuedSubscriptions removeObject:channel];
-  [self unsubscribe:channel];
+    [queuedSubscriptions removeObject:channel];
+    [self unsubscribe:channel];
 }
 
 - (BOOL) isSubscribedToChannel:(NSString *)channel {
-  return [openSubscriptions containsObject:channel];
+    return [openSubscriptions containsObject:channel];
 }
 
 - (void) subscribeQueuedSubscriptions {
-  
-  // if there are any outstanding open subscriptions resubscribe
-  if ([queuedSubscriptions count] > 0) {
-    NSSet *queue = [queuedSubscriptions copy];
-    for(NSString *channel in queue) {
-      [queuedSubscriptions removeObject:channel];
-      [self subscribeToChannel:channel];
+    
+    // if there are any outstanding open subscriptions resubscribe
+    if ([queuedSubscriptions count] > 0) {
+        NSSet *queue = [queuedSubscriptions copy];
+        for(NSString *channel in queue) {
+            [queuedSubscriptions removeObject:channel];
+            [self subscribeToChannel:channel];
+        }
     }
-  }
 }
 
 - (BOOL)webSocketConnected { return self.webSocket.readyState == SR_OPEN; }
@@ -157,44 +159,44 @@
 
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket;
 {
-  self.connectionInitiated = NO;
-  [self handshake];
+    self.connectionInitiated = NO;
+    [self handshake];
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error;
-{      
-  self.connectionInitiated = NO;
-  if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(connectionFailed)]) {
-    [self.delegate connectionFailed];
-  }  
+{
+    self.connectionInitiated = NO;
+    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(connectionFailed)]) {
+        [self.delegate connectionFailed];
+    }
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message;
-{    
-  [self receive:message];
+{
+    [self receive:message];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {  
-  self.connectionInitiated = NO;
-  fayeConnected = NO;
-  
-  [queuedSubscriptions unionSet:pendingSubscriptions];
-  [queuedSubscriptions unionSet:openSubscriptions];
-  [pendingSubscriptions removeAllObjects];
-  [openSubscriptions removeAllObjects];
-  
-  if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(disconnectedFromServer)]) {
-    [self.delegate disconnectedFromServer];
-  }
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    self.connectionInitiated = NO;
+    fayeConnected = NO;
+    
+    [queuedSubscriptions unionSet:pendingSubscriptions];
+    [queuedSubscriptions unionSet:openSubscriptions];
+    [pendingSubscriptions removeAllObjects];
+    [openSubscriptions removeAllObjects];
+    
+    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(disconnectedFromServer)]) {
+        [self.delegate disconnectedFromServer];
+    }
 }
 
 #pragma mark -
 #pragma mark Deallocation
 - (void) dealloc
 {
-  // clean up any existing socket
-  [self closeWebSocketConnection];
-  self.delegate = nil;
+    // clean up any existing socket
+    [self closeWebSocketConnection];
+    self.delegate = nil;
 }
 
 @end
@@ -204,30 +206,30 @@
 @implementation FayeClient (Private)
 
 - (void) passFayeClientError:(NSError *)error {
-  if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(fayeClientError:)]) {
-    [self.delegate fayeClientError:error];
-  }
+    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(fayeClientError:)]) {
+        [self.delegate fayeClientError:error];
+    }
 }
 
 - (NSString *) base36Encode:(uint32_t)value
 {
-  NSString *base36 = @"0123456789abcdefghijklmnopqrstuvwxyz";
-  NSString *buffer = @"";
-  
-  do {
-    NSString *newChar = [NSString stringWithFormat:@"%c", [base36 characterAtIndex:(value % 36)]];
-    buffer = [newChar stringByAppendingString:buffer];
-  } while (value /= 36);
-  
-  return buffer;
+    NSString *base36 = @"0123456789abcdefghijklmnopqrstuvwxyz";
+    NSString *buffer = @"";
+    
+    do {
+        NSString *newChar = [NSString stringWithFormat:@"%c", [base36 characterAtIndex:(value % 36)]];
+        buffer = [newChar stringByAppendingString:buffer];
+    } while (value /= 36);
+    
+    return buffer;
 }
 
 - (NSString *) nextMessageId
 {
-  messageNumber++;
-  if (messageNumber >= UINT32_MAX) messageNumber = 0;
-  
-  return [self base36Encode:messageNumber];
+    messageNumber++;
+    if (messageNumber >= UINT32_MAX) messageNumber = 0;
+    
+    return [self base36Encode:messageNumber];
 }
 
 - (void) send:(id)object
@@ -264,33 +266,44 @@
 #pragma mark -
 #pragma mark WebSocket connection
 - (void) openWebSocketConnection {
-  // clean up any existing socket
-  [self closeWebSocketConnection];
-  
-  webSocket = [[SRWebSocket alloc] initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.fayeURLString]]];
-  webSocket.delegate = self;
-  self.connectionInitiated = YES;
-  [webSocket open];
+    // clean up any existing socket
+    [self closeWebSocketConnection];
+    
+    webSocket = [[SRWebSocket alloc] initWithURLRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.fayeURLString]]];
+    webSocket.delegate = self;
+    self.connectionInitiated = YES;
+    [webSocket open];
 }
 
 - (void) closeWebSocketConnection {
-  [webSocket setDelegate:nil];
-  [webSocket close];
-  webSocket = nil;
+    [webSocket setDelegate:nil];
+    [webSocket close];
+    webSocket = nil;
 }
 
 #pragma mark -
 #pragma mark Private Bayeux procotol functions
 
+- (NSString*)getNextID
+{
+    current_id += 1;
+    return [NSString stringWithFormat:@"%d", current_id];
+}
+
 // Bayeux Handshake
 // "channel": "/meta/handshake",
 // "version": "1.0",
-// "minimumVersion": "1.0beta",
-// "supportedConnectionTypes": ["long-polling", "callback-polling", "iframe", "websocket]
+// "supportedConnectionTypes": ["long-polling"]
+// "id": increment
 - (void) handshake {
-  NSArray *connTypes = [NSArray arrayWithObjects:@"long-polling", @"callback-polling", @"iframe", @"websocket", nil];   
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:HANDSHAKE_CHANNEL, @"channel", @"1.0", @"version", @"1.0beta", @"minimumVersion", connTypes, @"supportedConnectionTypes", nil];
-  [self send:dict];
+    NSArray *connTypes = [NSArray arrayWithObjects:@"long-polling", nil];
+    //  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:HANDSHAKE_CHANNEL, @"channel", @"1.0", @"version", connTypes, @"supportedConnectionTypes", nil];
+
+    NSDictionary *dict = @{@"channel": HANDSHAKE_CHANNEL,
+                           @"version":@"1.0",
+                           @"supportedConnectionTypes":connTypes,
+                           @"id":[self getNextID]};
+    [self send:dict];
 }
 
 // Bayeux Connect
@@ -298,8 +311,12 @@
 // "clientId": "Un1q31d3nt1f13r",
 // "connectionType": "long-polling"
 - (void) connect {
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:CONNECT_CHANNEL, @"channel", self.fayeClientId, @"clientId", @"websocket", @"connectionType", nil];
-  [self send:dict];
+//    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:CONNECT_CHANNEL, @"channel", self.fayeClientId, @"clientId", @"websocket", @"connectionType", nil];
+    NSDictionary *dict = @{@"channel":CONNECT_CHANNEL,
+                           @"clientId":self.fayeClientId,
+                           @"connectionType":@"long-polling",
+                           @"id":[self getNextID]};
+    [self send:dict];
 }
 
 // {
@@ -307,8 +324,8 @@
 // "clientId": "Un1q31d3nt1f13r"
 // }
 - (void) disconnect {
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:DISCONNECT_CHANNEL, @"channel", self.fayeClientId, @"clientId", nil];
-  [self send:dict];
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:DISCONNECT_CHANNEL, @"channel", self.fayeClientId, @"clientId", nil];
+    [self send:dict];
 }
 
 // {
@@ -317,21 +334,30 @@
 // "subscription": "/foo/**"
 // }
 - (void) subscribe:(NSString *)channel {
-  if(nil == channel) {
-    return;
-  }
-  
-  NSDictionary *dict = nil;
-  if(nil == self.connectionExtension) {
-    dict = [NSDictionary dictionaryWithObjectsAndKeys:SUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", nil];
-  } else {
-    dict = [NSDictionary dictionaryWithObjectsAndKeys:SUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", self.connectionExtension, @"ext", nil];
-  }
-  
-  [self send:dict];
-  
-  // Add the channel to pending
-  [pendingSubscriptions addObject:channel];
+    if(nil == channel) {
+        return;
+    }
+    
+    NSDictionary *dict = nil;
+    if(nil == self.connectionExtension) {
+//        dict = [NSDictionary dictionaryWithObjectsAndKeys:SUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", nil];
+        dict = @{@"channel":SUBSCRIBE_CHANNEL,
+                 @"clientId":self.fayeClientId,
+                 @"subscription":channel,
+                 @"id":[self getNextID]};
+    } else {
+//        dict = [NSDictionary dictionaryWithObjectsAndKeys:SUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", self.connectionExtension, @"ext", nil];
+        dict = @{@"channel":SUBSCRIBE_CHANNEL,
+                 @"clientId":self.fayeClientId,
+                 @"subscription":channel,
+                 @"id":[self getNextID],
+                 @"ext":self.connectionExtension};
+    }
+    
+    [self send:dict];
+    
+    // Add the channel to pending
+    [pendingSubscriptions addObject:channel];
 }
 
 // {
@@ -340,8 +366,8 @@
 // "subscription": "/foo/**"
 // }
 - (void) unsubscribe:(NSString *)channel {
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:UNSUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", nil];
-  [self send:dict];
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:UNSUBSCRIBE_CHANNEL, @"channel", self.fayeClientId, @"clientId", channel, @"subscription", nil];
+    [self send:dict];
 }
 
 // {
@@ -352,22 +378,22 @@
 // }
 
 //- (void) publish:(NSDictionary *)messageDict withExt:(NSDictionary *)extension {
-- (void) publish:(NSDictionary *)messageDict channel:(NSString *)channel withExt:(NSDictionary *)extension {    
-  if(!fayeConnected) {
-    [self passFayeClientError:[NSError errorWithDomain:@"FayeNotConnected" code:1 userInfo:nil]];
-    return;
-  }
-  
-  NSString *messageId = [self nextMessageId];
-  NSDictionary *dict = nil;
-  
-  if(nil == extension) {
-    dict = [NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", self.fayeClientId, @"clientId", messageDict, @"data", messageId, @"id", nil];
-  } else {
-    dict = [NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", self.fayeClientId, @"clientId", messageDict, @"data", messageId, @"id", extension, @"ext",nil];
-  }
-  
-  [self send:dict];
+- (void) publish:(NSDictionary *)messageDict channel:(NSString *)channel withExt:(NSDictionary *)extension {
+    if(!fayeConnected) {
+        [self passFayeClientError:[NSError errorWithDomain:@"FayeNotConnected" code:1 userInfo:nil]];
+        return;
+    }
+    
+    NSString *messageId = [self nextMessageId];
+    NSDictionary *dict = nil;
+    
+    if(nil == extension) {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", self.fayeClientId, @"clientId", messageDict, @"data", messageId, @"id", nil];
+    } else {
+        dict = [NSDictionary dictionaryWithObjectsAndKeys:channel, @"channel", self.fayeClientId, @"clientId", messageDict, @"data", messageId, @"id", extension, @"ext",nil];
+    }
+    
+    [self send:dict];
 }
 
 # pragma mark - Faye extensions
@@ -395,10 +421,10 @@
     }
     
     if (pipeHandler != nil && [self.delegate respondsToSelector:pipeHandler]) {
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self.delegate performSelector:pipeHandler withObject:messageDict withObject:callback];
-        #pragma clang diagnostic pop
+#pragma clang diagnostic pop
     } else {
         callback(messageDict);
     }
@@ -411,29 +437,29 @@
     for(NSDictionary *messageDict in messages) {
         [self pipeThroughIncomingExtensions:messageDict withCallback:^(NSDictionary *messageDict){
             FayeMessage *fm = [[FayeMessage alloc] initWithDict:messageDict];
-    
+            
             if ([fm.channel isEqualToString:HANDSHAKE_CHANNEL]) {
                 if ([fm.successful boolValue]) {
-                  self.fayeClientId = fm.clientId;        
-                  if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(connectedToServer)]) {
-                      fayeConnected = YES;
-                      [self.delegate connectedToServer];
-                  }
-                  [self connect];
-                  [self subscribeQueuedSubscriptions];
-              } else {
-                  NSLog(@"ERROR WITH HANDSHAKE");
-              }    
-            } else if ([fm.channel isEqualToString:CONNECT_CHANNEL]) {      
+                    self.fayeClientId = fm.clientId;
+                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(connectedToServer)]) {
+                        fayeConnected = YES;
+                        [self.delegate connectedToServer];
+                    }
+                    [self connect];
+                    [self subscribeQueuedSubscriptions];
+                } else {
+                    NSLog(@"ERROR WITH HANDSHAKE");
+                }
+            } else if ([fm.channel isEqualToString:CONNECT_CHANNEL]) {
                 if ([fm.successful boolValue]) {
                     fayeConnected = YES;
-                    [self connect];        
+                    [self connect];
                 } else {
                     NSLog(@"ERROR CONNECTING TO FAYE");
                 }
             } else if ([fm.channel isEqualToString:DISCONNECT_CHANNEL]) {
-                if ([fm.successful boolValue]) {        
-                    fayeConnected = NO;  
+                if ([fm.successful boolValue]) {
+                    fayeConnected = NO;
                     [self closeWebSocketConnection];
                     if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(disconnectedFromServer)]) {
                         [self.delegate disconnectedFromServer];
@@ -446,24 +472,24 @@
                 if ([fm.successful boolValue]) {
                     NSLog(@"SUBSCRIBED TO CHANNEL %@ ON FAYE", fm.subscription);
                     [openSubscriptions addObject:fm.subscription];
-                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(didSubscribeToChannel:)]) {          
+                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(didSubscribeToChannel:)]) {
                         [self.delegate didSubscribeToChannel:fm.subscription];
                     }
                 } else {
                     NSLog(@"ERROR SUBSCRIBING TO %@ WITH ERROR %@", fm.subscription, fm.error);
-                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(subscriptionFailedWithError:)]) {          
+                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(subscriptionFailedWithError:)]) {
                         [self.delegate subscriptionFailedWithError:fm.error];
-                    }        
-                }      
+                    }
+                }
             } else if ([fm.channel isEqualToString:UNSUBSCRIBE_CHANNEL]) {
-                  NSLog(@"UNSUBSCRIBED FROM CHANNEL %@ ON FAYE", fm.subscription);
-                  [openSubscriptions removeObject:fm.subscription];
-                  if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(didUnsubscribeFromChannel:)]) {          
-                      [self.delegate didUnsubscribeFromChannel:fm.subscription];
-                  }
-            } else if ([openSubscriptions containsObject:fm.channel]) {      
-                if(fm.data) {        
-                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(messageReceived:channel:)]) {          
+                NSLog(@"UNSUBSCRIBED FROM CHANNEL %@ ON FAYE", fm.subscription);
+                [openSubscriptions removeObject:fm.subscription];
+                if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(didUnsubscribeFromChannel:)]) {
+                    [self.delegate didUnsubscribeFromChannel:fm.subscription];
+                }
+            } else if ([openSubscriptions containsObject:fm.channel]) {
+                if(fm.data) {
+                    if(self.delegate != NULL && [self.delegate respondsToSelector:@selector(messageReceived:channel:)]) {
                         [self.delegate messageReceived:fm.data channel:fm.channel];
                     }
                 }           

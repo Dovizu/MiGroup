@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		49716C5732F74222B106673B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D1475E2B0A4B088BD5AF44 /* libPods.a */; };
 		556404BAFE0A49098CFE4D01 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D1475E2B0A4B088BD5AF44 /* libPods.a */; };
-		F11C406A1872AE44004820A7 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F11C40631872AE2F004820A7 /* FayeObjC.framework */; };
 		F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */; };
 		F12A0316186B8A6C008C8BA5 /* DNBackEndTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */; };
 		F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12A0322186BA1F0008C8BA5 /* Security.framework */; };
@@ -30,6 +29,9 @@
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
 		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
+		F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
+		F1AE2F6A1872B495009C8851 /* DNSocketManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AE2F691872B495009C8851 /* DNSocketManager.m */; };
+		F1AE2F6C1872B727009C8851 /* DNSocketManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */; };
 		F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */ = {isa = PBXBuildFile; fileRef = F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */; };
 		F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */; };
 		F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F5C5EF186D2A6600C407A3 /* WebKit.framework */; };
@@ -37,47 +39,47 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		F11C40621872AE2F004820A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D0761ED16ED29C5002D5F3D;
-			remoteInfo = FayeObjCFramework;
-		};
-		F11C40641872AE2F004820A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D07620516ED29C5002D5F3D;
-			remoteInfo = FayeObjCFrameworkTests;
-		};
-		F11C40661872AE2F004820A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D07622316ED2ABC002D5F3D;
-			remoteInfo = FayeObjCLibrary;
-		};
-		F11C40681872AE2F004820A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8D07623216ED2ABC002D5F3D;
-			remoteInfo = FayeObjCLibraryTests;
-		};
-		F11C406B1872AE4F004820A7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D0761EC16ED29C5002D5F3D;
-			remoteInfo = FayeObjCFramework;
-		};
 		F144E192186A5CD100C42636 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F144E165186A5CD100C42636 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = F144E16C186A5CD100C42636;
 			remoteInfo = GroupOSX;
+		};
+		F1AE2F5A1872B1EE009C8851 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D0761ED16ED29C5002D5F3D;
+			remoteInfo = FayeObjCFramework;
+		};
+		F1AE2F5C1872B1EE009C8851 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D07620516ED29C5002D5F3D;
+			remoteInfo = FayeObjCFrameworkTests;
+		};
+		F1AE2F5E1872B1EE009C8851 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D07622316ED2ABC002D5F3D;
+			remoteInfo = FayeObjCLibrary;
+		};
+		F1AE2F601872B1EE009C8851 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D07623216ED2ABC002D5F3D;
+			remoteInfo = FayeObjCLibraryTests;
+		};
+		F1AE2F631872B20A009C8851 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D0761EC16ED29C5002D5F3D;
+			remoteInfo = FayeObjCFramework;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -119,6 +121,9 @@
 		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "GroupOSX/Backend/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
 		F18314161870E95900930D5E /* NSURL+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+NXOAuth2.m"; path = "GroupOSX/Backend/NSURL+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F1AE2F681872B495009C8851 /* DNSocketManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNSocketManager.h; path = GroupOSX/Backend/DNSocketManager.h; sourceTree = "<group>"; };
+		F1AE2F691872B495009C8851 /* DNSocketManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNSocketManager.m; path = GroupOSX/Backend/DNSocketManager.m; sourceTree = "<group>"; };
+		F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNSocketManagerTest.m; sourceTree = "<group>"; };
 		F1BD286B18715BA600D797A9 /* NSURLConnection+Tagged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLConnection+Tagged.h"; path = "GroupOSX/Backend/NSURLConnection+Tagged.h"; sourceTree = "<group>"; };
 		F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURLConnection+Tagged.m"; path = "GroupOSX/Backend/NSURLConnection+Tagged.m"; sourceTree = "<group>"; };
 		F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainWindowController.h; path = GroupOSX/DNMainWindowController.h; sourceTree = "<group>"; };
@@ -133,7 +138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F11C406A1872AE44004820A7 /* FayeObjC.framework in Frameworks */,
+				F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */,
 				F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */,
 				F144E171186A5CD100C42636 /* Cocoa.framework in Frameworks */,
 				F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */,
@@ -154,17 +159,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F11C405B1872AE2E004820A7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				F11C40631872AE2F004820A7 /* FayeObjC.framework */,
-				F11C40651872AE2F004820A7 /* FayeObjCFrameworkTests.octest */,
-				F11C40671872AE2F004820A7 /* libFayeObjC.a */,
-				F11C40691872AE2F004820A7 /* FayeObjCLibraryTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		F12A0314186B8A14008C8BA5 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +166,8 @@
 				F1F5C5F7186D594800C407A3 /* GlobalConstants.m */,
 				F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */,
 				F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */,
+				F1AE2F681872B495009C8851 /* DNSocketManager.h */,
+				F1AE2F691872B495009C8851 /* DNSocketManager.m */,
 				F18314191870EADC00930D5E /* Augmented */,
 				F158A65518726F91009DC7C1 /* DNAsynchronousUnitTesting.h */,
 				F158A65618726F91009DC7C1 /* DNAsynchronousUnitTesting.m */,
@@ -257,6 +253,7 @@
 			children = (
 				F144E19A186A5CD100C42636 /* GroupOSXTests.m */,
 				F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */,
+				F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */,
 				F144E195186A5CD100C42636 /* Supporting Files */,
 			);
 			path = GroupOSXTests;
@@ -295,6 +292,17 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
+		F1AE2F541872B1EE009C8851 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */,
+				F1AE2F5D1872B1EE009C8851 /* FayeObjCFrameworkTests.octest */,
+				F1AE2F5F1872B1EE009C8851 /* libFayeObjC.a */,
+				F1AE2F611872B1EE009C8851 /* FayeObjCLibraryTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F1F5C5F2186D2C0600C407A3 /* LoginSheet */ = {
 			isa = PBXGroup;
 			children = (
@@ -322,7 +330,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				F11C406C1872AE4F004820A7 /* PBXTargetDependency */,
+				F1AE2F641872B20A009C8851 /* PBXTargetDependency */,
 			);
 			name = GroupOSX;
 			productName = GroupOSX;
@@ -384,7 +392,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = F11C405B1872AE2E004820A7 /* Products */;
+					ProductGroup = F1AE2F541872B1EE009C8851 /* Products */;
 					ProjectRef = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
 				},
 			);
@@ -397,32 +405,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		F11C40631872AE2F004820A7 /* FayeObjC.framework */ = {
+		F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = FayeObjC.framework;
-			remoteRef = F11C40621872AE2F004820A7 /* PBXContainerItemProxy */;
+			remoteRef = F1AE2F5A1872B1EE009C8851 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		F11C40651872AE2F004820A7 /* FayeObjCFrameworkTests.octest */ = {
+		F1AE2F5D1872B1EE009C8851 /* FayeObjCFrameworkTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = FayeObjCFrameworkTests.octest;
-			remoteRef = F11C40641872AE2F004820A7 /* PBXContainerItemProxy */;
+			remoteRef = F1AE2F5C1872B1EE009C8851 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		F11C40671872AE2F004820A7 /* libFayeObjC.a */ = {
+		F1AE2F5F1872B1EE009C8851 /* libFayeObjC.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libFayeObjC.a;
-			remoteRef = F11C40661872AE2F004820A7 /* PBXContainerItemProxy */;
+			remoteRef = F1AE2F5E1872B1EE009C8851 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		F11C40691872AE2F004820A7 /* FayeObjCLibraryTests.octest */ = {
+		F1AE2F611872B1EE009C8851 /* FayeObjCLibraryTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = FayeObjCLibraryTests.octest;
-			remoteRef = F11C40681872AE2F004820A7 /* PBXContainerItemProxy */;
+			remoteRef = F1AE2F601872B1EE009C8851 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -522,6 +530,7 @@
 				F1F5C5F8186D594800C407A3 /* GlobalConstants.m in Sources */,
 				F144E184186A5CD100C42636 /* DNAppDelegate.m in Sources */,
 				F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */,
+				F1AE2F6A1872B495009C8851 /* DNSocketManager.m in Sources */,
 				F144E17D186A5CD100C42636 /* main.m in Sources */,
 				F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */,
 				F158A65718726F91009DC7C1 /* DNAsynchronousUnitTesting.m in Sources */,
@@ -538,21 +547,22 @@
 			files = (
 				F12A0316186B8A6C008C8BA5 /* DNBackEndTest.m in Sources */,
 				F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */,
+				F1AE2F6C1872B727009C8851 /* DNSocketManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		F11C406C1872AE4F004820A7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FayeObjCFramework;
-			targetProxy = F11C406B1872AE4F004820A7 /* PBXContainerItemProxy */;
-		};
 		F144E193186A5CD100C42636 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F144E16C186A5CD100C42636 /* GroupOSX */;
 			targetProxy = F144E192186A5CD100C42636 /* PBXContainerItemProxy */;
+		};
+		F1AE2F641872B20A009C8851 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FayeObjCFramework;
+			targetProxy = F1AE2F631872B20A009C8851 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -670,6 +680,11 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/AFNetworking\"",
+					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
+				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -685,6 +700,11 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/AFNetworking\"",
+					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
+				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -707,6 +727,11 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/AFNetworking\"",
+					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
+				);
 				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -727,6 +752,11 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers\"",
+					"\"${PODS_ROOT}/Headers/AFNetworking\"",
+					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
+				);
 				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

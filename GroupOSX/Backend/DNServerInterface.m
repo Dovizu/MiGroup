@@ -8,6 +8,7 @@
 
 #import "DNServerInterface.h"
 #import "DNLoginSheetController.h"
+#import "DNSocketManager.h"
 
 #ifdef DEBUG
 #import "DNAsynchronousUnitTesting.h"
@@ -22,11 +23,10 @@
 
 @interface DNServerInterface ()
 {
-//    SRWebSocket *socket;
-//    DNSocketDelegate *socketDelegate;
     BOOL authenticated;
     BOOL connected;
     AFHTTPRequestOperationManager *HTTPRequestManager;
+    DNSocketManager *socketManager;
     
     //User information
     NSDictionary *userInformation;
@@ -43,7 +43,8 @@
 {
     self = [super init];
     if (self){
-//        socketDelegate = [[DNSocketDelegate alloc] init];
+        socketManager = [[DNSocketManager alloc] init];
+        socketManager.server = self;
         HTTPRequestManager = [AFHTTPRequestOperationManager manager];
         [self establishObserversForNetworkEvents];
     }
@@ -153,6 +154,7 @@
 
 #ifdef DEBUG
         [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
+        [DNAsynchronousUnitTesting testAllSockets:socketManager];
 #endif
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
@@ -184,6 +186,11 @@
 - (BOOL)isConnected
 {
     return connected;
+}
+
+- (NSString*)getUserToken
+{
+    return userToken;
 }
 
 @end

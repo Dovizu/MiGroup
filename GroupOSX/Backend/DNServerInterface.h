@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
+#import <FayeClient.h>
 #import "NSURL+NXOAuth2.h"
 
+@class DNSocketManager;
 @class DNLoginSheetController;
 
 #ifdef DEBUG
@@ -23,6 +25,7 @@
 - (id)init;
 - (BOOL)isLoggedIn;
 - (BOOL)isConnected;
+- (NSString*)getUserToken;
 - (void)authenticate;
 - (void)didReceiveURL:(NSString*)urlString;
 
