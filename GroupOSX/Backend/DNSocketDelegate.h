@@ -12,7 +12,6 @@
 @interface DNSocketDelegate : NSObject <SRWebSocketDelegate>
 {
     SRWebSocket *messageSocket;
-    SRWebSocket *groupSocket;
 }
 
 //Interface for delegation for SRWebSocket

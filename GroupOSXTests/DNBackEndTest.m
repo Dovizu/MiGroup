@@ -23,6 +23,7 @@
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
     server = [[DNServerInterface alloc] init];
+    [server setTokenTo:@"b8f461104fdc0131750036749a13f9f7"];
     
 }
 
@@ -31,8 +32,6 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
-
-
 
 
 @end

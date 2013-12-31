@@ -51,7 +51,9 @@
 
 - (void)closeLoginSheet
 {
-    [self.mainWindowController.window endSheet:self.window];
+    if ([self.mainWindowController.window attachedSheet]) {
+        [self.mainWindowController.window endSheet:self.window];
+    }
 }
 
 - (IBAction)quitButtonPressed:(id)sender

@@ -24,3 +24,6 @@ NSString * const URLTokenParamKey = @"token";
 NSString * const JSONRequestContentTypeValue = @"application/json";
 NSString * const JSONRequestContentTypeKey = @"Content-Type";
 NSString * const JSONRequestContentLengthKey = @"Content-Length";
+
+//Network observer names
+NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.information.changed";

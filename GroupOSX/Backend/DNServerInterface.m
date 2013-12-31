@@ -7,107 +7,183 @@
 //
 
 #import "DNServerInterface.h"
-
 #import "DNLoginSheetController.h"
 
+#ifdef DEBUG
+#import "DNAsynchronousUnitTesting.h"
+#endif
+
+//Macros for HTTPRequestManager calls
+#define baseURLPlus(string) [NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, string]
+#define NSNumber(num) [NSNumber numberWithInteger:num]
+#define token_pair @"token":userToken
+#define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
+#define get_response(responseObject) (NSDictionary*)responseObject[@"response"]
 
 @interface DNServerInterface ()
 {
     SRWebSocket *socket;
     DNSocketDelegate *socketDelegate;
     BOOL authenticated;
-    NSString *userToken;
+    BOOL connected;
     AFHTTPRequestOperationManager *HTTPRequestManager;
+    
+    //User information
+    NSDictionary *userInformation;
+    NSString *userToken;
 }
-
-- (void)authenticatedOn;
-- (void)authenticatedOff;
 
 @end
 
 @implementation DNServerInterface
 
+#pragma mark - Initialization Logic
 
-#pragma mark - Server Initialization Logic
 - (id)init
 {
     self = [super init];
     if (self){
-        //Configure server interface and instantiate SocketRocket
         socketDelegate = [[DNSocketDelegate alloc] init];
         HTTPRequestManager = [AFHTTPRequestOperationManager manager];
+        [self establishObserversForNetworkEvents];
     }
     return self;
+}
+
+- (void)establishObserversForNetworkEvents
+{
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserInformationChanged object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLog(@"UserInformation Changed: %@", userInformation);
+        [self establishSockets];
+    }];
 }
 
 
 #pragma mark - Requests and Connection Logic
 
-- (NSDictionary*)getUserInformation
+//Users - me
+- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock
 {
-    NSDictionary* userInfo;
-    [HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, @"/users/me"]
-                 parameters:[NSDictionary dictionaryWithObjectsAndKeys:userToken, URLTokenParamKey, nil]
+    [HTTPRequestManager GET:baseURLPlus(@"/users/me")
+                 parameters:@{token_pair}
+     
                     success:^(AFHTTPRequestOperation *operation, id responseObject){
-                        DebugLog(@"%@", responseObject);
-                        NSError *error = [[NSError alloc] init];
-                        __block NSDictionary *userInfo = [NSJSONSerialization JSONObjectWithData:(NSData*)responseObject options:0 error:&error];
+                        completeBlock(get_response(responseObject));
                     }
                     failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                        DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error);
+                        report_request_error;
                     }];
-    return userInfo;
 }
+
+//Groups - Index
+- (void)GroupsIndexPage:(NSInteger)nthPage
+                   with:(NSInteger)pagesPerPage
+       andCompleteBlock:(void(^)(NSDictionary* groupsIndexData))completeBlock
+{
+    [HTTPRequestManager GET:baseURLPlus(@"/groups")
+                 parameters:@{token_pair,
+                              @"page":NSNumber(nthPage),
+                              @"per_page":NSNumber(pagesPerPage)}
+     
+                    success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        completeBlock(get_response(responseObject));
+                    }
+                    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        report_request_error;
+                    }];
+}
+
+//Groups - Former
+- (void)GroupsFormerAndCompleteBlock:(void(^)(NSDictionary* groupsFormerData))completeBlock
+{
+    [HTTPRequestManager GET:baseURLPlus(@"/groups/former")
+                 parameters:@{token_pair}
+     
+                    success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        completeBlock(get_response(responseObject));
+                    }
+                    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        report_request_error;
+                    }];
+}
+
+//Groups - Show
+- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock
+{
+    [HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@%@", DNRESTAPIBaseAddress, @"/groups/", groupID]
+                 parameters:@{token_pair,
+                              @"id":groupID}
+                    success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                        completeBlock(get_response(responseObject));
+                    }
+                    failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                        report_request_error;
+                    }];
+}
+
 
 #pragma mark - Authentication/Token Retrieval
 
-//Because of the nature of GroupMe's OAuth2 system, a view is always needed for authentication
-//Therefore ServerInterface keeps strong connection to LoginSheetController
+//Three step authentication/connection documentation
+//Step one: authenticate using webview and get token, wait for GroupMe to send in token-carrying URL
+//Step two: an AppleEvent with toekn-carrying URL will be sent in, didReceiveURL:url handles it
+//Step three: didReceiveURL:url requests for UserInformation, NSNotificationCenter gets kUserInformationChanged and calls establishSockets in callback block
+
 - (void)authenticate
 {
     if (![self isLoggedIn]) {
-        NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                           DNOAuth2ClientID, @"client_id",
-                                           nil];
+        NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
         DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
         [self.loginSheetController promptForLoginWithPreparedURL:preparedAuthorizationURL];
     }
 }
 
+//Step two: close loginSheet and use this token to get user information, redirect to establishSockets
 - (void)didReceiveURL:(NSURL*)url
 {
     DebugLog(@"Server received URL: %@", [url absoluteString]);
-    NSString *token = [url nxoauth2_valueForQueryParameterKey:DNOAuth2TokenArgumentKey];
+    NSString *token = [url nxoauth2_valueForQueryParameterKey:@"access_token"];
     
     if (token) {
-        [self authenticatedOn];
+        authenticated = YES;
         [self.loginSheetController closeLoginSheet];
         DebugLog(@"Server successfully authenticated with token: %@", token);
-        //save user setting right here
         userToken = token;
-        [self getUserInformation];
+
+#ifdef DEBUG
+        [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
+#endif
+        
+        [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
+            userInformation = userInfo;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUserInformationChanged object:nil];
+        }];
+        
     }else{
         DebugLog(@"Server failed to retrieve token, authentication restart...");
-        [self authenticatedOff]; //just to be sure
+        authenticated = NO; //just to be sure
         [self.loginSheetController closeLoginSheet];
         [self authenticate]; //do it again
     }
 }
 
-- (void)authenticatedOn
+//Step three: after receiving tokens and userInformation, establish websockets to listen for incoming messages
+- (void)establishSockets
 {
-    authenticated = YES;
+    if (!connected) {
+    }
 }
 
-- (void)authenticatedOff
-{
-    authenticated = NO;
-}
 
 - (BOOL)isLoggedIn
 {
     return authenticated;
+}
+
+- (BOOL)isConnected
+{
+    return connected;
 }
 
 @end

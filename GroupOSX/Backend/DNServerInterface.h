@@ -6,15 +6,15 @@
 //  Copyright (c) 2013 Dovizu Network. All rights reserved.
 //
 
-//Basic stuff
 #import <Foundation/Foundation.h>
-#include "GlobalConstants.h"
 #import <AFNetworking.h>
 #import "NSURL+NXOAuth2.h"
-
-//App headers
 #import "DNSocketDelegate.h"
 @class DNLoginSheetController;
+
+#ifdef DEBUG
+@class DNAsynchronousUnitTesting;
+#endif
 
 @interface DNServerInterface : NSObject
 
@@ -22,6 +22,13 @@
 
 - (id)init;
 - (BOOL)isLoggedIn;
+- (BOOL)isConnected;
 - (void)authenticate;
 - (void)didReceiveURL:(NSString*)urlString;
+
+//RESTful API
+- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock;
+- (void)GroupsIndexPage:(NSInteger)nthPage with:(NSInteger)pagesPerPage andCompleteBlock:(void(^)(NSDictionary* groupsIndexData))completeBlock;
+- (void)GroupsFormerAndCompleteBlock:(void(^)(NSDictionary* groupsFormerData))completeBlock;
+- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
 @end

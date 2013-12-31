@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Dovizu Network. All rights reserved.
 //
 
-#ifndef GroupOSX_Constants_h
-#define GroupOSX_Constants_h
+#ifndef GlobalConstants
+#define GlobalConstants
 
 typedef NSDictionary DNConnectionType;
 //Authentication Constants
@@ -26,5 +26,9 @@ extern NSString * const JSONRequestContentTypeValue;
 extern NSString * const JSONRequestContentTypeKey;
 extern NSString * const JSONRequestContentLengthKey;
 extern NSString * const connectionTag;
+
+
+//Network observer naems
+extern NSString * const kUserInformationChanged;
 
 #endif
