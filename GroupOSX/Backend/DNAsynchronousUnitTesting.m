@@ -8,7 +8,12 @@
 
 #import "DNAsynchronousUnitTesting.h"
 #import "DNServerInterface.h"
-#import "DNSocketManager.h"
+
+@interface DNServerInterface (Testing)
+
+- (void)establishMessageSocket;
+
+@end
 
 @implementation DNAsynchronousUnitTesting
 + (void)testAllAsynchronousUnits:(DNServerInterface*)server
@@ -43,9 +48,9 @@
     }];
 }
 
-+ (void)testAllSockets:(DNSocketManager*)socketManager
++ (void)testAllSockets:(DNServerInterface*)server
 {
-    [socketManager establishMessageSocketWithUserID:@"11201713"];
+    [server establishMessageSocket];
 }
 
 @end

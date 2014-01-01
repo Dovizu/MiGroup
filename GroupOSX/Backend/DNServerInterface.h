@@ -8,24 +8,23 @@
 
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
+#import <KSReachability/KSReachability.h>
 #import <FayeClient.h>
 #import "NSURL+NXOAuth2.h"
 
-@class DNSocketManager;
 @class DNLoginSheetController;
 
 #ifdef DEBUG
 @class DNAsynchronousUnitTesting;
 #endif
 
-@interface DNServerInterface : NSObject
+@interface DNServerInterface : NSObject <FayeClientDelegate>
 
 @property DNLoginSheetController *loginSheetController;
 
 - (id)init;
 - (BOOL)isLoggedIn;
-- (BOOL)isConnected;
-- (NSString*)getUserToken;
+- (BOOL)isListening;
 - (void)authenticate;
 - (void)didReceiveURL:(NSString*)urlString;
 

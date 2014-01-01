@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 @class DNServerInterface;
 @class DNSocketManager;
+
 @interface DNAsynchronousUnitTesting : NSObject
 + (void)testAllAsynchronousUnits:(DNServerInterface*)server;
-+ (void)testAllSockets:(DNSocketManager*)socketManager;
++ (void)testAllSockets:(DNServerInterface*)server;
 @end
