@@ -103,8 +103,8 @@
 		F144E17C186A5CD100C42636 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F144E17E186A5CD100C42636 /* GroupOSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GroupOSX-Prefix.pch"; sourceTree = "<group>"; };
 		F144E180186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		F144E182186A5CD100C42636 /* DNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DNAppDelegate.h; sourceTree = "<group>"; };
-		F144E183186A5CD100C42636 /* DNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DNAppDelegate.m; sourceTree = "<group>"; };
+		F144E182186A5CD100C42636 /* DNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DNAppDelegate.h; path = GroupOSX/DNAppDelegate.h; sourceTree = "<group>"; };
+		F144E183186A5CD100C42636 /* DNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DNAppDelegate.m; path = GroupOSX/DNAppDelegate.m; sourceTree = "<group>"; };
 		F144E186186A5CD100C42636 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		F144E188186A5CD100C42636 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroupOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -224,11 +224,9 @@
 		F144E176186A5CD100C42636 /* GroupOSX */ = {
 			isa = PBXGroup;
 			children = (
-				F144E182186A5CD100C42636 /* DNAppDelegate.h */,
-				F144E183186A5CD100C42636 /* DNAppDelegate.m */,
 				F144E188186A5CD100C42636 /* Images.xcassets */,
-				F12A0314186B8A14008C8BA5 /* Backend */,
 				F1A3C802186BF3AC00E97B4D /* MainWindow */,
+				F12A0314186B8A14008C8BA5 /* Backend */,
 				F1F5C5F2186D2C0600C407A3 /* LoginSheet */,
 				F144E177186A5CD100C42636 /* Supporting Files */,
 			);
@@ -283,6 +281,8 @@
 		F1A3C802186BF3AC00E97B4D /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
+				F144E182186A5CD100C42636 /* DNAppDelegate.h */,
+				F144E183186A5CD100C42636 /* DNAppDelegate.m */,
 				F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */,
 				F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */,
 				F144E185186A5CD100C42636 /* MainMenu.xib */,

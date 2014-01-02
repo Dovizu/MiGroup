@@ -27,3 +27,7 @@ NSString * const JSONRequestContentLengthKey = @"Content-Length";
 
 //Network observer names
 NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.information.changed";
+
+//Error domain names
+NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";
+NSInteger const eAuthenticationNoNetworkConnectivity = 000;

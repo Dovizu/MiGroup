@@ -39,7 +39,8 @@
 /*
  Authentication Flow Error Fallback Scheme
  1. Web portal authentication
- 1. No network connection - KSReachability
+    1. No network connection - reachability check within (void)authenticate and (void)establishSockets
+    2. Authentication failure: retry within (void)authenticate
  */
 
 @interface DNServerInterface ()
@@ -68,7 +69,7 @@
     if (self){
         self.HTTPRequestManager = [AFHTTPRequestOperationManager manager];
         //FayeClient initialization needs to wait for userInformation to be populated
-        self.reachability = [KSReachability reachabilityToHost:@"www.google.com"];
+        self.reachability = [KSReachability reachabilityToHost:DNRESTAPIBaseAddress];
         [self establishObserversForNetworkEvents];
     }
     return self;
@@ -76,12 +77,6 @@
 
 - (void)establishObserversForNetworkEvents
 {
-    //For authentication
-    [[NSNotificationCenter defaultCenter] addObserverForName:kUserInformationChanged object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-        DebugLog(@"UserInformation Changed: %@", self.userInfo);
-        [self establishSockets];
-    }];
-    
     //For network reachability change
     __weak DNServerInterface* block_self = self;
     self.reachability.onReachabilityChanged = ^(KSReachability* reachability)
@@ -91,16 +86,24 @@
             case YES:
                 DebugLog(@"GroupMe now reachable");
                 [block_self authenticate];
+                [block_self establishSockets];
                 break;
             case NO:
                 DebugLog(@"Lost Connection to GroupMe");
                 block_self.listening = NO;
-                [block_self establishSockets];
                 break;
             default:
                 break;
         }
     };
+    
+    //For authentication
+    [[NSNotificationCenter defaultCenter] addObserverForName:kUserInformationChanged object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLog(@"UserInformation Changed: %@", self.userInfo);
+        if (!self.listening) {
+            [self establishSockets];
+        }
+    }];
 }
 
 
@@ -180,6 +183,19 @@
     }
 }
 
+- (void)deauthenticate
+{
+    DebugLog(@"Deauthenticating...");
+    self.userToken = nil;
+    self.userInfo = nil;
+    self.authenticated = NO;
+    
+    [self.socketClient disconnectFromServer];
+    self.listening = NO;
+    
+    [self authenticate];
+}
+
 - (void)didReceiveURL:(NSURL*)url
 {
     DebugLog(@"Server received URL: %@", [url absoluteString]);
@@ -223,7 +239,7 @@
 
 - (void)establishSockets
 {
-    if (!self.listening && self.reachability.reachable) {
+    if (self.authenticated && !self.listening && self.reachability.reachable) {
         [self establishMessageSocket];
     }
 }

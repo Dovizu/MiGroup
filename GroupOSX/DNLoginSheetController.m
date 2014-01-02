@@ -11,8 +11,7 @@
 #import "DNMainWindowController.h"
 @interface DNLoginSheetController ()
 
-//Methods listed here are "private"
-- (IBAction)quitButtonPressed:(id)sender;
+@property IBOutlet WebView *loginWebView;
 
 @end
 
@@ -46,7 +45,7 @@
 - (void)promptForLoginWithPreparedURL:(NSURL *)url
 {
     [self.mainWindowController.window beginSheet:self.window completionHandler:^void (NSModalResponse returnCode){}];
-    [[loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+    [[self.loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 - (void)closeLoginSheet
@@ -60,15 +59,5 @@
 {
     [self closeLoginSheet];
 }
-
-#pragma mark - Authentication Catch
-
-//- (void)webView:(WebView *)sender willPerformClientRedirectToURL:(NSURL *)URL
-//          delay:(NSTimeInterval)seconds
-//       fireDate:(NSDate *)date
-//       forFrame:(WebFrame *)frame
-//{
-//    NSLog(@"Redirect: %@", URL);
-//}
 
 @end

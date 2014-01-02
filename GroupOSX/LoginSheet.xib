@@ -7,7 +7,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DNLoginSheetController">
             <connections>
-                <outlet property="loginWebView" destination="kpv-Of-6Xc" id="Doh-DW-w62"/>
+                <outlet property="loginWebView" destination="kpv-Of-6Xc" id="p0d-pt-Nnh"/>
                 <outlet property="window" destination="1" id="3"/>
             </connections>
         </customObject>

@@ -10,9 +10,7 @@
 #import <WebKit/WebKit.h>
 @class DNMainWindowController, DNServerInterface;
 
-@interface DNLoginSheetController : NSWindowController{
-    IBOutlet WebView *loginWebView;
-}
+@interface DNLoginSheetController : NSWindowController
 
 @property DNMainWindowController *mainWindowController;
 @property DNServerInterface *server;

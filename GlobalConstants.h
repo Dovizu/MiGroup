@@ -31,4 +31,8 @@ extern NSString * const connectionTag;
 //Network observer naems
 extern NSString * const kUserInformationChanged;
 
+//Error domain names
+extern NSString * const DNErrorDomain;
+extern NSInteger const eAuthenticationNoNetworkConnectivity;
+
 #endif
