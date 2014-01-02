@@ -9,6 +9,7 @@
 #import "DNServerInterface.h"
 
 #import "DNLoginSheetController.h"
+#import "DNMainWindowController.h"
 
 #ifdef DEBUG
 #import "DNAsynchronousUnitTesting.h"
@@ -27,8 +28,8 @@
  
  1. Server initiated, BOOL authenticated and BOOL listening are false, indicating that the app has not yet obtained a NSString *userToken and a working FayeClient *socketClient
  2. When (void)authenticate is called, it calls LoginSheetController to open up a web portal through OAuth2ClientID-carrying URL
- 3. When web OAuth2 authentication completes, app receives an Apple event containing an URL that contains the golden NSString *userToken, and BOOL authenticated = YES
- 4. AppDelegate will redirect this URL string to didReceiveURL:url, which will send a HTTP request for user information, update it internally and post a NSNotification of kUserInformationChanged
+ 3. When web OAuth2 authentication completes, app receives an Apple event containing an URL that contains the golden NSString *userToken
+ 4. AppDelegate will redirect this URL string to didReceiveURL:url, which will receive userToken and set BOOL authenticated = YES, then send a HTTP request for user information, update it internally and post a NSNotification of kUserInformationChanged
  5. Upon receiving kUserInformationChanged, the block will continue to establish sockets
  6. Once sockets are good, BOOL listening = YES, the delegate method called by FayeClient will proceed to call controllers and reload its interface elements and update internal data
  
@@ -89,9 +90,13 @@
                 [block_self establishSockets];
                 break;
             case NO:
+            {//variable assignment not allowed inside switch without explicit scope
                 DebugLog(@"Lost Connection to GroupMe");
                 block_self.listening = NO;
+                NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
+                [block_self.loginSheetController.mainWindowController presentError:error];
                 break;
+            }
             default:
                 break;
         }

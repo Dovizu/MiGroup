@@ -33,6 +33,7 @@ extern NSString * const kUserInformationChanged;
 
 //Error domain names
 extern NSString * const DNErrorDomain;
-extern NSInteger const eAuthenticationNoNetworkConnectivity;
+extern NSInteger const eNoNetworkConnectivityGeneral;
+NSString * const eNoNetworkConnectivityGeneralDesc;
 
 #endif

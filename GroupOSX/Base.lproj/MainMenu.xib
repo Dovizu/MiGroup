@@ -648,13 +648,112 @@
             </items>
         </menu>
         <window title="GroupOSX" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="481" y="161" width="1000" height="770"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
+            <rect key="contentRect" x="1000" y="281" width="850" height="550"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
+            <value key="minSize" type="size" width="850" height="550"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="1000" height="770"/>
+                <rect key="frame" x="0.0" y="0.0" width="850" height="550"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <splitView dividerStyle="thin" vertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qbh-zw-HhF">
+                        <rect key="frame" x="0.0" y="0.0" width="850" height="550"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <subviews>
+                            <customView id="xGG-dL-0Ra" userLabel="ListView">
+                                <rect key="frame" x="0.0" y="0.0" width="264" height="550"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <subviews>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="kXK-RH-EZL" userLabel="ListViewTop">
+                                        <rect key="frame" x="0.0" y="512" width="264" height="38"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <subviews>
+                                            <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WfC-Un-SSJ">
+                                                <rect key="frame" x="20" y="8" width="224" height="22"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="7HZ-Tu-ezv">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </searchFieldCell>
+                                            </searchField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="38" id="AxR-ga-qq3"/>
+                                            <constraint firstAttribute="centerY" secondItem="WfC-Un-SSJ" secondAttribute="centerY" id="Hvn-nH-gFz"/>
+                                            <constraint firstAttribute="trailing" secondItem="WfC-Un-SSJ" secondAttribute="trailing" constant="20" id="iuA-p9-hAk"/>
+                                            <constraint firstItem="WfC-Un-SSJ" firstAttribute="leading" secondItem="kXK-RH-EZL" secondAttribute="leading" constant="20" id="u6i-sR-OzF"/>
+                                            <constraint firstAttribute="centerX" secondItem="WfC-Un-SSJ" secondAttribute="centerX" id="zAv-B8-uky"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="tHI-td-zFU" userLabel="ListViewBottom">
+                                        <rect key="frame" x="0.0" y="0.0" width="264" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <subviews>
+                                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n0j-Tf-S6z">
+                                                <rect key="frame" x="20" y="10" width="39" height="19"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <buttonCell key="cell" type="roundRect" title="New" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" inset="2" id="4YA-Up-d0C">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="cellTitle"/>
+                                                </buttonCell>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="EbV-8m-0lo"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="l1D-YK-YIO" userLabel="ListViewMiddle">
+                                        <rect key="frame" x="0.0" y="40" width="264" height="473"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </customView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="l1D-YK-YIO" secondAttribute="trailing" id="1EE-Wc-hor"/>
+                                    <constraint firstAttribute="trailing" secondItem="tHI-td-zFU" secondAttribute="trailing" id="2Zw-Sm-JXz"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="264" id="GBz-mZ-0I8"/>
+                                    <constraint firstItem="tHI-td-zFU" firstAttribute="top" secondItem="l1D-YK-YIO" secondAttribute="bottom" id="Lob-4E-got"/>
+                                    <constraint firstItem="l1D-YK-YIO" firstAttribute="leading" secondItem="xGG-dL-0Ra" secondAttribute="leading" id="PFK-85-RuQ"/>
+                                    <constraint firstItem="tHI-td-zFU" firstAttribute="leading" secondItem="xGG-dL-0Ra" secondAttribute="leading" id="PIG-7o-uVG"/>
+                                    <constraint firstItem="l1D-YK-YIO" firstAttribute="top" secondItem="kXK-RH-EZL" secondAttribute="bottom" constant="-1" id="TfI-l3-asr"/>
+                                    <constraint firstAttribute="bottom" secondItem="tHI-td-zFU" secondAttribute="bottom" id="ZVB-fl-puY"/>
+                                    <constraint firstAttribute="trailing" secondItem="kXK-RH-EZL" secondAttribute="trailing" id="dk1-5i-zjC"/>
+                                    <constraint firstItem="kXK-RH-EZL" firstAttribute="leading" secondItem="xGG-dL-0Ra" secondAttribute="leading" id="nJc-Sc-2qK"/>
+                                    <constraint firstItem="kXK-RH-EZL" firstAttribute="top" secondItem="xGG-dL-0Ra" secondAttribute="top" id="uYQ-tg-iOz"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="300" id="x2o-wX-kJp"/>
+                                </constraints>
+                            </customView>
+                            <customView id="8Hx-mP-DOn" userLabel="ChatView">
+                                <rect key="frame" x="265" y="0.0" width="585" height="550"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <subviews>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="3Je-Lj-8cu" userLabel="GroupInfoView">
+                                        <rect key="frame" x="0.0" y="454" width="585" height="96"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="96" id="wyO-Rh-FKk"/>
+                                        </constraints>
+                                    </customView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="3Je-Lj-8cu" secondAttribute="trailing" id="1dc-mW-nxl"/>
+                                    <constraint firstItem="3Je-Lj-8cu" firstAttribute="top" secondItem="8Hx-mP-DOn" secondAttribute="top" id="DIY-mW-mvQ"/>
+                                    <constraint firstItem="3Je-Lj-8cu" firstAttribute="leading" secondItem="8Hx-mP-DOn" secondAttribute="leading" id="SUH-j2-zDZ"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <holdingPriorities>
+                            <real value="250"/>
+                            <real value="1"/>
+                        </holdingPriorities>
+                    </splitView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="qbh-zw-HhF" firstAttribute="top" secondItem="372" secondAttribute="top" id="06z-hh-qDV"/>
+                    <constraint firstAttribute="trailing" secondItem="qbh-zw-HhF" secondAttribute="trailing" id="43j-fE-jtn"/>
+                    <constraint firstAttribute="bottom" secondItem="qbh-zw-HhF" secondAttribute="bottom" id="hzA-00-zju"/>
+                    <constraint firstItem="qbh-zw-HhF" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="jV5-RT-TAm"/>
+                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="Lup-4e-br8" id="KAT-w4-ZPm"/>

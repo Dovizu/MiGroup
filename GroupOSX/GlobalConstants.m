@@ -30,4 +30,5 @@ NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.informatio
 
 //Error domain names
 NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";
-NSInteger const eAuthenticationNoNetworkConnectivity = 000;
+NSInteger const eNoNetworkConnectivityGeneral = 000;
+NSString * const eNoNetworkConnectivityGeneralDesc = @"Unable to connect to GroupMe server. Please check your Internet connection.";

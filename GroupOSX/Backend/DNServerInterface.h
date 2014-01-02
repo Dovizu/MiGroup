@@ -13,6 +13,7 @@
 #import "NSURL+NXOAuth2.h"
 
 @class DNLoginSheetController;
+@class DNMainWindowController;
 
 #ifdef DEBUG
 @class DNAsynchronousUnitTesting;

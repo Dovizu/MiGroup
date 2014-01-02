@@ -10,7 +10,7 @@
 
 @class DNServerInterface;
 
-@interface DNMainWindowController : NSWindowController <NSWindowDelegate>
+@interface DNMainWindowController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
 
 @property DNServerInterface *server;
 
