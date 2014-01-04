@@ -10,8 +10,18 @@
     #import "GlobalConstants.h"
 #endif
 
-#ifdef DEBUG
+//#define DEBUG_BACKEND
+#define DEBUG_CORE_DATA
+
+#ifdef DEBUG_BACKEND
     #define DebugLog( s, ... ) NSLog( @"<%@:(%d)> %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
 #else
     #define DebugLog( s, ... )
+#endif
+
+
+#ifdef DEBUG_CORE_DATA
+    #define DebugLogCD( s, ... ) NSLog( @"<%@:(%d)> %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )
+#else
+    #define DebugLogCD( s, ... )
 #endif

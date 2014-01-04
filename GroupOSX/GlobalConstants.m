@@ -32,3 +32,9 @@ NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.informatio
 NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";
 NSInteger const eNoNetworkConnectivityGeneral = 000;
 NSString * const eNoNetworkConnectivityGeneralDesc = @"Unable to connect to GroupMe server. Please check your Internet connection.";
+NSInteger const eLogOutPurgingFailure = 001;
+NSString * const eLogOutPurgingFailureDesc = @"Unable to clear application data and log out.";
+
+//User Defaults
+NSString * const DNUserDefaultsUserToken = @"UserToken";
+NSString * const DNUserDefaultsUserInfo = @"UserInfo";

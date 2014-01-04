@@ -11,7 +11,7 @@
 #import "DNLoginSheetController.h"
 #import "DNMainWindowController.h"
 
-#ifdef DEBUG
+#ifdef DEBUG_BACKEND
 #import "DNAsynchronousUnitTesting.h"
 #endif
 
@@ -71,6 +71,11 @@
         self.HTTPRequestManager = [AFHTTPRequestOperationManager manager];
         //FayeClient initialization needs to wait for userInformation to be populated
         self.reachability = [KSReachability reachabilityToHost:DNRESTAPIBaseAddress];
+        self.userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
+        self.userInfo =  (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
+        if (self.userToken) {
+            self.authenticated = YES;
+        }
         [self establishObserversForNetworkEvents];
     }
     return self;
@@ -177,6 +182,16 @@
 
 #pragma mark - Authentication/Token Retrieval
 
+//The almighty setup always makes sure everything is set up
+- (void)setup
+{
+    if (!self.authenticated) {
+        [self authenticate];
+    }else if(!self.listening){
+        [self establishMessageSocket];
+    }
+}
+
 - (void)authenticate
 {
     DebugLog(@"Reachability: %hhd", self.reachability.reachable);
@@ -188,16 +203,18 @@
     }
 }
 
-- (void)deauthenticate
+- (void)teardown
 {
     DebugLog(@"Deauthenticating...");
     self.userToken = nil;
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:DNUserDefaultsUserToken];
     self.userInfo = nil;
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:DNUserDefaultsUserInfo];
     self.authenticated = NO;
     
     [self.socketClient disconnectFromServer];
     self.listening = NO;
-    
+        
     [self authenticate];
 }
 
@@ -211,14 +228,17 @@
         [self.loginSheetController closeLoginSheet];
         DebugLog(@"Server successfully authenticated with token: %@", token);
         self.userToken = token;
+        [[NSUserDefaults standardUserDefaults] setObject:self.userToken forKey:DNUserDefaultsUserToken];
 
-#ifdef DEBUG
+#ifdef DEBUG_BACKEND
         [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
         [DNAsynchronousUnitTesting testAllSockets:self];
 #endif
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
             self.userInfo = userInfo;
+            NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
+            [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:kUserInformationChanged object:nil];
         }];
         
@@ -296,7 +316,7 @@
 }
 
 //This method is optional, and only intercepts messages being sent
-#ifdef DEBUG
+#ifdef DEBUG_BACKEND
 - (void)fayeClientWillSendMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback
 {
     DebugLog(@"Sending Faye message: %@", messageDict);

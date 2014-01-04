@@ -33,7 +33,14 @@ extern NSString * const kUserInformationChanged;
 
 //Error domain names
 extern NSString * const DNErrorDomain;
+
 extern NSInteger const eNoNetworkConnectivityGeneral;
-NSString * const eNoNetworkConnectivityGeneralDesc;
+extern NSString * const eNoNetworkConnectivityGeneralDesc;
+extern NSInteger const eLogOutPurgingFailure;
+extern NSString * const eLogOutPurgingFailureDesc;
+
+//User Defaults
+extern NSString * const DNUserDefaultsUserToken;
+extern NSString * const DNUserDefaultsUserInfo;
 
 #endif

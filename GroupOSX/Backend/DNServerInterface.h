@@ -15,7 +15,7 @@
 @class DNLoginSheetController;
 @class DNMainWindowController;
 
-#ifdef DEBUG
+#ifdef DEBUG_BACKEND
 @class DNAsynchronousUnitTesting;
 #endif
 
@@ -26,7 +26,8 @@
 - (id)init;
 - (BOOL)isLoggedIn;
 - (BOOL)isListening;
-- (void)authenticate;
+- (void)setup;
+- (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;
 
 //RESTful API

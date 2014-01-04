@@ -8,6 +8,7 @@
 
 #import "DNMainWindowController.h"
 #import "DNServerInterface.h"
+#import "DNAppDelegate.h"
 
 @interface DNMainWindowController ()
 
@@ -38,16 +39,16 @@
     return self;
 }
 
+- (IBAction)logout:(id)sender
+{
+    [self.server teardown];
+    [self.appDelegate purgeStores];
+}
+
 - (void)awakeFromNib
 {
     
 }
 
-- (void)start
-{
-    if (![self.server isLoggedIn]) {
-        [self.server authenticate];
-    }
-}
 
 @end

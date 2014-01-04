@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class DNServerInterface;
+@class DNAppDelegate;
 
 @interface DNMainWindowController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
 
@@ -16,6 +17,6 @@
 
 @property DNServerInterface *server;
 
-- (void)start;
+@property DNAppDelegate *appDelegate;
 
 @end

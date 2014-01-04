@@ -178,8 +178,6 @@
 		F12A0314186B8A14008C8BA5 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				F1F5C5F6186D592900C407A3 /* GlobalConstants.h */,
-				F1F5C5F7186D594800C407A3 /* GlobalConstants.m */,
 				F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */,
 				F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */,
 				F18314191870EADC00930D5E /* Augmented */,
@@ -196,6 +194,8 @@
 				F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */,
 				F18BF640186BA9C1007B2DCA /* Podfile */,
 				F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */,
+				F1F5C5F6186D592900C407A3 /* GlobalConstants.h */,
+				F1F5C5F7186D594800C407A3 /* GlobalConstants.m */,
 				F144E176186A5CD100C42636 /* GroupOSX */,
 				F144E194186A5CD100C42636 /* GroupOSXTests */,
 				F144E16F186A5CD100C42636 /* Frameworks */,

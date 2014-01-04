@@ -25,5 +25,6 @@
 
 
 - (IBAction)saveAction:(id)sender;
+- (void)purgeStores;
 
 @end

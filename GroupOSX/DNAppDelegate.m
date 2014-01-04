@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Dovizu Network. All rights reserved.
 //
 
+#import <Foundation/NSFileManager.h>
 #import "DNAppDelegate.h"
-
 #import "DNServerInterface.h"
 #import "DNLoginSheetController.h"
 #import "DNMainWindowController.h"
@@ -29,6 +29,7 @@
     self.loginSheetController.mainWindowController = self.mainWindowController;
     
     //set up mainWindowController
+    self.mainWindowController.appDelegate = self;
     self.mainWindowController.server = self.server;
     self.mainWindowController.managedObjectContext = self.managedObjectContext;
     
@@ -40,14 +41,14 @@
                                                        andSelector:@selector(handleAppleEvent:withReplyEvent:)
                                                      forEventClass:kInternetEventClass
                                                         andEventID:kAEGetURL];
-#ifdef DEBUG
+#ifdef DEBUG_CORE_DATA
     [self prepopulateOnFirstRun];
 #endif
     
-    [self.mainWindowController start];    
+    [self.server setup];
 }
 
-#ifdef DEBUG
+#ifdef DEBUG_CORE_DATA
 - (void)prepopulateOnFirstRun
 {
     if (![[NSUserDefaults standardUserDefaults] valueForKey:@"DN_DEBUG_FirstRun1"]) {
@@ -64,6 +65,28 @@
     }
 }
 #endif
+
+- (void)purgeStores
+{
+    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
+    NSArray *stores = [psc persistentStores];
+    for (NSPersistentStore *store in stores) {
+        NSError *error = nil;
+        [psc removePersistentStore:store error:&error];
+        if (error) {
+            [[NSApplication sharedApplication] presentError:[[NSError alloc] initWithDomain:DNErrorDomain
+                                                                                       code:eLogOutPurgingFailure
+                                                                                   userInfo:@{NSLocalizedDescriptionKey:eLogOutPurgingFailureDesc}]];
+            //To-Do: although very rare, recover from database failure?
+        }
+        [[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:&error];
+        if (error) {
+            [[NSApplication sharedApplication] presentError:[[NSError alloc] initWithDomain:DNErrorDomain
+                                                                                       code:eLogOutPurgingFailure
+                                                                                   userInfo:@{NSLocalizedDescriptionKey:eLogOutPurgingFailureDesc}]];
+        }
+    }
+}
 
 //This function should only be used for handling authentication URL redirect's, for now
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event
