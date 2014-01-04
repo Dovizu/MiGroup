@@ -9,8 +9,9 @@
 /* Begin PBXBuildFile section */
 		49716C5732F74222B106673B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D1475E2B0A4B088BD5AF44 /* libPods.a */; };
 		556404BAFE0A49098CFE4D01 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31D1475E2B0A4B088BD5AF44 /* libPods.a */; };
+		F1049C281877906800F79610 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E174186A5CD100C42636 /* CoreData.framework */; };
+		F1049C2E1877915E00F79610 /* GroupOSX.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */; };
 		F1102CBA1873A0D100716B50 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1102CB91873A0D100716B50 /* SystemConfiguration.framework */; };
-		F1102CC918755CB900716B50 /* DNMainWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F1102CC818755CB900716B50 /* DNMainWindow.m */; };
 		F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */; };
 		F12A0316186B8A6C008C8BA5 /* DNBackEndTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */; };
 		F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12A0322186BA1F0008C8BA5 /* Security.framework */; };
@@ -30,6 +31,10 @@
 		F15BFF2A186C1B34003BE76D /* LoginSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = F15BFF28186C1B34003BE76D /* LoginSheet.xib */; };
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
 		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
+		F1840B961877B25500C399DA /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B951877B25500C399DA /* Attachment.m */; };
+		F1840B991877B25600C399DA /* Member.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B981877B25600C399DA /* Member.m */; };
+		F1840B9C1877B25600C399DA /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B9B1877B25600C399DA /* Group.m */; };
+		F1840B9F1877B25700C399DA /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B9E1877B25600C399DA /* Message.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
 		F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
 		F1AE2F6C1872B727009C8851 /* DNSocketManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */; };
@@ -87,9 +92,8 @@
 /* Begin PBXFileReference section */
 		31D1475E2B0A4B088BD5AF44 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CF5DDBABBFB44E8B37FE138 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GroupOSX.xcdatamodel; sourceTree = "<group>"; };
 		F1102CB91873A0D100716B50 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		F1102CC718755CB900716B50 /* DNMainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainWindow.h; path = GroupOSX/DNMainWindow.h; sourceTree = "<group>"; };
-		F1102CC818755CB900716B50 /* DNMainWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainWindow.m; path = GroupOSX/DNMainWindow.m; sourceTree = "<group>"; };
 		F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FayeObjC.xcodeproj; path = GroupOSX/FayeObjC/FayeObjC.xcodeproj; sourceTree = "<group>"; };
 		F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNServerInterface.h; path = GroupOSX/Backend/DNServerInterface.h; sourceTree = "<group>"; };
 		F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNServerInterface.m; path = GroupOSX/Backend/DNServerInterface.m; sourceTree = "<group>"; };
@@ -124,6 +128,14 @@
 		F18314141870E95900930D5E /* NSString+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+NXOAuth2.m"; path = "GroupOSX/Backend/NSString+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "GroupOSX/Backend/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
 		F18314161870E95900930D5E /* NSURL+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+NXOAuth2.m"; path = "GroupOSX/Backend/NSURL+NXOAuth2.m"; sourceTree = "<group>"; };
+		F1840B941877B25500C399DA /* Attachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attachment.h; path = GroupOSX/Backend/Attachment.h; sourceTree = "<group>"; };
+		F1840B951877B25500C399DA /* Attachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attachment.m; path = GroupOSX/Backend/Attachment.m; sourceTree = "<group>"; };
+		F1840B971877B25600C399DA /* Member.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Member.h; path = GroupOSX/Backend/Member.h; sourceTree = "<group>"; };
+		F1840B981877B25600C399DA /* Member.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Member.m; path = GroupOSX/Backend/Member.m; sourceTree = "<group>"; };
+		F1840B9A1877B25600C399DA /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Group.h; path = GroupOSX/Backend/Group.h; sourceTree = "<group>"; };
+		F1840B9B1877B25600C399DA /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Group.m; path = GroupOSX/Backend/Group.m; sourceTree = "<group>"; };
+		F1840B9D1877B25600C399DA /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = GroupOSX/Backend/Message.h; sourceTree = "<group>"; };
+		F1840B9E1877B25600C399DA /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = GroupOSX/Backend/Message.m; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNSocketManagerTest.m; sourceTree = "<group>"; };
 		F1BD286B18715BA600D797A9 /* NSURLConnection+Tagged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLConnection+Tagged.h"; path = "GroupOSX/Backend/NSURLConnection+Tagged.h"; sourceTree = "<group>"; };
@@ -140,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1049C281877906800F79610 /* CoreData.framework in Frameworks */,
 				F1102CBA1873A0D100716B50 /* SystemConfiguration.framework in Frameworks */,
 				F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */,
 				F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */,
@@ -180,6 +193,8 @@
 		F144E164186A5CD100C42636 = {
 			isa = PBXGroup;
 			children = (
+				F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */,
+				F1840B931877B19F00C399DA /* Models */,
 				F18BF640186BA9C1007B2DCA /* Podfile */,
 				F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */,
 				F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */,
@@ -281,6 +296,21 @@
 			name = Augmented;
 			sourceTree = "<group>";
 		};
+		F1840B931877B19F00C399DA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F1840B9D1877B25600C399DA /* Message.h */,
+				F1840B9E1877B25600C399DA /* Message.m */,
+				F1840B9A1877B25600C399DA /* Group.h */,
+				F1840B9B1877B25600C399DA /* Group.m */,
+				F1840B971877B25600C399DA /* Member.h */,
+				F1840B981877B25600C399DA /* Member.m */,
+				F1840B941877B25500C399DA /* Attachment.h */,
+				F1840B951877B25500C399DA /* Attachment.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		F1A3C802186BF3AC00E97B4D /* MainWindow */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,8 +319,6 @@
 				F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */,
 				F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */,
 				F144E185186A5CD100C42636 /* MainMenu.xib */,
-				F1102CC718755CB900716B50 /* DNMainWindow.h */,
-				F1102CC818755CB900716B50 /* DNMainWindow.m */,
 			);
 			name = MainWindow;
 			path = ..;
@@ -537,10 +565,14 @@
 				F144E17D186A5CD100C42636 /* main.m in Sources */,
 				F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */,
 				F158A65718726F91009DC7C1 /* DNAsynchronousUnitTesting.m in Sources */,
+				F1840B991877B25600C399DA /* Member.m in Sources */,
+				F1840B9F1877B25700C399DA /* Message.m in Sources */,
 				F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */,
 				F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */,
-				F1102CC918755CB900716B50 /* DNMainWindow.m in Sources */,
+				F1840B9C1877B25600C399DA /* Group.m in Sources */,
+				F1840B961877B25500C399DA /* Attachment.m in Sources */,
 				F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */,
+				F1049C2E1877915E00F79610 /* GroupOSX.xcdatamodeld in Sources */,
 				F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -799,6 +831,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */,
+			);
+			currentVersion = F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */;
+			name = GroupOSX.xcdatamodeld;
+			path = GroupOSX/Backend/GroupOSX.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F144E165186A5CD100C42636 /* Project object */;
 }

@@ -12,8 +12,9 @@
 
 @interface DNMainWindowController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
 
-@property DNServerInterface *server;
+@property (nonatomic) NSManagedObjectContext *managedObjectContext;
 
+@property DNServerInterface *server;
 
 - (void)start;
 

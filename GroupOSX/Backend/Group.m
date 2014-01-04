@@ -1,0 +1,28 @@
+//
+//  Group.m
+//  GroupOSX
+//
+//  Created by Donny Reynolds on 1/3/14.
+//  Copyright (c) 2014 Dovizu Network. All rights reserved.
+//
+
+#import "Group.h"
+#import "Member.h"
+#import "Message.h"
+
+
+@implementation Group
+
+@dynamic created_at;
+@dynamic desc;
+@dynamic group_id;
+@dynamic image_url;
+@dynamic name;
+@dynamic share_url;
+@dynamic type;
+@dynamic updated_at;
+@dynamic creator;
+@dynamic members;
+@dynamic messages;
+
+@end

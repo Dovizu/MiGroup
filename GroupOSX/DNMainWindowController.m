@@ -7,12 +7,25 @@
 //
 
 #import "DNMainWindowController.h"
+#import "DNServerInterface.h"
 
 @interface DNMainWindowController ()
 
+@property IBOutlet NSSplitView *splitView;
+@property IBOutlet NSView *listView;
+@property IBOutlet NSView *chatView;
+
+@property IBOutlet NSView *listViewTop;
+@property IBOutlet NSView *listViewMiddle;
+@property IBOutlet NSView *listViewBottom;
+
+@property IBOutlet NSSearchField *searchField;
+@property IBOutlet NSButton *ListViewBottomNewButton;
+
+@property IBOutlet NSView *groupInfo;
+
 @end
 
-#import "DNServerInterface.h"
 
 @implementation DNMainWindowController
 
@@ -20,12 +33,14 @@
 {
     self = [super initWithWindow:window];
     if (self) {
+        
     }
     return self;
 }
 
 - (void)awakeFromNib
 {
+    
 }
 
 - (void)start
