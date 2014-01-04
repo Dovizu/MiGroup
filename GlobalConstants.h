@@ -27,9 +27,15 @@ extern NSString * const JSONRequestContentTypeKey;
 extern NSString * const JSONRequestContentLengthKey;
 extern NSString * const connectionTag;
 
+extern NSString * const JSONObjectEmojiPlaceholderString;
 
 //Network observer naems
 extern NSString * const kUserInformationChanged;
+extern NSString * const kJSONObjectNotifierTypeGroupMemberAdded;
+extern NSString * const kJSONObjectNotifierTypeGroupMemberRemoved;
+extern NSString * const kJSONObjectNotifierTypeGroupAvatarChanged;
+extern NSString * const kJSONObjectNotifierTypeMessageReceived;
+extern NSString * const kGetMessageKey;
 
 //Error domain names
 extern NSString * const DNErrorDomain;

@@ -22,10 +22,12 @@
 @interface DNServerInterface : NSObject <FayeClientDelegate>
 
 @property DNLoginSheetController *loginSheetController;
+@property DNMainWindowController *mainWindowController;
 
 - (id)init;
 - (BOOL)isLoggedIn;
 - (BOOL)isListening;
+- (BOOL)isUser:(NSString*)name;
 - (void)setup;
 - (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;

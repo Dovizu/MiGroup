@@ -22,7 +22,7 @@
 {
     self.server = [[DNServerInterface alloc] init];
     self.mainWindowController = (DNMainWindowController*) [self.window delegate];
-    self.loginSheetController = [[DNLoginSheetController alloc] init]; //init with xib
+    self.loginSheetController = [[DNLoginSheetController alloc] init]; //custom init with xib
     
     //set up login sheet controller
     self.loginSheetController.server = self.server;
@@ -35,6 +35,7 @@
     
     //set up server
     self.server.loginSheetController = self.loginSheetController;
+    self.server.mainWindowController = self.mainWindowController;
 
     //set up URI Scheme
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
@@ -68,10 +69,14 @@
 
 - (void)purgeStores
 {
+    DebugLogCD(@"Purging all stores");
     NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
     NSArray *stores = [psc persistentStores];
+    NSError *error = nil;
+    [self.managedObjectContext save:&error]; //don't really care if error or not
+    
+    //To-Do: although very rare, recover from database failure? Suggest user manual removal as last resort?
     for (NSPersistentStore *store in stores) {
-        NSError *error = nil;
         [psc removePersistentStore:store error:&error];
         if (error) {
             [[NSApplication sharedApplication] presentError:[[NSError alloc] initWithDomain:DNErrorDomain

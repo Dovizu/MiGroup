@@ -260,6 +260,11 @@
     return self.listening;
 }
 
+- (BOOL)isUser:(NSString*)name
+{
+    return self.authenticated && [self.userInfo[@"name"] isEqualToString:name];
+}
+
 #pragma mark - Web Sockets / Faye Push Notification
 
 - (void)establishSockets
@@ -291,6 +296,35 @@
 - (void)messageReceived:(NSDictionary *)messageDict channel:(NSString *)channel
 {
     DebugLog(@"%@", messageDict);
+    DebugLogCD(@"Server received raw message:\n%@", messageDict);
+    
+    NSString *identifierSenderName = [[messageDict objectForKey:@"subject"] objectForKey:@"name"];
+    NSString *identifierUserID = [[messageDict objectForKey:@"subject"] objectForKey:@"user_id"];
+    NSString *identifierForSystemMsg = [messageDict objectForKey:@"alert"];
+    
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    NSDictionary *userInfo = @{kGetMessageKey: messageDict[@"subject"]};
+    
+    //Sent by system
+    if ([identifierSenderName isEqualToString:@"GroupMe"]) {
+        
+        //Group member removed
+        if ([identifierForSystemMsg rangeOfString:@"from the group"].location != NSNotFound) {
+            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupMemberRemoved object:nil userInfo:userInfo];
+        //Group member added
+        }else if ([identifierForSystemMsg rangeOfString:@"to the group"].location != NSNotFound){
+            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupMemberAdded object:nil userInfo:userInfo];
+        //Group avatar changed
+        }else if ([identifierForSystemMsg rangeOfString:@"changed the group's avatar"].location != NSNotFound){
+            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupAvatarChanged object:nil userInfo:userInfo];
+        }
+        
+    //user generated notification
+    }else{
+        if ([identifierUserID isNotEqualTo:@"0"]) {
+            [notificationCenter postNotificationName:kJSONObjectNotifierTypeMessageReceived object:nil userInfo:userInfo];
+        }
+    }
 }
 
 - (void)connectionFailed

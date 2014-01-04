@@ -25,8 +25,16 @@ NSString * const JSONRequestContentTypeValue = @"application/json";
 NSString * const JSONRequestContentTypeKey = @"Content-Type";
 NSString * const JSONRequestContentLengthKey = @"Content-Length";
 
+NSString * const JSONObjectEmojiPlaceholderString = @"\\Ufffd";
+NSString * const JSONObjectNotifierTypeGroupRelated = @"JSONObjectNotifierTypeGroupRelated";
+
 //Network observer names
 NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.information.changed";
+NSString * const kJSONObjectNotifierTypeGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
+NSString * const kJSONObjectNotifierTypeGroupMemberRemoved = @"kJSONObjectNotifierTypeGroupMemberRemoved";
+NSString * const kJSONObjectNotifierTypeGroupAvatarChanged = @"kJSONObjectNotifierTypeGroupAvatarChanged";
+NSString * const kJSONObjectNotifierTypeMessageReceived = @"kJSONObjectNotifierTypeMessageReceived";
+NSString * const kGetMessageKey = @"message";
 
 //Error domain names
 NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";
