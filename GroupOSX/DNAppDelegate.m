@@ -59,7 +59,8 @@
         NSManagedObject *group2 = [[NSManagedObject alloc] initWithEntity:[NSEntityDescription entityForName:@"Group" inManagedObjectContext:self.managedObjectContext] insertIntoManagedObjectContext:self.managedObjectContext];
         [group2 setValue:@"Good Old Friends" forKey:@"name"];
         [group2 setValue:@"Good old friends will last forever" forKey:@"desc"];
-        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO] forKey:@"DN_DEBUG_FirstRUn"];
+//        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO] forKey:@"DN_DEBUG_FirstRUn"];
+        //Don't save
     }
 }
 #endif

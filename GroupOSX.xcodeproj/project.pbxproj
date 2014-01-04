@@ -194,15 +194,14 @@
 			isa = PBXGroup;
 			children = (
 				F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */,
-				F1840B931877B19F00C399DA /* Models */,
 				F18BF640186BA9C1007B2DCA /* Podfile */,
 				F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */,
-				F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */,
 				F144E176186A5CD100C42636 /* GroupOSX */,
 				F144E194186A5CD100C42636 /* GroupOSXTests */,
 				F144E16F186A5CD100C42636 /* Frameworks */,
 				F144E16E186A5CD100C42636 /* Products */,
 				9CF5DDBABBFB44E8B37FE138 /* Pods.xcconfig */,
+				F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -242,6 +241,7 @@
 		F144E176186A5CD100C42636 /* GroupOSX */ = {
 			isa = PBXGroup;
 			children = (
+				F1840B931877B19F00C399DA /* Models */,
 				F144E188186A5CD100C42636 /* Images.xcassets */,
 				F1A3C802186BF3AC00E97B4D /* MainWindow */,
 				F12A0314186B8A14008C8BA5 /* Backend */,
@@ -309,6 +309,7 @@
 				F1840B951877B25500C399DA /* Attachment.m */,
 			);
 			name = Models;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		F1A3C802186BF3AC00E97B4D /* MainWindow */ = {

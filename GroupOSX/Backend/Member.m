@@ -15,12 +15,12 @@
 
 @dynamic app_installed;
 @dynamic autokicked;
+@dynamic avatar;
 @dynamic guid;
-@dynamic user_instrinsic_id;
-@dynamic image_url;
 @dynamic muted;
 @dynamic nickname;
 @dynamic user_id;
+@dynamic user_instrinsic_id;
 @dynamic created_groups;
 @dynamic favorited_messages;
 @dynamic groups;

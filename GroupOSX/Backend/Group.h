@@ -16,7 +16,7 @@
 @property (nonatomic, retain) NSDate * created_at;
 @property (nonatomic, retain) NSString * desc;
 @property (nonatomic, retain) NSString * group_id;
-@property (nonatomic, retain) NSString * image_url;
+@property (nonatomic, retain) id image;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * share_url;
 @property (nonatomic, retain) NSString * type;

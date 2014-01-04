@@ -20,7 +20,7 @@
 @property (nonatomic, retain) NSString * text;
 @property (nonatomic, retain) NSSet *attachments;
 @property (nonatomic, retain) Member *creator;
-@property (nonatomic, retain) NSSet *favoritor;
+@property (nonatomic, retain) NSOrderedSet *favoritor;
 @property (nonatomic, retain) Group *target_group;
 @end
 
@@ -31,9 +31,14 @@
 - (void)addAttachments:(NSSet *)values;
 - (void)removeAttachments:(NSSet *)values;
 
+- (void)insertObject:(Member *)value inFavoritorAtIndex:(NSUInteger)idx;
+- (void)removeObjectFromFavoritorAtIndex:(NSUInteger)idx;
+- (void)insertFavoritor:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
+- (void)removeFavoritorAtIndexes:(NSIndexSet *)indexes;
+- (void)replaceObjectInFavoritorAtIndex:(NSUInteger)idx withObject:(Member *)value;
+- (void)replaceFavoritorAtIndexes:(NSIndexSet *)indexes withFavoritor:(NSArray *)values;
 - (void)addFavoritorObject:(Member *)value;
 - (void)removeFavoritorObject:(Member *)value;
-- (void)addFavoritor:(NSSet *)values;
-- (void)removeFavoritor:(NSSet *)values;
-
+- (void)addFavoritor:(NSOrderedSet *)values;
+- (void)removeFavoritor:(NSOrderedSet *)values;
 @end

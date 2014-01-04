@@ -16,7 +16,7 @@
 @dynamic created_at;
 @dynamic desc;
 @dynamic group_id;
-@dynamic image_url;
+@dynamic image;
 @dynamic name;
 @dynamic share_url;
 @dynamic type;
