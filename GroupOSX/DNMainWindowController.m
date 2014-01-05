@@ -111,7 +111,7 @@
 //first time logon procedure
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
-//    [self.server requestGroups];
+    [self.server requestGroups];
 }
 
 #pragma mark - GUI Actions

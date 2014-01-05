@@ -128,31 +128,32 @@
 
 - (void)requestNextGroupsWithNewestResult:(NSArray*)newestResult triggerType:(NSString*)type
 {
-    if (!self.prevResults && !self.currentlyPollingForGroups) {
+    if (!_prevResults && !_currentlyPollingForGroups) {
         //first call
-        self.currentlyPollingForGroups = YES;
-        self.currentPageNum = 1;
-        self.prevResults = [[NSMutableArray alloc] init];
+        _currentlyPollingForGroups = YES;
+        _currentPageNum = 1;
+        _prevResults = [[NSMutableArray alloc] init];
     }else if ([newestResult count] != 0){
         //new results arrived
-        [self.prevResults addObjectsFromArray:newestResult];
-        self.currentPageNum += 1;
+        [_prevResults addObjectsFromArray:newestResult];
+        _currentPageNum += 1;
     }else{
         //no more groups, post notification with complete results
-        self.currentlyPollingForGroups = NO;
-        
-        __block NSArray *rawGroupList = _prevResults;
+        NSArray *rawGroupList = _prevResults;
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
         dispatch_async(queue, ^{
             NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
             [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                NSDictionary *oldGroup = (NSDictionary*)obj;
+                NSDictionary *group = (NSDictionary*)obj;
+                group = [self convertRawDictionary:group];
+                [groupList addObject:group];
             }];
-            NSDictionary *userInfo = @{kGetContentKey: self.prevResults, kGetTypeKey:type};
+            NSDictionary *userInfo = @{kGetContentKey: groupList, kGetTypeKey:type};
             [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupIndexResultsArrived object:nil userInfo:userInfo];
+
         });
-        
-        self.prevResults = nil;
+        _currentlyPollingForGroups = NO;
+        _prevResults = nil;
         return;
     }
 
@@ -169,15 +170,15 @@
 
 #pragma mark - Low-Level Requests and Connection Logic
 
-//Convert all JSON-serialized crappy Dictionary into one with Cocoa objects
-- (void)convertRawDictionary:(NSDictionary*)oldDict usingBlock:(void(^)(NSDictionary* newDict))block
+//Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
+- (NSDictionary*)convertRawDictionary:(NSDictionary*)oldDict
 {
     NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
     [oldDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         NSString *strKey = [NSString stringWithFormat:@"%@", key];
         NSString *strObj = [NSString stringWithFormat:@"%@", obj];
-        //is a date
-        //Seriously GroupMe? Non-standard date format that looks like JSON created but in SECONDS? Seriously?
+        
+        //is a date, GroupMe uses "ddddd" seconds after 1970
         if ([strKey isEqualToString:@"created_at"] || [strKey isEqualToString:@"updated_at"]) {
             NSDate *date = nil;
             NSRegularExpression *dateRegEx = nil;
@@ -199,12 +200,12 @@
                     seconds += [[NSString stringWithFormat:@"%@%@", sign, [strObj substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
                 }
                 date = [NSDate dateWithTimeIntervalSince1970:seconds];
-                [newDict setObject:date forKey:strKey];
             }else{
                 DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
                 //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
                 date = [NSDate date];
             }
+            [newDict setObject:date forKey:strKey];
         //is an image, either in message, or in an attachment
         }else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
             NSURL *imageUrl = [NSURL URLWithString:strObj];
@@ -212,11 +213,31 @@
                 NSImage *image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:imageUrl]];
                 if (image) {
                     [newDict setObject:image forKey:@"image"];
+                }else{
+                    [newDict setObject:[NSNull null] forKey:@"image"];
                 }
             }
+        //is generic url (as in the case of "share_url"
+        }else if ([strKey hasSuffix:@"url"]){
+            NSURL *url = [NSURL URLWithString:strObj];
+            if (url) {
+                [newDict setObject:url forKey:strKey];
+            }else{
+                [newDict setObject:[NSNull null] forKey:strKey];
+            }
+        //is boolean
+        }else if ([strObj isEqualToString:@"false"] || [strObj isEqualToString:@"true"]){
+            BOOL value = [strObj isEqualToString:@"true"];
+            [newDict setObject:[NSNumber numberWithBool:value] forKey:strKey];
+        //all other cases, treat as string
+        }else{
+            if (![obj isKindOfClass:[NSString class]]) {
+                strObj = obj;
+            }
+            [newDict setObject:strObj forKey:strKey];
         }
     }];
-    block(newDict);
+    return newDict;
 }
 
 //Users - me
