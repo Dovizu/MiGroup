@@ -25,18 +25,13 @@
 @property DNMainWindowController *mainWindowController;
 
 - (id)init;
-- (BOOL)isLoggedIn;
-- (BOOL)isListening;
-- (BOOL)isUser:(NSString*)name;
 - (void)setup;
 - (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;
 
-//RESTful API
-- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock;
-- (void)GroupsIndexPage:(NSInteger)nthPage with:(NSInteger)pagesPerPage andCompleteBlock:(void(^)(NSDictionary* groupsIndexData))completeBlock;
-- (void)GroupsFormerAndCompleteBlock:(void(^)(NSDictionary* groupsFormerData))completeBlock;
-- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
+//Interface to request data
+- (void)requestGroups;
+
 @end
 
 

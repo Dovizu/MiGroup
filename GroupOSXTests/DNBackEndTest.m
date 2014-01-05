@@ -15,12 +15,17 @@
 }
 @end
 
+@interface DNServerInterface (Test)
+- (void)convertRawDictionary:(NSDictionary*)oldDict usingBlock:(void(^)(NSDictionary* newDict))block;
+- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
+@end
+
 @implementation DNBackEndTest
 
 - (void)setUp
 {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    server = [[DNServerInterface alloc] init];
     
 }
 
@@ -30,5 +35,21 @@
     [super tearDown];
 }
 
+
+
+- (void)testConvertRawDictionary
+{
+    //test converting dates
+    NSDictionary *dict = @{@"created_at": @"1388914990"};
+    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
+        NSLog(@"%@", newDict[@"created_at"]);
+    }];
+    
+    //test images
+    dict = @{@"type":@"image", @"url": @"http://i.groupme.com/116e96f0a4da0130f4466ab9833e124e"};
+    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
+        NSLog(@"%@", newDict[@"image"]);
+    }];
+}
 
 @end

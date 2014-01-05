@@ -30,12 +30,21 @@ extern NSString * const connectionTag;
 extern NSString * const JSONObjectEmojiPlaceholderString;
 
 //Network observer naems
-extern NSString * const kUserInformationChanged;
-extern NSString * const kJSONObjectNotifierTypeGroupMemberAdded;
-extern NSString * const kJSONObjectNotifierTypeGroupMemberRemoved;
-extern NSString * const kJSONObjectNotifierTypeGroupAvatarChanged;
-extern NSString * const kJSONObjectNotifierTypeMessageReceived;
-extern NSString * const kGetMessageKey;
+extern NSString * const noteUserInfoReceivedReadyForSockets;
+
+extern NSString * const noteFirstTimeLogon;
+extern NSString * const noteForceRequestGroupData;
+
+extern NSString * const noteGroupMemberAdded;
+extern NSString * const noteGroupMemberRemoved;
+extern NSString * const noteGroupAvatarChanged;
+extern NSString * const noteUserOwnMessageReceived;
+extern NSString * const noteMemberMessageReceived;
+extern NSString * const kGetContentKey;
+extern NSString * const kGetTypeKey;
+
+//Asynchronous chain-recursion notifications
+extern NSString * const finalGroupIndexResultsArrived;
 
 //Error domain names
 extern NSString * const DNErrorDomain;

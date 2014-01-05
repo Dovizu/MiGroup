@@ -12,7 +12,10 @@
 @interface DNServerInterface (Testing)
 
 - (void)establishMessageSocket;
-
+- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock;
+- (void)GroupsIndexPage:(NSInteger)nthPage with:(NSInteger)groups perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock;
+- (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* groupsFormerData))completeBlock;
+- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
 @end
 
 @implementation DNAsynchronousUnitTesting
@@ -30,7 +33,7 @@
     }];
     
     //Groups Index
-    [server GroupsIndexPage:1 with:10 andCompleteBlock:^(NSDictionary *groupsIndexData) {
+    [server GroupsIndexPage:1 with:10 perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
         if (groupsIndexData) {
             DebugLog(@"GroupIndex: %u entries",(int)[groupsIndexData count]);
         }else{
@@ -39,7 +42,7 @@
     }];
     
     //Groups Former
-    [server GroupsFormerAndCompleteBlock:^(NSDictionary *groupsFormerData) {
+    [server GroupsFormerAndCompleteBlock:^(NSArray *groupsFormerData) {
         if (groupsFormerData) {
             DebugLog(@"GroupsFormer: %u entries", (int)[groupsFormerData count]);
         }else{

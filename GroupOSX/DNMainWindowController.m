@@ -10,6 +10,8 @@
 #import "DNServerInterface.h"
 #import "DNAppDelegate.h"
 
+#import "Group.h"
+
 @interface DNMainWindowController ()
 
 @property IBOutlet NSSplitView *splitView;
@@ -45,43 +47,71 @@
     
 }
 
-#pragma mark - Data management
+#pragma mark - Data Management
+
+
+#pragma mark - Message Routing
 
 - (void)establishObserversForMessages
 {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    
+    //First time logon
+    [center addObserver:self selector:@selector(firstTimeLogonSetup:) name:noteFirstTimeLogon object:nil];
     //Group changes
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:kJSONObjectNotifierTypeGroupMemberAdded object:nil];
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:kJSONObjectNotifierTypeGroupMemberRemoved object:nil];
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:kJSONObjectNotifierTypeGroupAvatarChanged object:nil];
-
+    [center addObserver:self selector:@selector(groupInfoChanged:) name:finalGroupIndexResultsArrived object:nil];
     //Messages
-    [center addObserver:self selector:@selector(messageReceived:) name:kJSONObjectNotifierTypeMessageReceived object:nil];
-    
+    [center addObserver:self selector:@selector(messageReceived:) name:noteMemberMessageReceived object:nil];
 }
 
+//noteMemberMessageReceived
 - (void)messageReceived:(NSNotification*)note
 {
-    __unused NSString *type = note.name;
-    NSDictionary *details = note.userInfo[kGetMessageKey];
+    NSDictionary *details = note.userInfo[kGetContentKey];
     NSString *sender = details[@"name"];
-    if (![self.server isUser:sender]) {
-        DebugLogCD(@"%@ sent a message: %@", sender, details[@"text"]);
-    }
-#ifdef DEBUG_CORE_DATA
-    else{
-        DebugLogCD(@"Received a message from myself");
-    }
-#endif
+    DebugLogCD(@"%@ sent a message: %@", sender, details[@"text"]);
 }
 
+//finalGroupIndexResultsArrived
 - (void)groupInfoChanged:(NSNotification*)note
 {
-    NSString *type = note.name;
-    NSDictionary *details = note.userInfo[kGetMessageKey];
+    NSString *type = note.userInfo[kGetTypeKey];
+    NSArray *groupList = note.userInfo[kGetContentKey];
+
+    DebugLogCD(@"Type: %@ received, details:\n%d", type, (int)[groupList count]);
+//
+//    [groupList enumerateObjectsWithOptions:NSEnumerationConcurrent
+//                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//                                    NSDictionary *group = (NSDictionary*)obj;
+//                                    DebugLogCD(@"Iterating concurrently over group: %@", group[@"name"]);
+//                                    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+//                                    [moc setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
+//                                    [moc performBlock:^{
+//                                        //request
+//                                        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Group"];
+//                                        [request setPredicate:[NSPredicate predicateWithFormat:@"group_id == %@", [group objectForKey:@"id"]]];
+//                                        NSError *error = nil;
+//                                        NSArray *array = [moc executeFetchRequest:request error:&error];
+//                                        if (!array){
+//                                            DebugLogCD(@"Could not fetch group: %@", group[@"group_id"]);
+//                                        }else if ([array count] == 0) {
+//                                            //save
+//                                            DebugLogCD(@"This group: %@ does not exist in DB yet", group[@"name"]);
+//                                            Group *newGroup = [NSEntityDescription insertNewObjectForEntityForName:@"Group" inManagedObjectContext:moc];
+//                                            newGroup.group_id = group[@"id"];
+//                                            newGroup.name = group[@"name"];
+//                                            if (![moc save:&error]) {
+//                                                DebugLogCD(@"Failed to save newGroup: %@", group[@"name"]);
+//                                            }
+//                                        }
+//                                    }];
+//                                }];
     
-    DebugLogCD(@"Type: %@ received, details:\n%@", type, details);
+}
+
+//first time logon procedure
+- (void)firstTimeLogonSetup:(NSNotification*)note
+{
+//    [self.server requestGroups];
 }
 
 #pragma mark - GUI Actions

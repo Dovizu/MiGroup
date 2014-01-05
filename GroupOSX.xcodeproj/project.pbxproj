@@ -37,7 +37,6 @@
 		F1840B9F1877B25700C399DA /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B9E1877B25600C399DA /* Message.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
 		F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
-		F1AE2F6C1872B727009C8851 /* DNSocketManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */; };
 		F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */ = {isa = PBXBuildFile; fileRef = F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */; };
 		F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */; };
 		F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1F5C5EF186D2A6600C407A3 /* WebKit.framework */; };
@@ -137,7 +136,7 @@
 		F1840B9D1877B25600C399DA /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = GroupOSX/Backend/Message.h; sourceTree = "<group>"; };
 		F1840B9E1877B25600C399DA /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = GroupOSX/Backend/Message.m; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNSocketManagerTest.m; sourceTree = "<group>"; };
+		F1B21D4018793FF700E3E6E2 /* GroupOSX 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GroupOSX 2.xcdatamodel"; sourceTree = "<group>"; };
 		F1BD286B18715BA600D797A9 /* NSURLConnection+Tagged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLConnection+Tagged.h"; path = "GroupOSX/Backend/NSURLConnection+Tagged.h"; sourceTree = "<group>"; };
 		F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURLConnection+Tagged.m"; path = "GroupOSX/Backend/NSURLConnection+Tagged.m"; sourceTree = "<group>"; };
 		F1F5C5EC186CF52500C407A3 /* DNMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainWindowController.h; path = GroupOSX/DNMainWindowController.h; sourceTree = "<group>"; };
@@ -268,7 +267,6 @@
 			children = (
 				F144E19A186A5CD100C42636 /* GroupOSXTests.m */,
 				F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */,
-				F1AE2F6B1872B727009C8851 /* DNSocketManagerTest.m */,
 				F144E195186A5CD100C42636 /* Supporting Files */,
 			);
 			path = GroupOSXTests;
@@ -584,7 +582,6 @@
 			files = (
 				F12A0316186B8A6C008C8BA5 /* DNBackEndTest.m in Sources */,
 				F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */,
-				F1AE2F6C1872B727009C8851 /* DNSocketManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +834,7 @@
 		F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				F1B21D4018793FF700E3E6E2 /* GroupOSX 2.xcdatamodel */,
 				F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */,
 			);
 			currentVersion = F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */;

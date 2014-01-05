@@ -57,6 +57,11 @@
 @property NSDictionary *userInfo;
 @property NSString *userToken;
 
+//Asynchronous chain-recursion variables
+@property NSInteger currentPageNum;
+@property NSMutableArray *prevResults;
+@property BOOL currentlyPollingForGroups;
+
 @end
 
 
@@ -73,6 +78,10 @@
         self.reachability = [KSReachability reachabilityToHost:DNRESTAPIBaseAddress];
         self.userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
         self.userInfo =  (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
+#ifdef DEBUG_BACKEND
+        self.userToken = nil;
+        self.userInfo = nil;
+#endif
         if (self.userToken) {
             self.authenticated = YES;
         }
@@ -106,27 +115,119 @@
                 break;
         }
     };
+}
+
+#pragma mark - High-Level Request Triggers (Public)
+
+- (void)requestGroups
+{
+    [self requestNextGroupsWithNewestResult:nil triggerType:noteForceRequestGroupData];
+}
+
+#pragma mark - High-Level Requests API
+
+- (void)requestNextGroupsWithNewestResult:(NSArray*)newestResult triggerType:(NSString*)type
+{
+    if (!self.prevResults && !self.currentlyPollingForGroups) {
+        //first call
+        self.currentlyPollingForGroups = YES;
+        self.currentPageNum = 1;
+        self.prevResults = [[NSMutableArray alloc] init];
+    }else if ([newestResult count] != 0){
+        //new results arrived
+        [self.prevResults addObjectsFromArray:newestResult];
+        self.currentPageNum += 1;
+    }else{
+        //no more groups, post notification with complete results
+        self.currentlyPollingForGroups = NO;
+        
+        __block NSArray *rawGroupList = _prevResults;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+        dispatch_async(queue, ^{
+            NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
+            [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSDictionary *oldGroup = (NSDictionary*)obj;
+            }];
+            NSDictionary *userInfo = @{kGetContentKey: self.prevResults, kGetTypeKey:type};
+            [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupIndexResultsArrived object:nil userInfo:userInfo];
+        });
+        
+        self.prevResults = nil;
+        return;
+    }
+
+    DebugLogCD(@"Group Polling page: %d", (int)self.currentPageNum);
+    NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
+#ifdef DEBUG_BACKEND
+    num = 1; //Small to see if repeated polling works or not
+#endif
     
-    //For authentication
-    [[NSNotificationCenter defaultCenter] addObserverForName:kUserInformationChanged object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-        DebugLog(@"UserInformation Changed: %@", self.userInfo);
-        if (!self.listening) {
-            [self establishSockets];
-        }
+    [self GroupsIndexPage:self.currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+        [self requestNextGroupsWithNewestResult:groupsIndexData triggerType:type];
     }];
 }
 
+#pragma mark - Low-Level Requests and Connection Logic
 
-#pragma mark - Requests and Connection Logic
+//Convert all JSON-serialized crappy Dictionary into one with Cocoa objects
+- (void)convertRawDictionary:(NSDictionary*)oldDict usingBlock:(void(^)(NSDictionary* newDict))block
+{
+    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
+    [oldDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        NSString *strKey = [NSString stringWithFormat:@"%@", key];
+        NSString *strObj = [NSString stringWithFormat:@"%@", obj];
+        //is a date
+        //Seriously GroupMe? Non-standard date format that looks like JSON created but in SECONDS? Seriously?
+        if ([strKey isEqualToString:@"created_at"] || [strKey isEqualToString:@"updated_at"]) {
+            NSDate *date = nil;
+            NSRegularExpression *dateRegEx = nil;
+            dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
+                                                             options:NSRegularExpressionCaseInsensitive error:nil];
+            NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:strObj
+                                                                      options:0
+                                                                        range:NSMakeRange(0, [strObj length])];
+            if (regexResult) {
+                //Milliseconds to seconds
+                NSTimeInterval seconds = [[strObj substringWithRange:[regexResult rangeAtIndex:1]] doubleValue];
+                //Timezone offset
+                if ([regexResult rangeAtIndex:2].location != NSNotFound) {
+                    //Offset sign
+                    NSString *sign = [strObj substringWithRange:[regexResult rangeAtIndex:2]];
+                    //Offset hours
+                    seconds += [[NSString stringWithFormat:@"%@%@", sign, [strObj substringWithRange:[regexResult rangeAtIndex:3]]] doubleValue] * 60.0 * 60.0;
+                    //Offset minutes
+                    seconds += [[NSString stringWithFormat:@"%@%@", sign, [strObj substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
+                }
+                date = [NSDate dateWithTimeIntervalSince1970:seconds];
+                [newDict setObject:date forKey:strKey];
+            }else{
+                DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
+                //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
+                date = [NSDate date];
+            }
+        //is an image, either in message, or in an attachment
+        }else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
+            NSURL *imageUrl = [NSURL URLWithString:strObj];
+            if (imageUrl) {
+                NSImage *image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:imageUrl]];
+                if (image) {
+                    [newDict setObject:image forKey:@"image"];
+                }
+            }
+        }
+    }];
+    block(newDict);
+}
 
 //Users - me
+//Response should be a dictionary
 - (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/users/me")
                  parameters:@{token_pair}
      
                     success:^(AFHTTPRequestOperation *operation, id responseObject){
-                        completeBlock(get_response(responseObject));
+                        completeBlock((NSDictionary*)responseObject[@"response"]);
                     }
                     failure:^(AFHTTPRequestOperation *operation, NSError *error){
                         report_request_error;
@@ -134,17 +235,18 @@
 }
 
 //Groups - Index
+//Response should be an array of dictionaries
 - (void)GroupsIndexPage:(NSInteger)nthPage
-                   with:(NSInteger)pagesPerPage
-       andCompleteBlock:(void(^)(NSDictionary* groupsIndexData))completeBlock
+                   with:(NSInteger)groups
+       perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/groups")
                  parameters:@{token_pair,
                               @"page":NSNumber(nthPage),
-                              @"per_page":NSNumber(pagesPerPage)}
+                              @"per_page":NSNumber(groups)}
      
                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        completeBlock(get_response(responseObject));
+                        completeBlock((NSArray*)responseObject[@"response"]);
                     }
                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                         report_request_error;
@@ -152,13 +254,14 @@
 }
 
 //Groups - Former
-- (void)GroupsFormerAndCompleteBlock:(void(^)(NSDictionary* groupsFormerData))completeBlock
+//Response should be an array of dictionaries
+- (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* groupsFormerData))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/groups/former")
                  parameters:@{token_pair}
      
                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                        completeBlock(get_response(responseObject));
+                        completeBlock((NSArray*)responseObject[@"response"]);
                     }
                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                         report_request_error;
@@ -166,6 +269,7 @@
 }
 
 //Groups - Show
+//Response should be a dictionary
 - (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock
 {
     [self.HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@%@", DNRESTAPIBaseAddress, @"/groups/", groupID]
@@ -205,6 +309,7 @@
 
 - (void)teardown
 {
+    //To-Do: true logout includes logout in webview
     DebugLog(@"Deauthenticating...");
     self.userToken = nil;
     [[NSUserDefaults standardUserDefaults] setObject:nil forKey:DNUserDefaultsUserToken];
@@ -230,16 +335,20 @@
         self.userToken = token;
         [[NSUserDefaults standardUserDefaults] setObject:self.userToken forKey:DNUserDefaultsUserToken];
 
-#ifdef DEBUG_BACKEND
+        #ifdef DEBUG_BACKEND
         [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
         [DNAsynchronousUnitTesting testAllSockets:self];
-#endif
+        #endif
+        
+        //First time log-on
+        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
             self.userInfo = userInfo;
             NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
             [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kUserInformationChanged object:nil];
+            DebugLog(@"UserInformation Changed: %@", self.userInfo);
+            [self establishSockets];
         }];
         
     }else{
@@ -293,6 +402,7 @@
     DebugLog(@"Push server disconnected");
 }
 
+//This is a giant router of raw messages, the type of message dictates the next method to call, or nothing at all
 - (void)messageReceived:(NSDictionary *)messageDict channel:(NSString *)channel
 {
     DebugLog(@"%@", messageDict);
@@ -303,26 +413,30 @@
     NSString *identifierForSystemMsg = [messageDict objectForKey:@"alert"];
     
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-    NSDictionary *userInfo = @{kGetMessageKey: messageDict[@"subject"]};
+    NSDictionary *userInfo = @{kGetContentKey: messageDict[@"subject"]};
     
     //Sent by system
-    if ([identifierSenderName isEqualToString:@"GroupMe"]) {
-        
+    if ([identifierSenderName isEqualToString:@"GroupMe"] && [identifierUserID isEqualToString:@"0"]) {
+
         //Group member removed
         if ([identifierForSystemMsg rangeOfString:@"from the group"].location != NSNotFound) {
-            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupMemberRemoved object:nil userInfo:userInfo];
+            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupMemberRemoved];
+            
         //Group member added
         }else if ([identifierForSystemMsg rangeOfString:@"to the group"].location != NSNotFound){
-            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupMemberAdded object:nil userInfo:userInfo];
+            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupMemberAdded];
+            
         //Group avatar changed
         }else if ([identifierForSystemMsg rangeOfString:@"changed the group's avatar"].location != NSNotFound){
-            [notificationCenter postNotificationName:kJSONObjectNotifierTypeGroupAvatarChanged object:nil userInfo:userInfo];
+            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupAvatarChanged];
         }
-        
-    //user generated notification
+
+    //user generated notification, received directly by MainWindowController
     }else{
-        if ([identifierUserID isNotEqualTo:@"0"]) {
-            [notificationCenter postNotificationName:kJSONObjectNotifierTypeMessageReceived object:nil userInfo:userInfo];
+        if ([self isUser:identifierSenderName]) {
+            [notificationCenter postNotificationName:noteUserOwnMessageReceived object:nil userInfo:userInfo];
+        }else{
+            [notificationCenter postNotificationName:noteMemberMessageReceived object:nil userInfo:userInfo];
         }
     }
 }
@@ -335,6 +449,10 @@
 {
     DebugLog(@"Subscribed to channel: %@", channel);
     self.listening = YES;
+    
+    #ifdef DEBUG_CORE_DATA
+//    [self requestGroups];
+    #endif
 }
 - (void)didUnsubscribeFromChannel:(NSString *)channel
 {

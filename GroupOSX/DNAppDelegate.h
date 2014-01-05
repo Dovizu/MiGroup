@@ -15,16 +15,12 @@
 
 @property IBOutlet NSWindow *window;
 
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property DNServerInterface *server;
 @property DNLoginSheetController *loginSheetController;
 @property DNMainWindowController<NSWindowDelegate> *mainWindowController;
 
-
-- (IBAction)saveAction:(id)sender;
 - (void)purgeStores;
 
 @end

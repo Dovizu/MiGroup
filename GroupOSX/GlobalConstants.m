@@ -28,13 +28,26 @@ NSString * const JSONRequestContentLengthKey = @"Content-Length";
 NSString * const JSONObjectEmojiPlaceholderString = @"\\Ufffd";
 NSString * const JSONObjectNotifierTypeGroupRelated = @"JSONObjectNotifierTypeGroupRelated";
 
-//Network observer names
-NSString * const kUserInformationChanged = @"com.dovizu.grouposx.user.information.changed";
-NSString * const kJSONObjectNotifierTypeGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
-NSString * const kJSONObjectNotifierTypeGroupMemberRemoved = @"kJSONObjectNotifierTypeGroupMemberRemoved";
-NSString * const kJSONObjectNotifierTypeGroupAvatarChanged = @"kJSONObjectNotifierTypeGroupAvatarChanged";
-NSString * const kJSONObjectNotifierTypeMessageReceived = @"kJSONObjectNotifierTypeMessageReceived";
-NSString * const kGetMessageKey = @"message";
+//Generic extraction keys for NSNotification's userInfo
+NSString * const kGetTypeKey = @"type";
+NSString * const kGetContentKey = @"message";
+
+//Authentication use
+NSString * const noteUserInfoReceivedReadyForSockets = @"com.dovizu.grouposx.user.information.changed";
+
+//Triggers that caused polling methods to be called
+    //aritificial triggers
+NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
+NSString * const noteForceRequestGroupData = @"com.dovizu.grouposx.forceRequestGroupData";
+    //organic triggers, sent from Faye socket
+NSString * const noteGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
+NSString * const noteGroupMemberRemoved = @"kJSONObjectNotifierTypeGroupMemberRemoved";
+NSString * const noteGroupAvatarChanged = @"kJSONObjectNotifierTypeGroupAvatarChanged";
+NSString * const noteUserOwnMessageReceived = @"kJSONObjectNotifierTypeMessageReceived";
+NSString * const noteMemberMessageReceived = @"kJSONObjectNotifierTypeMemberMessageReceived";
+
+//Updates sent by Server, used in Main Window Controller
+NSString * const finalGroupIndexResultsArrived = @"com.dovizu.grouposx.finalGroupIndexResultsArrived";
 
 //Error domain names
 NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";

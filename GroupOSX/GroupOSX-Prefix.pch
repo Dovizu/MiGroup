@@ -8,10 +8,14 @@
     #import <Cocoa/Cocoa.h>
     #import <CoreData/CoreData.h>
     #import "GlobalConstants.h"
+    #import <MagicalRecord/CoreData+MagicalRecord.h>
+    #import <dispatch/dispatch.h>
 #endif
 
-//#define DEBUG_BACKEND
-#define DEBUG_CORE_DATA
+#define MR_SHORTHAND
+
+#define DEBUG_BACKEND
+//#define DEBUG_CORE_DATA
 
 #ifdef DEBUG_BACKEND
     #define DebugLog( s, ... ) NSLog( @"<%@:(%d)> %@", [[NSString stringWithUTF8String:__FILE__] lastPathComponent], __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__] )

@@ -14,6 +14,7 @@
 @interface DNMainWindowController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
 
 @property (nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property DNServerInterface *server;
 @property DNAppDelegate *appDelegate;
 
