@@ -29,9 +29,6 @@
 - (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;
 
-//Interface to request data
-- (void)requestGroups;
-
 @end
 
 

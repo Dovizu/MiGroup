@@ -18,6 +18,7 @@
 @interface DNServerInterface (Test)
 - (void)convertRawDictionary:(NSDictionary*)oldDict usingBlock:(void(^)(NSDictionary* newDict))block;
 - (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
+- (NSString*)helpFindStringWithPattern:(NSString*)regExPattern inString:(NSString*)string;
 @end
 
 @implementation DNBackEndTest
@@ -50,6 +51,23 @@
     [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
         NSLog(@"%@", newDict[@"image"]);
     }];
+}
+
+- (void)testRegularExpressionParsing
+{
+    NSString * result = nil;
+    
+    result = [server helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:@"Donny Reynolds removed Kha Nguyen from the group."];
+    XCTAssert([result isEqualToString:@"Kha Nguyen"], @"Regex Failed");
+    
+    result = [server helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:@"Donny Reynolds added Kha to the group"];
+    XCTAssert([result isEqualToString:@"Kha"], @"Regex Failed");
+    
+    result = [server helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:@"Donny Reynolds changed the group's name to Test group 2"];
+    XCTAssert([result isEqualToString:@"Test group 2"], @"Regex Failed");
+    
+    result = [server helpFindStringWithPattern:@"(.+) changed name to (.+)" inString:@"Donny Reynolds changed name to Donny"];
+    XCTAssert([result isEqualToString:@"Donny Reynolds"], @"Regex Failed");
 }
 
 @end
