@@ -57,15 +57,15 @@
 @property NSDictionary *userInfo;
 @property NSString *userToken;
 
-//Asynchronous chain-recursion variables
-@property NSInteger currentPageNum;
-@property NSMutableArray *prevResults;
-@property BOOL currentlyPollingForGroups;
-
 @end
 
-
 @implementation DNServerInterface
+{
+    //Used by -(void)requestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
+    NSInteger _currentPageNum;
+    NSMutableArray *_prevResults;
+    BOOL _currentlyPollingForGroups;
+}
 
 #pragma mark - Initialization Logic
 
@@ -117,16 +117,29 @@
     };
 }
 
-#pragma mark - High-Level Request Triggers (Public)
-
-- (void)requestGroups
+#pragma mark - High-Level Request Triggers
+/*
+ High-Level Request Triggers may use helper methods, post "final-" type notification when data is obtained and converted
+ */
+- (void)requestGroupsUsingBlock:(void(^)(NSArray* groupList))block
 {
-    [self requestNextGroupsWithNewestResult:nil triggerType:noteForceRequestGroupData];
+    //Use helper
+    [self requestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
+        block(groupList);
+    }];
 }
 
-#pragma mark - High-Level Requests API
+- (void)requestSpecificGroup:(NSString*)group_id usingBlock:(void(^)(NSDictionary* group))block
+{
+    [self GroupsShow:group_id andCompleteBlock:^(NSDictionary *groupsShowData) {
+        groupsShowData = [self convertRawDictionary:groupsShowData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupSpecificResultArrived object:nil userInfo:@{kGetContentKey: groupsShowData}];
+    }];
+}
 
-- (void)requestNextGroupsWithNewestResult:(NSArray*)newestResult triggerType:(NSString*)type
+#pragma mark - High-Level Request Triggers (Helpers)
+
+- (void)requestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
 {
     if (!_prevResults && !_currentlyPollingForGroups) {
         //first call
@@ -148,27 +161,23 @@
                 group = [self convertRawDictionary:group];
                 [groupList addObject:group];
             }];
-            NSDictionary *userInfo = @{kGetContentKey: groupList, kGetTypeKey:type};
-            [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupIndexResultsArrived object:nil userInfo:userInfo];
-
+            block(groupList);
         });
         _currentlyPollingForGroups = NO;
         _prevResults = nil;
         return;
     }
 
-    DebugLogCD(@"Group Polling page: %d", (int)self.currentPageNum);
+    DebugLogCD(@"Group Polling page: %d", (int)_currentPageNum);
     NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
 #ifdef DEBUG_BACKEND
     num = 1; //Small to see if repeated polling works or not
 #endif
     
-    [self GroupsIndexPage:self.currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
-        [self requestNextGroupsWithNewestResult:groupsIndexData triggerType:type];
+    [self GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+        [self requestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
     }];
 }
-
-#pragma mark - Low-Level Requests and Connection Logic
 
 //Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
 - (NSDictionary*)convertRawDictionary:(NSDictionary*)oldDict
@@ -239,6 +248,8 @@
     }];
     return newDict;
 }
+
+#pragma mark - Low-Level Requests and Connection Logic
 
 //Users - me
 //Response should be a dictionary
@@ -362,7 +373,7 @@
         #endif
         
         //First time log-on
-        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
             self.userInfo = userInfo;
@@ -441,23 +452,33 @@
 
         //Group member removed
         if ([identifierForSystemMsg rangeOfString:@"from the group"].location != NSNotFound) {
-            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupMemberRemoved];
+            //find the group being removed
+            NSString* memberID = @"12345";
+            [self requestSpecificGroup:memberID usingBlock:^(NSDictionary *group) {
+                NSDictionary *userInfo = @{kGetContentKey: memberID};
+//                [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupMemberRemoved object:nil userInfo:userInfo];
+            }];
             
         //Group member added
         }else if ([identifierForSystemMsg rangeOfString:@"to the group"].location != NSNotFound){
-            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupMemberAdded];
+            //find group member added
+            NSString *memberID = @"123456";
+            [self requestSpecificGroup:memberID usingBlock:^(NSDictionary *group) {
+                NSDictionary *userInfo = @{kGetContentKey: memberID};
+//                [[NSNotificationCenter defaultCenter] postNotificationName:finalGroupMemberRemoved object:nil userInfo:userInfo];
+            }];
             
         //Group avatar changed
         }else if ([identifierForSystemMsg rangeOfString:@"changed the group's avatar"].location != NSNotFound){
-            [self requestNextGroupsWithNewestResult:nil triggerType:noteGroupAvatarChanged];
+//            [self requestNextGroupsWithNewestResult:nil triggerType:finalGroupAvatarChanged];
         }
 
     //user generated notification, received directly by MainWindowController
     }else{
         if ([self isUser:identifierSenderName]) {
-            [notificationCenter postNotificationName:noteUserOwnMessageReceived object:nil userInfo:userInfo];
+            [notificationCenter postNotificationName:finalUserOwnMessageReceived object:nil userInfo:userInfo];
         }else{
-            [notificationCenter postNotificationName:noteMemberMessageReceived object:nil userInfo:userInfo];
+            [notificationCenter postNotificationName:finalMemberMessageReceived object:nil userInfo:userInfo];
         }
     }
 }

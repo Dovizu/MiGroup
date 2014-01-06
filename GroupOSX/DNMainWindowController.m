@@ -58,9 +58,9 @@
     //First time logon
     [center addObserver:self selector:@selector(firstTimeLogonSetup:) name:noteFirstTimeLogon object:nil];
     //Group changes
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:finalGroupIndexResultsArrived object:nil];
+    [center addObserver:self selector:@selector(groupInfoChanged:) name:finalGroupIndexAllResultsArrived object:nil];
     //Messages
-    [center addObserver:self selector:@selector(messageReceived:) name:noteMemberMessageReceived object:nil];
+    [center addObserver:self selector:@selector(messageReceived:) name:finalMemberMessageReceived object:nil];
 }
 
 //noteMemberMessageReceived

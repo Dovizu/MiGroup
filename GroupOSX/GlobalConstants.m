@@ -36,18 +36,17 @@ NSString * const kGetContentKey = @"message";
 NSString * const noteUserInfoReceivedReadyForSockets = @"com.dovizu.grouposx.user.information.changed";
 
 //Triggers that caused polling methods to be called
-    //aritificial triggers
-NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
-NSString * const noteForceRequestGroupData = @"com.dovizu.grouposx.forceRequestGroupData";
-    //organic triggers, sent from Faye socket
-NSString * const noteGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
-NSString * const noteGroupMemberRemoved = @"kJSONObjectNotifierTypeGroupMemberRemoved";
-NSString * const noteGroupAvatarChanged = @"kJSONObjectNotifierTypeGroupAvatarChanged";
-NSString * const noteUserOwnMessageReceived = @"kJSONObjectNotifierTypeMessageReceived";
-NSString * const noteMemberMessageReceived = @"kJSONObjectNotifierTypeMemberMessageReceived";
+//organic triggers
+NSString * const finalGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
+NSString * const finalGroupMemberRemoved = @"kJSONObjectNotifierTypeGroupMemberRemoved";
+NSString * const finalGroupAvatarChanged = @"kJSONObjectNotifierTypeGroupAvatarChanged";
+NSString * const finalUserOwnMessageReceived = @"kJSONObjectNotifierTypeMessageReceived";
+NSString * const finalMemberMessageReceived = @"kJSONObjectNotifierTypeMemberMessageReceived";
 
-//Updates sent by Server, used in Main Window Controller
-NSString * const finalGroupIndexResultsArrived = @"com.dovizu.grouposx.finalGroupIndexResultsArrived";
+//deterministic triggers
+NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
+NSString * const finalGroupIndexAllResultsArrived = @"com.dovizu.grouposx.forceRequestGroupData";
+NSString * const finalGroupSpecificResultArrived = @"com.dovizu.grouposx.finalSpecificGroupResultArrived";
 
 //Error domain names
 NSString * const DNErrorDomain = @"com.dovizu.grouposx.ErrorDomain";

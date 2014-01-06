@@ -9,7 +9,7 @@
 #ifndef GlobalConstants
 #define GlobalConstants
 
-typedef NSDictionary DNConnectionType;
+typedef NSString* DNNotificationType;
 //Authentication Constants
 extern NSString* const DNOAuth2ClientID;
 extern NSString * const DNOAuth2AuthorizationURL;
@@ -29,22 +29,23 @@ extern NSString * const connectionTag;
 
 extern NSString * const JSONObjectEmojiPlaceholderString;
 
-//Network observer naems
+//Network observer names
 extern NSString * const noteUserInfoReceivedReadyForSockets;
 
 extern NSString * const noteFirstTimeLogon;
-extern NSString * const noteForceRequestGroupData;
+extern NSString * const finalGroupIndexAllResultsArrived;
 
-extern NSString * const noteGroupMemberAdded;
-extern NSString * const noteGroupMemberRemoved;
-extern NSString * const noteGroupAvatarChanged;
-extern NSString * const noteUserOwnMessageReceived;
-extern NSString * const noteMemberMessageReceived;
+extern NSString * const finalGroupMemberAdded;
+extern NSString * const finalGroupMemberRemoved;
+extern NSString * const finalGroupAvatarChanged;
+extern NSString * const finalUserOwnMessageReceived;
+extern NSString * const finalMemberMessageReceived;
 extern NSString * const kGetContentKey;
 extern NSString * const kGetTypeKey;
 
-//Asynchronous chain-recursion notifications
+
 extern NSString * const finalGroupIndexResultsArrived;
+extern NSString * const finalGroupSpecificResultArrived;
 
 //Error domain names
 extern NSString * const DNErrorDomain;
