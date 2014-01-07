@@ -88,12 +88,12 @@ NSString * const HTTPParamToken = @"token";
     self = [super init];
     if (self){
         //Configure HTTP Request Manager
-        _HTTPRequestManager = [AFHTTPRequestOperationManager manager];
+        _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
         NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
         [acceptableTypes addObject:@"text/html"];
         _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
-        //FayeClient initialization needs to wait for userInformation to be populated
         _reachabilityManager = [_HTTPRequestManager reachabilityManager];
+        //FayeClient initialization needs to wait for userInformation to be populated
         _notificationCenter = [NSNotificationCenter defaultCenter];
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
         _userInfo =  (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
@@ -403,7 +403,7 @@ NSString * const HTTPParamToken = @"token";
 //Response should be a dictionary
 - (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userDict))completeBlock
 {
-    [self.HTTPRequestManager GET:baseURLPlus(@"/users/me")
+    [self.HTTPRequestManager GET:@"users/me"
                       parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject){
                              completeBlock((NSDictionary*)responseObject[@"response"]);
@@ -419,7 +419,7 @@ NSString * const HTTPParamToken = @"token";
                    with:(NSInteger)groups
 perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 {
-    [self.HTTPRequestManager GET:baseURLPlus(@"/groups")
+    [self.HTTPRequestManager GET:@"groups"
                       parameters:@{HTTPParamToken:_userToken,
                                    @"page":NSNumber(nthPage),
                                    @"per_page":NSNumber(groups)}
@@ -435,7 +435,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be an array of dictionaries
 - (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* formerGroupArray))completeBlock
 {
-    [self.HTTPRequestManager GET:baseURLPlus(@"/groups/former")
+    [self.HTTPRequestManager GET:@"groups/former"
                       parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSArray*)responseObject[@"response"]);
@@ -450,7 +450,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 - (void)GroupsShow:(NSString*)groupID
   andCompleteBlock:(void(^)(NSDictionary* groupDict))completeBlock
 {
-    [self.HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@%@", DNRESTAPIBaseAddress, @"/groups/", groupID]
+    [self.HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
                       parameters:@{HTTPParamToken:_userToken,
                                    @"id":groupID}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -476,7 +476,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
         if (description)    {[params setObject:description forKey:@"description"];}
         if (imageURL)       {[params setObject:imageURL forKey:@"image_url"];}
         if (allowShare)     {[params setObject:@"true" forKey:@"share"];}
-        [_HTTPRequestManager POST:baseURLPlus(@"/groups")
+        [_HTTPRequestManager POST:@"groups"
                        parameters:params
                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
                               completeBlock((NSDictionary*)responseObject[@"response"]);
@@ -512,7 +512,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
         if (allowShare)     {[params setObject:@"true" forKey:@"share"];}else{[params setObject:@"false" forKey:@"share"];}
         if (imageURL)       {[params setObject:imageURL forKey:@"image"];}
         //"baseURL/groups/group_id/update"
-        [_HTTPRequestManager POST:[NSString stringWithFormat:@"%@/%@%@", baseURLPlus(@"/groups"), groupID, @"/update"]
+        [_HTTPRequestManager POST:concatStrings(@"groups/%@/update", groupID)
                        parameters:params
                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
                               completeBlock((NSDictionary*)responseObject[@"response"]);
@@ -534,7 +534,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a status
 - (void)GroupsDestroy:(NSString*)groupID andCompleteBlock:(void(^)(NSString* deleted_group_id))completeBlock
 {
-    [_HTTPRequestManager POST:baseURLPlus(concatStrings(@"/groups/%@/destroy", groupID))
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/destroy", groupID)
                    parameters:@{HTTPParamToken: _userToken}
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                           NSLog(@"Group %@ deleted", groupID);

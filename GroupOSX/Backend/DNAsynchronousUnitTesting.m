@@ -35,40 +35,40 @@
 {
     DebugLog(@"=========Asynchronous Units Testing============");
     
-//    //UsersGetInformation
-//    [server UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
-//        if (userInfo) {
-//            DebugLog(@"UsersGetInformation: %d entries", (int)[userInfo count]);
-//        }else{
-//            DebugLog(@"UsersGetInformation failed");
-//        }
-//    }];
-//    
-//    //Groups Index
-//    [server GroupsIndexPage:1 with:10 perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
-//        if (groupsIndexData) {
-//            DebugLog(@"GroupIndex: %u entries",(int)[groupsIndexData count]);
-//        }else{
-//            DebugLog(@"GroupsIndexFailed");
-//        }
-//    }];
-//    
-//    //Groups Former
-//    [server GroupsFormerAndCompleteBlock:^(NSArray *groupsFormerData) {
-//        if (groupsFormerData) {
-//            DebugLog(@"GroupsFormer: %u entries", (int)[groupsFormerData count]);
-//        }else{
-//            DebugLog(@"GroupsFormer failed");
-//        }
-//    }];
+    //UsersGetInformation
+    [server UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
+        if (userInfo) {
+            DebugLog(@"UsersGetInformation: %d entries", (int)[userInfo count]);
+        }else{
+            DebugLog(@"UsersGetInformation failed");
+        }
+    }];
     
-//    [server GroupsShow:@"6622360" andCompleteBlock:^(NSDictionary *groupsShowData) {
-//        NSLog(@"%@", groupsShowData);
-//    }];
-//    [server GroupsShow:@"6736514" andCompleteBlock:^(NSDictionary *groupsShowData) {
-//        NSLog(@"%@", groupsShowData);
-//    }];
-//    
+    //Groups Index
+    [server GroupsIndexPage:1 with:10 perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+        if (groupsIndexData) {
+            DebugLog(@"GroupIndex: %u entries",(int)[groupsIndexData count]);
+        }else{
+            DebugLog(@"GroupsIndexFailed");
+        }
+    }];
+    
+    //Groups Former
+    [server GroupsFormerAndCompleteBlock:^(NSArray *groupsFormerData) {
+        if (groupsFormerData) {
+            DebugLog(@"GroupsFormer: %u entries", (int)[groupsFormerData count]);
+        }else{
+            DebugLog(@"GroupsFormer failed");
+        }
+    }];
+    
+    [server GroupsShow:@"6622360" andCompleteBlock:^(NSDictionary *groupsShowData) {
+        NSLog(@"%@", groupsShowData);
+    }];
+    [server GroupsShow:@"6736514" andCompleteBlock:^(NSDictionary *groupsShowData) {
+        NSLog(@"%@", groupsShowData);
+    }];
+//
 //    [server GroupsCreateName:@"XCTest test group" description:@"blah" image:nil share:NO andCompleteBlock:^(NSDictionary *createdGroupDict) {
 //        DebugLog(@"Group Created:\n%@", createdGroupDict);
 //    }];
