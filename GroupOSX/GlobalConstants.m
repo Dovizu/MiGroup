@@ -47,6 +47,9 @@ NSString * const k_name = @"name";
 NSString * const k_group_id = @"group_id";
 NSString * const k_members = @"members";
 NSString * const k_image = @"image";
+NSString * const k_email = @"email";
+NSString * const k_phone_number = @"phone_number";
+NSString * const k_user_id = @"user_id";
 
 //Triggers that caused polling methods to be called
 //organic triggers

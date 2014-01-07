@@ -29,3 +29,7 @@
 #else
     #define DebugLogCD( s, ... )
 #endif
+
+//Other Utilities
+#define concatStrings(format, ...) [NSString stringWithFormat:format, ##__VA_ARGS__]
+#define NSNumber(num) [NSNumber numberWithInteger:num]

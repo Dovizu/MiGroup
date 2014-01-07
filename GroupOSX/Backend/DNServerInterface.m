@@ -17,8 +17,6 @@
 
 //Macros for HTTPRequestManager calls
 #define baseURLPlus(string) [NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, string]
-#define concatStrings(format, ...) [NSString stringWithFormat:format, ##__VA_ARGS__]
-#define NSNumber(num) [NSNumber numberWithInteger:num]
 #define token_pair @"token":_userToken
 #define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
 #define get_response(responseObject) (NSDictionary*)responseObject[@"response"]
@@ -68,17 +66,36 @@
 
 //GroupMe HTTP request constants
 NSString * const HTTPParamToken = @"token";
+NSString * const HTTPParamMemberName = @"nickname";
+NSString * const HTTPParamUserID = @"user_id";
+NSString * const HTTPParamPhoneNumber = @"phone_number";
+NSString * const HTTPParamEmail = @"email";
+NSString * const HTTPParamMembers = @"members";
+NSString * const HTTPParamResultsID = @"results_id";
+NSString * const HTTPParamResponse = @"response";
+NSString * const HTTPParamBeforeID = @"before_id";
+NSString * const HTTPParamSinceID = @"since_id";
+NSString * const HTTPParamMessages = @"messages";
+NSString * const HTTPParamAttachType = @"type";
+NSString * const HTTPParamAttachURL = @"url";
+NSString * const HTTPParamSourceGUID = @"source_guid";
+NSString * const HTTPParamMessageText = @"text";
+NSString * const HTTPParamMessageAttach = @"attachments";
 
 @implementation DNServerInterface
 {
     
     AFNetworkReachabilityManager *_reachabilityManager;
+    NSDictionary *_paramConversion;
+    
+    BOOL _authenticating;
     
     //Used by -(void)requestNextGroupsWithNewestResult:newestResult completionBlock:block
     NSInteger _currentPageNum;
     NSMutableArray *_prevResults;
     BOOL _currentlyPollingForGroups;
     NSNotificationCenter *_notificationCenter;
+    
 }
 
 #pragma mark - Initialization Logic
@@ -87,6 +104,11 @@ NSString * const HTTPParamToken = @"token";
 {
     self = [super init];
     if (self){
+        //Create dictionary for parameter conversion
+        _paramConversion = @{k_name:           HTTPParamMemberName,
+                                          k_user_id:        HTTPParamUserID,
+                                          k_phone_number:   HTTPParamPhoneNumber,
+                                          k_email:          HTTPParamEmail};
         //Configure HTTP Request Manager
         _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
         NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
@@ -207,7 +229,8 @@ NSString * const HTTPParamToken = @"token";
 - (void)authenticate
 {
     DebugLog(@"Reachability: %hhd", _reachabilityManager.reachable);
-    if (!self.authenticated && _reachabilityManager.reachable) {
+    if (!_authenticating && !_authenticated && _reachabilityManager.reachable) {
+        _authenticating = YES;
         NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
         DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
@@ -242,7 +265,7 @@ NSString * const HTTPParamToken = @"token";
         DebugLog(@"Server successfully authenticated with token: %@", token);
         self.userToken = token;
         [[NSUserDefaults standardUserDefaults] setObject:self.userToken forKey:DNUserDefaultsUserToken];
-
+        _authenticating = NO;
         #ifdef DEBUG_BACKEND
         [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
         [DNAsynchronousUnitTesting testAllSockets:self];
@@ -324,7 +347,15 @@ NSString * const HTTPParamToken = @"token";
             [self notifyMembersRemoveActionWithMemberName:name andGroupID:identifierGroupID];
         }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
             //GROUP MEMBER ADDED
-
+            [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", identifierGroupID, identifiersSubject[@"source_guid"])
+                          parameters:@{HTTPParamToken: _userToken,
+                                       HTTPParamResultsID: identifiersSubject[@"source_guid"]}
+                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                 DebugLog(@"yes results obtained \n%@", responseObject);
+                             }
+                             failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                 DebugLog(@"Nope this doesn't work: \n%@", error);
+                             }];
             [self notifyMembersAddActionWithMemberNames:@[name] andGroupID:identifierGroupID];
         }else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
             //GROUP NAME CHANGED
@@ -537,7 +568,6 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/destroy", groupID)
                    parameters:@{HTTPParamToken: _userToken}
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          NSLog(@"Group %@ deleted", groupID);
                           completeBlock(groupID);
                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                           //Do not expect a response but does check statusCode
@@ -546,6 +576,152 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                           }else{
                               report_request_error;
                           }
+                      }];
+}
+
+//Members - Add
+//Response should be a dictionary
+- (void)MembersAdd:(NSArray*)members toGroup:(NSString*)groupID andCompleteBlock:(void(^)())completeBlock
+{
+    NSAssert((members), @"Nil is passed into MembersAdd");
+    NSAssert([members count], @"Empty list of members is passed into MembersAdd");
+    NSAssert([members[0] isKindOfClass:[NSDictionary class]], @"MembersAdd did not receive a list of dictionaries");
+    [members enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, BOOL __unused *stop) {
+        NSDictionary *member = (NSDictionary*)obj;
+        NSAssert(member[HTTPParamMemberName], @"One or more users don't have a valid nickname");
+    }];
+    
+    NSDictionary *userInfo = @{HTTPParamMembers: members,
+                               HTTPParamToken: _userToken};
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/add", groupID)
+                   parameters:userInfo
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          //Implement gettting results
+//                          NSString *results_id = (NSString*)responseObject[HTTPParamResponse][HTTPParamResultsID];
+//                          NSDictionary *params = @{HTTPParamToken: _userToken,
+//                                                   HTTPParamResultsID: results_id};
+//                          [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", groupID, results_id)
+//                                        parameters:params
+//                                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//                                               completeBlock((NSArray*)responseObject[HTTPParamResponse][HTTPParamMembers]);
+//                                           }
+//                                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//                                               report_request_error;
+//                                           }];
+                          completeBlock();
+                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                          report_request_error;
+                      }];
+}
+
+//Members - Remove
+//Response should be a status
+- (void)MembersRemoveUser:(NSString*)userID
+            fromGroup:(NSString*)groupID
+     andCompleteBlock:(void(^)())completeBlock
+{
+    NSAssert((userID && groupID), @"MembersRemove received a null ID");
+    NSDictionary *params = @{HTTPParamToken: _userToken};
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, userID)
+                   parameters:params
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                           completeBlock();
+                      }
+                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                           if ([[operation response] statusCode] / 100 == 2) {
+                               completeBlock();
+                           }else{
+                               report_request_error;
+                           }
+                      }];
+}
+
+//Messages - Index Before
+//Response should be a dictionary
+- (void)MessagesIndex20BeforeID:(NSString*)beforeID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
+{
+    NSAssert((beforeID && groupID), @"beforeID and groupID cannot be nil");
+    NSDictionary *params = @{HTTPParamToken:    _userToken,
+                             HTTPParamBeforeID: beforeID};
+    [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
+                  parameters:params
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         completeBlock(((NSDictionary*)responseObject)[HTTPParamMessages]);
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         report_request_error;
+                     }];
+}
+
+//Messages - Index Since
+//Response should be a dictionary
+- (void)MessagesIndexMostRecent20SinceID:(NSString*)sinceID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
+{
+    NSAssert((sinceID && groupID), @"sinceID and groupID cannot be nil");
+    NSDictionary *params = @{HTTPParamToken:    _userToken,
+                             HTTPParamSinceID: sinceID};
+    [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
+                  parameters:params
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         if (completeBlock) {
+                             completeBlock(((NSDictionary*)responseObject)[HTTPParamMessages]);
+                         }
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         report_request_error;
+                     }];
+}
+
+//Messages - Create
+//Response should be a dictionary
+- (void)MessagesCreateInGroup:(NSString*)groupID
+                         text:(NSString*)text
+                  attachments:(NSArray*)arrayOfAttach
+             andCompleteBlock:(void(^)(NSDictionary* sentMessage))completeBlock
+{
+    NSAssert((groupID && text), @"groupID and text cannot be nil");
+    if (arrayOfAttach){
+        NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[arrayOfAttach count]];
+        dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx.messageProcessing", DISPATCH_QUEUE_SERIAL);
+        
+        //The block that processes an attachment
+        void (^processAttachment)(NSDictionary*) = ^void(NSDictionary* attachment){
+            if ([attachment[HTTPParamAttachType]  isEqual: @"image"]) {
+                //not sure about releasing image functionality yet
+//                [self helpAsyncUploadImageToGroupMe:attachment[HTTPParamAttachURL]
+//                                         usingBlock:^(NSString *imageURL) {
+//                                             dispatch_async(serial_queue, ^{
+//                                                 [convertedAttachments addObject:@{HTTPParamAttachType: @"image",
+//                                                                                   HTTPParamAttachURL: imageURL}];
+//                                             });
+//                                         }];
+            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"location"]){
+                //do something about location, check its validity
+            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"split"]){
+                //do something about the split, check its validity
+            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"emoji"]){
+                //do something about this emoji, check its validity
+            }
+        };
+        
+        [arrayOfAttach enumerateObjectsWithOptions:NSEnumerationConcurrent
+                                        usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                                            processAttachment((NSDictionary*)obj);
+                                        }];
+        arrayOfAttach = convertedAttachments;
+    }
+    NSDictionary *params = @{HTTPParamSourceGUID: @"source_guid_here",
+                             HTTPParamMessageText: text,
+                             HTTPParamMessageAttach: arrayOfAttach};
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages", groupID)
+                   parameters:params
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          if (completeBlock) {
+                              completeBlock((NSDictionary*)responseObject[@"message"]);
+                          }
+                      }
+                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                          report_request_error;
                       }];
 }
 
@@ -562,7 +738,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 
 #pragma mark - Helper Methods for Notification Processing
 
-- (void)requestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
+- (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
 {
     if (!_prevResults && !_currentlyPollingForGroups) {
         //first call
@@ -598,7 +774,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 #endif
     
     [self GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
-        [self requestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
+        [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
     }];
 }
 

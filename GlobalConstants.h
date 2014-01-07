@@ -54,6 +54,9 @@ extern NSString * const k_members;
 extern NSString * const k_messages;
 extern NSString * const k_muted;
 extern NSString * const k_user_id;
+//not actually in database
+extern NSString * const k_email;
+extern NSString * const k_phone_number;
 
 
 extern NSString * const finalGroupMemberAdded;
