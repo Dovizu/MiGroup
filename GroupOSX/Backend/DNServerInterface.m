@@ -17,8 +17,9 @@
 
 //Macros for HTTPRequestManager calls
 #define baseURLPlus(string) [NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, string]
+#define concatStrings(format, ...) [NSString stringWithFormat:format, ##__VA_ARGS__]
 #define NSNumber(num) [NSNumber numberWithInteger:num]
-#define token_pair @"token":self.userToken
+#define token_pair @"token":_userToken
 #define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
 #define get_response(responseObject) (NSDictionary*)responseObject[@"response"]
 
@@ -51,14 +52,13 @@
 @property BOOL listening;
 @property AFHTTPRequestOperationManager *HTTPRequestManager;
 @property FayeClient *socketClient;
-@property KSReachability *reachability;
 
 //User information
 @property NSDictionary *userInfo;
 @property NSString *userToken;
 
 - (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID;
-- (void)notifyMembersAddActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID;
+- (void)notifyMembersAddActionWithMemberNames:(NSArray*)names andGroupID:(NSString*)identifierGroupID;
 - (void)notifyGroupAvatarChangeActionWithGroupID:(NSString*)identifierGroupID;
 - (void)notifyGroupNameChangeActionWithName:(NSString*)name GroupID:(NSString*)identifierGroupID;
 - (void)notifyGroupMemberNickNameChangeActionWithOldName:(NSString*)old newName:(NSString*)new;
@@ -66,8 +66,14 @@
 - (void)notifyMessageFromGeneric:(NSDictionary*)messageDict;
 @end
 
+//GroupMe HTTP request constants
+NSString * const HTTPParamToken = @"token";
+
 @implementation DNServerInterface
 {
+    
+    AFNetworkReachabilityManager *_reachabilityManager;
+    
     //Used by -(void)requestNextGroupsWithNewestResult:newestResult completionBlock:block
     NSInteger _currentPageNum;
     NSMutableArray *_prevResults;
@@ -81,16 +87,19 @@
 {
     self = [super init];
     if (self){
+        //Configure HTTP Request Manager
         _HTTPRequestManager = [AFHTTPRequestOperationManager manager];
+        NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
+        [acceptableTypes addObject:@"text/html"];
+        _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
         //FayeClient initialization needs to wait for userInformation to be populated
-        _reachability = [KSReachability reachabilityToHost:DNRESTAPIBaseAddress];
+        _reachabilityManager = [_HTTPRequestManager reachabilityManager];
         _notificationCenter = [NSNotificationCenter defaultCenter];
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
         _userInfo =  (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
-#ifdef DEBUG_BACKEND
+        #ifdef DEBUG_BACKEND
         _userToken = nil;
-        _userInfo = nil;
-#endif
+        #endif
         if (_userToken) {
             _authenticated = YES;
         }
@@ -103,16 +112,16 @@
 {
     //For network reachability change
     __weak DNServerInterface* block_self = self;
-    self.reachability.onReachabilityChanged = ^(KSReachability* reachability)
-    {
-        NSLog(@"Reachability changed to %d (blocks)", reachability.reachable);
-        switch (reachability.reachable) {
-            case YES:
+    [_reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        NSLog(@"Reachability changed to %ld (blocks)", status);
+        switch (status) {
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+            case AFNetworkReachabilityStatusReachableViaWWAN:
                 DebugLog(@"GroupMe now reachable");
                 [block_self authenticate];
                 [block_self establishSockets];
                 break;
-            case NO:
+            case AFNetworkReachabilityStatusNotReachable:
             {//variable assignment not allowed inside switch without explicit scope
                 DebugLog(@"Lost Connection to GroupMe");
                 block_self.listening = NO;
@@ -120,22 +129,48 @@
                 [block_self.loginSheetController.mainWindowController presentError:error];
                 break;
             }
+            case AFNetworkReachabilityStatusUnknown:
             default:
                 break;
         }
-    };
+    }];
 }
 
 #pragma mark - Notification Processing
 
 - (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID
 {
+    NSDictionary *userInfo = @{k_name:name, k_group_id:identifierGroupID};
+    [_notificationCenter postNotificationName:noteMembersRemove object:nil userInfo:userInfo];
+}
 
-}
-- (void)notifyMembersAddActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID
+- (void)notifyMembersAddActionWithMemberNames:(NSArray*)names andGroupID:(NSString*)identifierGroupID
 {
-    
+    [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupsShowData) {
+        NSArray *allMembers = groupsShowData[@"members"];
+        DebugLog(@"Got unfiltered members: %@", allMembers);
+        //Filter only users with "nickname" in names array
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF[%@] IN %@)", @"nickname", names];
+        NSArray *filteredMembers = [allMembers filteredArrayUsingPredicate:predicate];
+        if ([names count] == [filteredMembers count]) {
+            DebugLog(@"Newly added members: %@", filteredMembers);
+            NSMutableArray *filteredConvertedMembers = [[NSMutableArray alloc] initWithCapacity:[filteredMembers count]];
+            dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx", DISPATCH_QUEUE_SERIAL);
+            [filteredMembers enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSDictionary *convertedMember = [self convertRawDictionary:(NSDictionary*)obj];
+                dispatch_async(serial_queue, ^{
+                    [filteredConvertedMembers addObject:convertedMember];
+                });
+            }];
+            NSDictionary *userInfo = @{k_members:filteredConvertedMembers, k_group_id:identifierGroupID};
+            [_notificationCenter postNotificationName:noteMembersAdd object:nil userInfo:userInfo];
+            DebugLog(@"Filtered newly added members: %@", filteredConvertedMembers);
+        }else{
+            DebugLog(@"Failed to obtain all the added members");
+        }
+    }];
 }
+
 - (void)notifyGroupAvatarChangeActionWithGroupID:(NSString*)identifierGroupID
 {
     
@@ -171,8 +206,8 @@
 
 - (void)authenticate
 {
-    DebugLog(@"Reachability: %hhd", self.reachability.reachable);
-    if (!self.authenticated && self.reachability.reachable) {
+    DebugLog(@"Reachability: %hhd", _reachabilityManager.reachable);
+    if (!self.authenticated && _reachabilityManager.reachable) {
         NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
         DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
@@ -251,7 +286,7 @@
 
 - (void)establishSockets
 {
-    if (self.authenticated && !self.listening && self.reachability.reachable) {
+    if (self.authenticated && !self.listening && _reachabilityManager.reachable) {
         [self establishMessageSocket];
     }
 }
@@ -270,8 +305,10 @@
 //This is a giant router of raw messages, the type of message dictates the next method to call, or nothing at all
 - (void)messageReceived:(NSDictionary*)messageDict channel:(NSString* __unused)channel
 {
-    DebugLog(@"%@", messageDict[@"alert"]);
+    DebugLog(@"%@", messageDict);
     DebugLogCD(@"Server received raw message:\n%@", messageDict[@"alert"]);
+    
+    return;
     
     NSDictionary *identifiersSubject    =   [messageDict objectForKey:@"subject"];
     NSString *identifierAlert           =   [messageDict objectForKey:@"alert"];
@@ -287,7 +324,8 @@
             [self notifyMembersRemoveActionWithMemberName:name andGroupID:identifierGroupID];
         }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
             //GROUP MEMBER ADDED
-            [self notifyMembersAddActionWithMemberName:name andGroupID:identifierGroupID];
+
+            [self notifyMembersAddActionWithMemberNames:@[name] andGroupID:identifierGroupID];
         }else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
             //GROUP NAME CHANGED
             [self notifyGroupNameChangeActionWithName:name GroupID:identifierGroupID];
@@ -300,7 +338,7 @@
             NSError *error = nil;
             NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"(.+) changed name to (.+)" options:0 error:&error];
             NSTextCheckingResult *regexResult = [regEx firstMatchInString:identifierAlert options:0 range:NSMakeRange(0, [identifierAlert length])];
-            if ([regexResult rangeAtIndex:1].location != NSNotFound && [regexResult rangeAtIndex:2].location != NSNotFound) {
+            if ([regexResult numberOfRanges] == 3) {
                 oldName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:1]];
                 newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
                 [self notifyGroupMemberNickNameChangeActionWithOldName:oldName newName:newName];
@@ -363,11 +401,10 @@
 
 //Users - me
 //Response should be a dictionary
-- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userInfo))completeBlock
+- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userDict))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/users/me")
-                      parameters:@{token_pair}
-     
+                      parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject){
                              completeBlock((NSDictionary*)responseObject[@"response"]);
                          }
@@ -380,13 +417,12 @@
 //Response should be an array of dictionaries
 - (void)GroupsIndexPage:(NSInteger)nthPage
                    with:(NSInteger)groups
-perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
+perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/groups")
-                      parameters:@{token_pair,
+                      parameters:@{HTTPParamToken:_userToken,
                                    @"page":NSNumber(nthPage),
                                    @"per_page":NSNumber(groups)}
-     
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSArray*)responseObject[@"response"]);
                          }
@@ -397,11 +433,10 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
 
 //Groups - Former
 //Response should be an array of dictionaries
-- (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* groupsFormerData))completeBlock
+- (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* formerGroupArray))completeBlock
 {
     [self.HTTPRequestManager GET:baseURLPlus(@"/groups/former")
-                      parameters:@{token_pair}
-     
+                      parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSArray*)responseObject[@"response"]);
                          }
@@ -412,19 +447,118 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
 
 //Groups - Show
 //Response should be a dictionary
-- (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock
+- (void)GroupsShow:(NSString*)groupID
+  andCompleteBlock:(void(^)(NSDictionary* groupDict))completeBlock
 {
     [self.HTTPRequestManager GET:[NSString stringWithFormat:@"%@%@%@", DNRESTAPIBaseAddress, @"/groups/", groupID]
-                      parameters:@{token_pair,
+                      parameters:@{HTTPParamToken:_userToken,
                                    @"id":groupID}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             completeBlock(get_response(responseObject));
+                             completeBlock((NSDictionary*)responseObject[@"response"]);
                          }
                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                              report_request_error;
                          }];
 }
 
+//Groups - Create
+//Response should be a dictionary
+- (void)GroupsCreateName:(NSString*)name
+             description:(NSString*)description
+                   image:(id)image
+                share:(BOOL)allowShare
+              andCompleteBlock:(void(^)(NSDictionary* createdGroupDict))completeBlock
+{
+    void (^createGroup)(NSString*) = ^void(NSString* imageURL){
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+        [params setObject:name forKey:@"name"];
+        [params setObject:_userToken forKey:HTTPParamToken];
+        if (description)    {[params setObject:description forKey:@"description"];}
+        if (imageURL)       {[params setObject:imageURL forKey:@"image_url"];}
+        if (allowShare)     {[params setObject:@"true" forKey:@"share"];}
+        [_HTTPRequestManager POST:baseURLPlus(@"/groups")
+                       parameters:params
+                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                              completeBlock((NSDictionary*)responseObject[@"response"]);
+                          }
+                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                              report_request_error;
+                          }];
+
+    };
+    if (image) {
+        [self helpAsyncUploadImageToGroupMe:image usingBlock:^(NSString *imageURL) {
+            createGroup(imageURL);
+        }];
+    }else{
+        createGroup(nil);
+    }
+}
+
+//Groups - Update
+//Response should be a dictionary
+- (void)GroupsUpdate:(NSString*)groupID
+            withName:(NSString*)name
+         description:(NSString*)description
+               image:(id)image
+             orShare:(BOOL)allowShare
+    andCompleteBlock:(void(^)(NSDictionary* updatedGroupDict))completeBlock
+{
+    void (^updateGroup)(NSString*) = ^void(NSString* imageURL){
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+        [params setObject:_userToken forKey:HTTPParamToken];
+        if (name)           {[params setObject:name forKey:@"name"];}
+        if (description)    {[params setObject:description forKey:@"description"];}
+        if (allowShare)     {[params setObject:@"true" forKey:@"share"];}else{[params setObject:@"false" forKey:@"share"];}
+        if (imageURL)       {[params setObject:imageURL forKey:@"image"];}
+        //"baseURL/groups/group_id/update"
+        [_HTTPRequestManager POST:[NSString stringWithFormat:@"%@/%@%@", baseURLPlus(@"/groups"), groupID, @"/update"]
+                       parameters:params
+                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                              completeBlock((NSDictionary*)responseObject[@"response"]);
+                          }
+                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                              report_request_error;
+                          }];
+    };
+    if (image) {
+        [self helpAsyncUploadImageToGroupMe:image usingBlock:^(NSString *imageURL) {
+            updateGroup(imageURL);
+        }];
+    }else{
+        updateGroup(nil);
+    }
+}
+
+//Groups - Destroy
+//Response should be a status
+- (void)GroupsDestroy:(NSString*)groupID andCompleteBlock:(void(^)(NSString* deleted_group_id))completeBlock
+{
+    [_HTTPRequestManager POST:baseURLPlus(concatStrings(@"/groups/%@/destroy", groupID))
+                   parameters:@{HTTPParamToken: _userToken}
+                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          NSLog(@"Group %@ deleted", groupID);
+                          completeBlock(groupID);
+                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                          //Do not expect a response but does check statusCode
+                          if ([[operation response] statusCode] / 100 == 2) {
+                              completeBlock(groupID);
+                          }else{
+                              report_request_error;
+                          }
+                      }];
+}
+
+//Image Service
+//Response should be a string of URL
+- (void)helpAsyncUploadImageToGroupMe:(id)image usingBlock:(void(^)(NSString* imageURL))completeBlock
+{
+    NSString *imageURL = nil;
+    if (image) {
+        //upload image here
+    }
+    completeBlock(imageURL);
+}
 
 #pragma mark - Helper Methods for Notification Processing
 
@@ -504,17 +638,22 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
                 date = [NSDate date];
             }
             [newDict setObject:date forKey:strKey];
-            //is an image, either in message, or in an attachment
+            //is an image, either in message, or in an attachment, or user
         }else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
             NSURL *imageUrl = [NSURL URLWithString:strObj];
+            NSImage *image = nil;
             if (imageUrl) {
-                NSImage *image = [[NSImage alloc] initWithData:[NSData dataWithContentsOfURL:imageUrl]];
-                if (image) {
-                    [newDict setObject:image forKey:@"image"];
-                }else{
-                    [newDict setObject:[NSNull null] forKey:@"image"];
+                NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+                if (imageData) {
+                    image = [[NSImage alloc] initWithData:imageData];
                 }
             }
+            if (!image) {
+                [newDict setObject:[NSNull null] forKey:k_image];
+            }else{
+                [newDict setObject:image forKey:k_image];
+            }
+
             //is generic url (as in the case of "share_url"
         }else if ([strKey hasSuffix:@"url"]){
             NSURL *url = [NSURL URLWithString:strObj];
@@ -549,8 +688,8 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupsIndexData))completeBlock
         return nil;
     }
     NSTextCheckingResult *result = [regEx firstMatchInString:string options:0 range:NSMakeRange(0, [string length])];
-    NSRange range = [result rangeAtIndex:1];
-    if (range.location != NSNotFound) {
+    if (result) {
+        NSRange range = [result rangeAtIndex:1];
         return [string substringWithRange:range];
     }else{
         DebugLog(@"Parsing %@ with pattern %@ failed, Error: %@", string, regExPattern, error);

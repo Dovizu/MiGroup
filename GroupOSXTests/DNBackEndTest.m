@@ -38,20 +38,20 @@
 
 
 
-- (void)testConvertRawDictionary
-{
-    //test converting dates
-    NSDictionary *dict = @{@"created_at": @"1388914990"};
-    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
-        NSLog(@"%@", newDict[@"created_at"]);
-    }];
-    
-    //test images
-    dict = @{@"type":@"image", @"url": @"http://i.groupme.com/116e96f0a4da0130f4466ab9833e124e"};
-    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
-        NSLog(@"%@", newDict[@"image"]);
-    }];
-}
+//- (void)testConvertRawDictionary
+//{
+//    //test converting dates
+//    NSDictionary *dict = @{@"created_at": @"1388914990"};
+//    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
+//        NSLog(@"%@", newDict[@"created_at"]);
+//    }];
+//    
+//    //test images
+//    dict = @{@"type":@"image", @"url": @"http://i.groupme.com/116e96f0a4da0130f4466ab9833e124e"};
+//    [server convertRawDictionary:dict usingBlock:^(NSDictionary *newDict) {
+//        NSLog(@"%@", newDict[@"image"]);
+//    }];
+//}
 
 - (void)testRegularExpressionParsing
 {
@@ -59,6 +59,9 @@
     
     result = [server helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:@"Donny Reynolds removed Kha Nguyen from the group."];
     XCTAssert([result isEqualToString:@"Kha Nguyen"], @"Regex Failed");
+    
+    result = [server helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:@"Donny Reynolds removed Kha Nguyen from the group."];
+    XCTAssert(!result, @"Regex Failed");
     
     result = [server helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:@"Donny Reynolds added Kha to the group"];
     XCTAssert([result isEqualToString:@"Kha"], @"Regex Failed");
@@ -68,6 +71,10 @@
     
     result = [server helpFindStringWithPattern:@"(.+) changed name to (.+)" inString:@"Donny Reynolds changed name to Donny"];
     XCTAssert([result isEqualToString:@"Donny Reynolds"], @"Regex Failed");
+    
+    result = [server helpFindStringWithPattern:@"([^,]+)(?:, )?(?:and )?" inString:@"Henry Chen, Steven Chau, and Nanavati Low"];
+    XCTAssert([result isEqualToString:@"Henry Chen"], @"Regex Failed");
 }
+
 
 @end

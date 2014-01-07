@@ -27,6 +27,8 @@ extern NSString * const JSONRequestContentTypeKey;
 extern NSString * const JSONRequestContentLengthKey;
 extern NSString * const connectionTag;
 
+
+
 extern NSString * const JSONObjectEmojiPlaceholderString;
 
 //Network observer names
@@ -34,6 +36,25 @@ extern NSString * const noteUserInfoReceivedReadyForSockets;
 
 extern NSString * const noteFirstTimeLogon;
 extern NSString * const finalGroupIndexAllResultsArrived;
+
+extern NSString * const noteMembersRemove;
+extern NSString * const noteMembersAdd;
+
+//Database attribute names
+extern NSString * const k_name;
+extern NSString * const k_group_id;
+extern NSString * const k_created_at;
+extern NSString * const k_desc;
+extern NSString * const k_image;
+extern NSString * const k_share_url;
+extern NSString * const k_type;
+extern NSString * const k_updated_at;
+extern NSString * const k_creator;
+extern NSString * const k_members;
+extern NSString * const k_messages;
+extern NSString * const k_muted;
+extern NSString * const k_user_id;
+
 
 extern NSString * const finalGroupMemberAdded;
 extern NSString * const finalGroupMemberRemoved;

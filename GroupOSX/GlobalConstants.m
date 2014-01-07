@@ -28,12 +28,25 @@ NSString * const JSONRequestContentLengthKey = @"Content-Length";
 NSString * const JSONObjectEmojiPlaceholderString = @"\\Ufffd";
 NSString * const JSONObjectNotifierTypeGroupRelated = @"JSONObjectNotifierTypeGroupRelated";
 
+//
+
+
+//Authentication use
+NSString * const noteUserInfoReceivedReadyForSockets = @"com.dovizu.grouposx.user.information.changed";
+
 //Generic extraction keys for NSNotification's userInfo
 NSString * const kGetTypeKey = @"type";
 NSString * const kGetContentKey = @"message";
 
-//Authentication use
-NSString * const noteUserInfoReceivedReadyForSockets = @"com.dovizu.grouposx.user.information.changed";
+//Messages posted by DNServerInterface
+NSString * const noteMembersRemove = @"com.dovizu.grouposx.noteMembersRemove";
+NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
+
+//Database attribute names
+NSString * const k_name = @"name";
+NSString * const k_group_id = @"group_id";
+NSString * const k_members = @"members";
+NSString * const k_image = @"image";
 
 //Triggers that caused polling methods to be called
 //organic triggers

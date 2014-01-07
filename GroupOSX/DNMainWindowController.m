@@ -67,51 +67,19 @@
 - (void)messageReceived:(NSNotification*)note
 {
     NSDictionary *details = note.userInfo[kGetContentKey];
-    NSString *sender = details[@"name"];
     DebugLogCD(@"%@ sent a message: %@", sender, details[@"text"]);
 }
 
 //finalGroupIndexResultsArrived
 - (void)groupInfoChanged:(NSNotification*)note
 {
-    NSString *type = note.userInfo[kGetTypeKey];
-    NSArray *groupList = note.userInfo[kGetContentKey];
 
-    DebugLogCD(@"Type: %@ received, details:\n%d", type, (int)[groupList count]);
-//
-//    [groupList enumerateObjectsWithOptions:NSEnumerationConcurrent
-//                                usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//                                    NSDictionary *group = (NSDictionary*)obj;
-//                                    DebugLogCD(@"Iterating concurrently over group: %@", group[@"name"]);
-//                                    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-//                                    [moc setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
-//                                    [moc performBlock:^{
-//                                        //request
-//                                        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Group"];
-//                                        [request setPredicate:[NSPredicate predicateWithFormat:@"group_id == %@", [group objectForKey:@"id"]]];
-//                                        NSError *error = nil;
-//                                        NSArray *array = [moc executeFetchRequest:request error:&error];
-//                                        if (!array){
-//                                            DebugLogCD(@"Could not fetch group: %@", group[@"group_id"]);
-//                                        }else if ([array count] == 0) {
-//                                            //save
-//                                            DebugLogCD(@"This group: %@ does not exist in DB yet", group[@"name"]);
-//                                            Group *newGroup = [NSEntityDescription insertNewObjectForEntityForName:@"Group" inManagedObjectContext:moc];
-//                                            newGroup.group_id = group[@"id"];
-//                                            newGroup.name = group[@"name"];
-//                                            if (![moc save:&error]) {
-//                                                DebugLogCD(@"Failed to save newGroup: %@", group[@"name"]);
-//                                            }
-//                                        }
-//                                    }];
-//                                }];
     
 }
 
 //first time logon procedure
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
-    [self.server requestGroups];
 }
 
 #pragma mark - GUI Actions
