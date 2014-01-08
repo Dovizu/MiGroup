@@ -27,7 +27,7 @@
 - (void)setup;
 - (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;
-
+- (void)fetchAllGroups;
 @end
 
 

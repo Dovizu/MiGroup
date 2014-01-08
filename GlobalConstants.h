@@ -35,7 +35,7 @@ extern NSString * const JSONObjectEmojiPlaceholderString;
 extern NSString * const noteUserInfoReceivedReadyForSockets;
 
 extern NSString * const noteFirstTimeLogon;
-extern NSString * const finalGroupIndexAllResultsArrived;
+extern NSString * const noteAllGroupsFetch;
 
 extern NSString * const noteMembersRemove;
 extern NSString * const noteMembersAdd;

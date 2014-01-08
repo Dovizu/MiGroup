@@ -158,6 +158,15 @@ NSString * const HTTPParamMessageAttach = @"attachments";
     }];
 }
 
+#pragma mark - User Actions
+
+- (void)fetchAllGroups
+{
+    [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
+        [_notificationCenter postNotificationName:noteAllGroupsFetch object:nil userInfo:@{kGetContentKey: groupList}];
+    }];
+}
+
 #pragma mark - Notification Processing
 
 - (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID
@@ -272,7 +281,7 @@ NSString * const HTTPParamMessageAttach = @"attachments";
         #endif
         
         //First time log-on
-//        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
             self.userInfo = userInfo;
@@ -434,6 +443,8 @@ NSString * const HTTPParamMessageAttach = @"attachments";
 //Response should be a dictionary
 - (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userDict))completeBlock
 {
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [self.HTTPRequestManager GET:@"users/me"
                       parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject){
@@ -450,6 +461,10 @@ NSString * const HTTPParamMessageAttach = @"attachments";
                    with:(NSInteger)groups
 perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 {
+    NSAssert(nthPage, @"nthPage param cannot be nil");
+    NSAssert(groups, @"groups param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [self.HTTPRequestManager GET:@"groups"
                       parameters:@{HTTPParamToken:_userToken,
                                    @"page":NSNumber(nthPage),
@@ -466,6 +481,8 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be an array of dictionaries
 - (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* formerGroupArray))completeBlock
 {
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [self.HTTPRequestManager GET:@"groups/former"
                       parameters:@{HTTPParamToken:_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -481,6 +498,9 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 - (void)GroupsShow:(NSString*)groupID
   andCompleteBlock:(void(^)(NSDictionary* groupDict))completeBlock
 {
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [self.HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
                       parameters:@{HTTPParamToken:_userToken,
                                    @"id":groupID}
@@ -500,13 +520,16 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                 share:(BOOL)allowShare
               andCompleteBlock:(void(^)(NSDictionary* createdGroupDict))completeBlock
 {
+    NSAssert(name, @"name param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     void (^createGroup)(NSString*) = ^void(NSString* imageURL){
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        [params setObject:name forKey:@"name"];
-        [params setObject:_userToken forKey:HTTPParamToken];
-        if (description)    {[params setObject:description forKey:@"description"];}
-        if (imageURL)       {[params setObject:imageURL forKey:@"image_url"];}
-        if (allowShare)     {[params setObject:@"true" forKey:@"share"];}
+        [params setObject:name          forKey:@"name"];
+        [params setObject:_userToken    forKey:@"token"];
+        if (description)    {[params setObject:description  forKey:@"description"];}
+        if (imageURL)       {[params setObject:imageURL     forKey:@"image_url"];}
+        if (allowShare)     {[params setObject:@"true"      forKey:@"share"];}
         [_HTTPRequestManager POST:@"groups"
                        parameters:params
                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -535,6 +558,9 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
              orShare:(BOOL)allowShare
     andCompleteBlock:(void(^)(NSDictionary* updatedGroupDict))completeBlock
 {
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     void (^updateGroup)(NSString*) = ^void(NSString* imageURL){
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         [params setObject:_userToken forKey:HTTPParamToken];
@@ -565,6 +591,9 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a status
 - (void)GroupsDestroy:(NSString*)groupID andCompleteBlock:(void(^)(NSString* deleted_group_id))completeBlock
 {
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/destroy", groupID)
                    parameters:@{HTTPParamToken: _userToken}
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -583,9 +612,12 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a dictionary
 - (void)MembersAdd:(NSArray*)members toGroup:(NSString*)groupID andCompleteBlock:(void(^)())completeBlock
 {
-    NSAssert((members), @"Nil is passed into MembersAdd");
-    NSAssert([members count], @"Empty list of members is passed into MembersAdd");
-    NSAssert([members[0] isKindOfClass:[NSDictionary class]], @"MembersAdd did not receive a list of dictionaries");
+    NSAssert((members), @"members param cannot be nil");
+    NSAssert([members count], @"members param cannot be empty array");
+    NSAssert([members[0] isKindOfClass:[NSDictionary class]], @"members param does not contain dictionaries");
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     [members enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, BOOL __unused *stop) {
         NSDictionary *member = (NSDictionary*)obj;
         NSAssert(member[HTTPParamMemberName], @"One or more users don't have a valid nickname");
@@ -616,15 +648,19 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 
 //Members - Remove
 //Response should be a status
-- (void)MembersRemoveUser:(NSString*)userID
+- (void)MembersRemoveUser:(NSString*)membershipID
             fromGroup:(NSString*)groupID
      andCompleteBlock:(void(^)())completeBlock
 {
-    NSAssert((userID && groupID), @"MembersRemove received a null ID");
+    NSAssert(membershipID, @"membershipID param cannot be nil");
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     NSDictionary *params = @{HTTPParamToken: _userToken};
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, userID)
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, membershipID)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                          DebugLog(@"%@", responseObject);
                            completeBlock();
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -640,7 +676,10 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a dictionary
 - (void)MessagesIndex20BeforeID:(NSString*)beforeID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
 {
-    NSAssert((beforeID && groupID), @"beforeID and groupID cannot be nil");
+    NSAssert(beforeID, @"beforeID param cannot be nil");
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     NSDictionary *params = @{HTTPParamToken:    _userToken,
                              HTTPParamBeforeID: beforeID};
     [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
@@ -657,7 +696,10 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a dictionary
 - (void)MessagesIndexMostRecent20SinceID:(NSString*)sinceID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
 {
-    NSAssert((sinceID && groupID), @"sinceID and groupID cannot be nil");
+    NSAssert(sinceID, @"sinceID cannot be nil");
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     NSDictionary *params = @{HTTPParamToken:    _userToken,
                              HTTPParamSinceID: sinceID};
     [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
@@ -679,7 +721,10 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                   attachments:(NSArray*)arrayOfAttach
              andCompleteBlock:(void(^)(NSDictionary* sentMessage))completeBlock
 {
-    NSAssert((groupID && text), @"groupID and text cannot be nil");
+    NSAssert(groupID, @"groupID param cannot be nil");
+    NSAssert(text, @"text param cannot be nil");
+    NSAssert(completeBlock, @"completion block cannot be nil");
+    
     if (arrayOfAttach){
         NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[arrayOfAttach count]];
         dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx.messageProcessing", DISPATCH_QUEUE_SERIAL);
@@ -729,17 +774,30 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //Response should be a string of URL
 - (void)helpAsyncUploadImageToGroupMe:(id)image usingBlock:(void(^)(NSString* imageURL))completeBlock
 {
+    NSAssert(image, @"Image cannot be nil");
+    
     NSString *imageURL = nil;
-    if (image) {
-        //upload image here
-    }
+    //upload image
     completeBlock(imageURL);
+}
+
+//Image Service
+//Response should be a NSImage
+- (void)helpAsyncDownloadImage:(NSString*)imageURL usingBlock:(void(^)(NSImage* IMAGE))completeBlock
+{
+    NSAssert(imageURL, @"Image URL cannot be nil");
+    
+    NSImage *image = nil;
+    //download image here
+    completeBlock(image);
 }
 
 #pragma mark - Helper Methods for Notification Processing
 
 - (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
 {
+    NSAssert(block, @"completion block cannot be nil");
+    
     if (!_prevResults && !_currentlyPollingForGroups) {
         //first call
         _currentlyPollingForGroups = YES;

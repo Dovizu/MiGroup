@@ -58,9 +58,7 @@
     //First time logon
     [center addObserver:self selector:@selector(firstTimeLogonSetup:) name:noteFirstTimeLogon object:nil];
     //Group changes
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:finalGroupIndexAllResultsArrived object:nil];
-    //Messages
-    [center addObserver:self selector:@selector(messageReceived:) name:finalMemberMessageReceived object:nil];
+    [center addObserver:self selector:@selector(groupInfoChanged:) name:noteAllGroupsFetch object:nil];
 }
 
 //noteMemberMessageReceived
@@ -70,7 +68,7 @@
     DebugLogCD(@"%@ sent a message: %@", sender, details[@"text"]);
 }
 
-//finalGroupIndexResultsArrived
+
 - (void)groupInfoChanged:(NSNotification*)note
 {
 
@@ -80,6 +78,7 @@
 //first time logon procedure
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
+    NSArray *groupList = note.userInfo[kGetContentKey];
 }
 
 #pragma mark - GUI Actions

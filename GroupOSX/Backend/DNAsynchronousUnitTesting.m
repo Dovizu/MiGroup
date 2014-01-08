@@ -68,7 +68,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock;
 //        }
 //    }];
 //    
-//    [server GroupsShow:@"6622360" andCompleteBlock:^(NSDictionary *groupsShowData) {
+//    [server GroupsShow:@"6736514" andCompleteBlock:^(NSDictionary *groupsShowData) {
 //        NSLog(@"%@", groupsShowData);
 //    }];
 //    [server GroupsShow:@"6736514" andCompleteBlock:^(NSDictionary *groupsShowData) {
@@ -94,8 +94,8 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock;
 //    [server MembersAdd:membersToAdd toGroup:@"6736514" andCompleteBlock:^() {
 //    }];
     
-    [server MembersRemoveUser:@"11201736" fromGroup:@"6736514" andCompleteBlock:^() {
-    }];
+//    [server MembersRemoveUser:@"35121596" fromGroup:@"6736514" andCompleteBlock:^() {
+//    }];
     
 }
 

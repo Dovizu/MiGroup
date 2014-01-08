@@ -41,6 +41,7 @@ NSString * const kGetContentKey = @"message";
 //Messages posted by DNServerInterface
 NSString * const noteMembersRemove = @"com.dovizu.grouposx.noteMembersRemove";
 NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
+NSString * const noteAllGroupsFetch = @"com.dovizu.grouposx.forceRequestGroupData";
 
 //Database attribute names
 NSString * const k_name = @"name";
@@ -61,7 +62,7 @@ NSString * const finalMemberMessageReceived = @"kJSONObjectNotifierTypeMemberMes
 
 //deterministic triggers
 NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
-NSString * const finalGroupIndexAllResultsArrived = @"com.dovizu.grouposx.forceRequestGroupData";
+
 NSString * const finalGroupSpecificResultArrived = @"com.dovizu.grouposx.finalSpecificGroupResultArrived";
 
 //Error domain names
