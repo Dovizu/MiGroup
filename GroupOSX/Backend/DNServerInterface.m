@@ -64,23 +64,6 @@
 - (void)notifyMessageFromGeneric:(NSDictionary*)messageDict;
 @end
 
-//GroupMe HTTP request constants
-NSString * const HTTPParamToken = @"token";
-NSString * const HTTPParamMemberName = @"nickname";
-NSString * const HTTPParamUserID = @"user_id";
-NSString * const HTTPParamPhoneNumber = @"phone_number";
-NSString * const HTTPParamEmail = @"email";
-NSString * const HTTPParamMembers = @"members";
-NSString * const HTTPParamResultsID = @"results_id";
-NSString * const HTTPParamResponse = @"response";
-NSString * const HTTPParamBeforeID = @"before_id";
-NSString * const HTTPParamSinceID = @"since_id";
-NSString * const HTTPParamMessages = @"messages";
-NSString * const HTTPParamAttachType = @"type";
-NSString * const HTTPParamAttachURL = @"url";
-NSString * const HTTPParamSourceGUID = @"source_guid";
-NSString * const HTTPParamMessageText = @"text";
-NSString * const HTTPParamMessageAttach = @"attachments";
 
 @implementation DNServerInterface
 {
@@ -105,10 +88,10 @@ NSString * const HTTPParamMessageAttach = @"attachments";
     self = [super init];
     if (self){
         //Create dictionary for parameter conversion
-        _paramConversion = @{k_name:           HTTPParamMemberName,
-                                          k_user_id:        HTTPParamUserID,
-                                          k_phone_number:   HTTPParamPhoneNumber,
-                                          k_email:          HTTPParamEmail};
+        _paramConversion = @{k_name:          @"name",
+                            k_user_id:        @"user_id",
+                            k_phone_number:   @"phone_number",
+                            k_email:          @"email"};
         //Configure HTTP Request Manager
         _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
         NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
@@ -357,8 +340,8 @@ NSString * const HTTPParamMessageAttach = @"attachments";
         }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
             //GROUP MEMBER ADDED
             [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", identifierGroupID, identifiersSubject[@"source_guid"])
-                          parameters:@{HTTPParamToken: _userToken,
-                                       HTTPParamResultsID: identifiersSubject[@"source_guid"]}
+                          parameters:@{@"token": _userToken,
+                                       @"results_id": identifiersSubject[@"source_guid"]}
                              success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                  DebugLog(@"yes results obtained \n%@", responseObject);
                              }
@@ -446,7 +429,7 @@ NSString * const HTTPParamMessageAttach = @"attachments";
     NSAssert(completeBlock, @"completion block cannot be nil");
     
     [self.HTTPRequestManager GET:@"users/me"
-                      parameters:@{HTTPParamToken:_userToken}
+                      parameters:@{@"token":_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject){
                              completeBlock((NSDictionary*)responseObject[@"response"]);
                          }
@@ -466,7 +449,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(completeBlock, @"completion block cannot be nil");
     
     [self.HTTPRequestManager GET:@"groups"
-                      parameters:@{HTTPParamToken:_userToken,
+                      parameters:@{@"token":_userToken,
                                    @"page":NSNumber(nthPage),
                                    @"per_page":NSNumber(groups)}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -484,7 +467,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(completeBlock, @"completion block cannot be nil");
     
     [self.HTTPRequestManager GET:@"groups/former"
-                      parameters:@{HTTPParamToken:_userToken}
+                      parameters:@{@"token":_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSArray*)responseObject[@"response"]);
                          }
@@ -502,7 +485,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(completeBlock, @"completion block cannot be nil");
     
     [self.HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
-                      parameters:@{HTTPParamToken:_userToken,
+                      parameters:@{@"token":_userToken,
                                    @"id":groupID}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSDictionary*)responseObject[@"response"]);
@@ -563,7 +546,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     
     void (^updateGroup)(NSString*) = ^void(NSString* imageURL){
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        [params setObject:_userToken forKey:HTTPParamToken];
+        [params setObject:_userToken forKey:@"token"];
         if (name)           {[params setObject:name forKey:@"name"];}
         if (description)    {[params setObject:description forKey:@"description"];}
         if (allowShare)     {[params setObject:@"true" forKey:@"share"];}else{[params setObject:@"false" forKey:@"share"];}
@@ -595,7 +578,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(completeBlock, @"completion block cannot be nil");
     
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/destroy", groupID)
-                   parameters:@{HTTPParamToken: _userToken}
+                   parameters:@{@"token": _userToken}
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
                           completeBlock(groupID);
                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -620,11 +603,11 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     
     [members enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, BOOL __unused *stop) {
         NSDictionary *member = (NSDictionary*)obj;
-        NSAssert(member[HTTPParamMemberName], @"One or more users don't have a valid nickname");
+        NSAssert(member[@"name"], @"One or more users don't have a valid nickname");
     }];
     
-    NSDictionary *userInfo = @{HTTPParamMembers: members,
-                               HTTPParamToken: _userToken};
+    NSDictionary *userInfo = @{@"members": members,
+                               @"token": _userToken};
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/add", groupID)
                    parameters:userInfo
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -656,7 +639,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(groupID, @"groupID param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    NSDictionary *params = @{HTTPParamToken: _userToken};
+    NSDictionary *params = @{@"token": _userToken};
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, membershipID)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -680,12 +663,12 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(groupID, @"groupID param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    NSDictionary *params = @{HTTPParamToken:    _userToken,
-                             HTTPParamBeforeID: beforeID};
+    NSDictionary *params = @{@"token":    _userToken,
+                             @"before_id": beforeID};
     [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
                   parameters:params
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         completeBlock(((NSDictionary*)responseObject)[HTTPParamMessages]);
+                         completeBlock(((NSDictionary*)responseObject)[@"messages"]);
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          report_request_error;
@@ -700,13 +683,13 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(groupID, @"groupID param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    NSDictionary *params = @{HTTPParamToken:    _userToken,
-                             HTTPParamSinceID: sinceID};
+    NSDictionary *params = @{@"token":    _userToken,
+                             @"since_id": sinceID};
     [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
                   parameters:params
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          if (completeBlock) {
-                             completeBlock(((NSDictionary*)responseObject)[HTTPParamMessages]);
+                             completeBlock(((NSDictionary*)responseObject)[@"messages"]);
                          }
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -731,7 +714,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
         
         //The block that processes an attachment
         void (^processAttachment)(NSDictionary*) = ^void(NSDictionary* attachment){
-            if ([attachment[HTTPParamAttachType]  isEqual: @"image"]) {
+            if ([attachment[@"type"]  isEqual: @"image"]) {
                 //not sure about releasing image functionality yet
 //                [self helpAsyncUploadImageToGroupMe:attachment[HTTPParamAttachURL]
 //                                         usingBlock:^(NSString *imageURL) {
@@ -740,11 +723,11 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 //                                                                                   HTTPParamAttachURL: imageURL}];
 //                                             });
 //                                         }];
-            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"location"]){
+            }else if ([attachment[@"type"] isEqualToString:@"location"]){
                 //do something about location, check its validity
-            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"split"]){
+            }else if ([attachment[@"type"] isEqualToString:@"split"]){
                 //do something about the split, check its validity
-            }else if ([attachment[HTTPParamAttachType] isEqualToString:@"emoji"]){
+            }else if ([attachment[@"type"] isEqualToString:@"emoji"]){
                 //do something about this emoji, check its validity
             }
         };
@@ -755,9 +738,9 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                                         }];
         arrayOfAttach = convertedAttachments;
     }
-    NSDictionary *params = @{HTTPParamSourceGUID: @"source_guid_here",
-                             HTTPParamMessageText: text,
-                             HTTPParamMessageAttach: arrayOfAttach};
+    NSDictionary *params = @{@"source_guid": @"source_guid_here",
+                             @"text": text,
+                             @"attachments": arrayOfAttach};
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages", groupID)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
