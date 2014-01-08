@@ -48,19 +48,29 @@ NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
 NSString * const noteAllGroupsFetch = @"com.dovizu.grouposx.forceRequestGroupData";
 
 //Database attribute names
-NSString * const k_name = @"name";
-NSString * const k_group_id = @"group_id";
+NSString * const k_name_group = @"name";
+NSString * const k_name_member = @"nickname";
+NSString * const k_group_id = @"id";
+NSString * const k_type = @"type";
 NSString * const k_members = @"members";
-NSString * const k_image = @"image";
+NSString * const k_image = @"image_url";
 NSString * const k_email = @"email";
 NSString * const k_phone_number = @"phone_number";
 NSString * const k_user_id = @"user_id";
-NSString * const k_membership_id = @"membership_id";
+NSString * const k_membership_id = @"id";
 NSString * const k_new_name = @"new_name";
 NSString * const k_message = @"messages";
 NSString * const k_messages = @"messages";
 NSString * const k_muted = @"muted";
-
+NSString * const k_message_id = @"id";
+NSString * const k_target_group = @"group_id";
+NSString * const k_text = @"text";
+NSString * const k_creator_group = @"creator_user_id";
+NSString * const k_creator_message = @"user_id";
+NSString * const k_created_at = @"created_at";
+NSString * const k_updated_at = @"updated_at";
+NSString * const k_attachments = @"attachments";
+NSString * const k_url = @"url";
 //Triggers that caused polling methods to be called
 //organic triggers
 NSString * const finalGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";

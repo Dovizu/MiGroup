@@ -15,12 +15,17 @@
 #import "DNAsynchronousUnitTesting.h"
 #endif
 
-//Macros for HTTPRequestManager calls
 #define baseURLPlus(string) [NSString stringWithFormat:@"%@%@", DNRESTAPIBaseAddress, string]
 #define token_pair @"token":_userToken
 #define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
 #define get_response(responseObject) (NSDictionary*)responseObject[@"response"]
 
+enum DNJSONDictionaryType {
+    DNMemberJSONDictionary,
+    DNGroupJSONDictionary,
+    DNMessageJSONDictionary,
+    DNAttachmentJSONDictionary
+    };
 
 /*
  Authentication Flow Documentation (for GroupMe's weird non-standard interface)
@@ -230,7 +235,7 @@
             NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
             [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                 NSDictionary *group = (NSDictionary*)obj;
-                group = [self helpConvertRawDictionary:group];
+                group = [self helpConvertRawDictionary:group ofType:DNGroupJSONDictionary];
                 [groupList addObject:group];
             }];
             block(groupList);
@@ -292,56 +297,57 @@
     return [NSNull null];
 }
 
-- (BOOL)helpBooleanFromWord:(NSString*)word
+- (NSNumber*)helpBooleanFromWord:(NSString*)word
 {
     NSAssert(word, @"word param cannot be nil");
-    return [word isEqualToString:@"true"];
+    return [NSNumber numberWithBool:[word isEqualToString:@"true"]];
 }
 
 //Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
-- (NSDictionary*)helpConvertRawDictionary:(NSDictionary*)oldDict
+- (NSDictionary*)helpConvertRawDictionary:(NSDictionary*)oldDict ofType:(enum DNJSONDictionaryType)type
 {
     NSMutableDictionary *newDict = [oldDict mutableCopy];
-    [oldDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL __unused *stop) {
-        NSString *strKey = [NSString stringWithFormat:@"%@", key];
-        NSString *strObj = [NSString stringWithFormat:@"%@", obj];
-        
-        //is a date, GroupMe uses "dddddd" seconds after 1970
-        if ([strKey isEqualToString:@"created_at"] || [strKey isEqualToString:@"updated_at"]) {
-            [newDict setObject:[self helpConvertToDateFromStringOfSeconds:strObj] forKey:strKey];
-        }
-        //is an image, either in message, or in an attachment, or user
-        else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
-            NSURL *imageUrl = [NSURL URLWithString:strObj];
-            NSImage *image = nil;
-            if (imageUrl) {
-                NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
-                if (imageData) {
-                    image = [[NSImage alloc] initWithData:imageData];
+    #define ifThen(first, second) (first ? second : [NSNull null])
+
+    switch (type) {
+        case DNGroupJSONDictionary:{
+            newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
+            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_updated_at]]);
+            newDict[k_share_url] = ifThen(oldDict[k_share_url], [self helpURLFromString:oldDict[k_share_url]]);
+            newDict[k_created_at] = ifThen(oldDict[k_created_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_created_at]]);
+            if (oldDict[k_members]) {
+                NSMutableArray *convertedMembers = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_members] count]];
+                for (NSDictionary* member in oldDict[k_members]) {
+                    [convertedMembers addObject:[self helpConvertRawDictionary:member ofType:DNMemberJSONDictionary]];
                 }
+                newDict[k_members] = convertedMembers;
             }
-            if (!image) {
-                [newDict setObject:[NSNull null] forKey:k_image];
-            }else{
-                [newDict setObject:image forKey:k_image];
+            break;
+        }
+        case DNMemberJSONDictionary:{
+            newDict[k_muted] = ifThen(oldDict[k_muted], [self helpBooleanFromWord:oldDict[k_muted]]);
+            newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
+            break;
+        }
+        case DNMessageJSONDictionary:{
+            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_updated_at]]);
+            if (oldDict[k_attachments]) {
+                NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
+                for (NSDictionary* attachment in oldDict[k_attachments]) {
+                    [convertedAttachments addObject:[self helpConvertRawDictionary:attachment ofType:DNAttachmentJSONDictionary]];
+                }
+                newDict[k_attachments] = convertedAttachments;
             }
+            break;
         }
-        //is generic url (as in the case of "share_url")
-        else if ([strKey hasSuffix:@"url"]){
-            NSURL *url = [NSURL URLWithString:strObj];
-            if (url) {
-                [newDict setObject:url forKey:strKey];
-            }else{
-                [newDict setObject:[NSNull null] forKey:strKey];
-            }
+        case DNAttachmentJSONDictionary:{
+            newDict[k_url] = ifThen(oldDict[k_url], [self helpURLFromString:oldDict[k_url]]);
+            break;
         }
-        //is boolean
-        else if ([strObj isEqualToString:@"false"] || [strObj isEqualToString:@"true"]){
-            BOOL value = [strObj isEqualToString:@"true"];
-            [newDict setObject:[NSNumber numberWithBool:value] forKey:strKey];
-        }
-        //all other cases, leave as is
-    }];
+        default:
+            break;
+    }
+
     return newDict;
 }
 
@@ -391,7 +397,7 @@
                                                       k_membership_id:  member[@"id"],
                                                       k_image:          [self helpURLFromString:member[@"image_url"]],
                                                       k_user_id:        member[@"user_id"],
-                                                      k_muted:          [NSNumber numberWithBool:[self helpBooleanFromWord:member[@"muted"]]]};
+                                                      k_muted:          [self helpBooleanFromWord:member[@"muted"]]};
                     [newMembersWithImages addObject:convertedMember];
                 }];
                 NSDictionary *userInfo = @{k_members:newMembersWithImages, k_group_id:identifierGroupID};
