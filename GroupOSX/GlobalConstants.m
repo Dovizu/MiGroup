@@ -59,6 +59,7 @@ NSString * const k_membership_id = @"membership_id";
 NSString * const k_new_name = @"new_name";
 NSString * const k_message = @"messages";
 NSString * const k_messages = @"messages";
+NSString * const k_muted = @"muted";
 
 //Triggers that caused polling methods to be called
 //organic triggers

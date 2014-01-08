@@ -251,7 +251,7 @@
     }];
 }
 
-- (NSDate *)helpConvertToDateFromStringOfSeconds:(NSString *)secondsString
+- (NSDate*)helpConvertToDateFromStringOfSeconds:(NSString *)secondsString
 {
     NSDate *date = nil;
     NSRegularExpression *dateRegEx = nil;
@@ -279,6 +279,23 @@
         date = [NSDate date];
     }
     return date;
+}
+
+//returns NSURL if urlString is a valid URL string, NSNull otherwise
+- (id)helpURLFromString:(NSString*)urlString
+{
+    NSAssert(urlString, @"urlString cannot be nil");
+    NSURL *url;
+    if (!([urlString isKindOfClass:[NSNull class]]) && (url = [NSURL URLWithString:urlString])) {
+        return url;
+    }
+    return [NSNull null];
+}
+
+- (BOOL)helpBooleanFromWord:(NSString*)word
+{
+    NSAssert(word, @"word param cannot be nil");
+    return [word isEqualToString:@"true"];
 }
 
 //Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
@@ -368,21 +385,15 @@
                     DebugLog(@"Failed to obtain any added members");
                 }
                 NSMutableArray *newMembersWithImages = [[NSMutableArray alloc] initWithCapacity:[newMembers count]];
-                dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx.imageProcessing", DISPATCH_QUEUE_SERIAL);
-                [newMembers enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, __unused BOOL *stop) {
-                    NSMutableDictionary *convertedMember = [(NSDictionary*)obj mutableCopy];
-                    [convertedMember setObject:convertedMember[@"nickname"] forKey:k_name];
-                    [convertedMember setObject:convertedMember[@"id"] forKey:k_membership_id];
-                    [self helpAsyncDownloadImage:convertedMember[@"image_url"] usingBlock:^(NSImage *image) {
-                        if (image) {
-                            [convertedMember setObject:image forKey:@"image"];
-                        }
-                        dispatch_async(serial_queue, ^{
-                            [newMembersWithImages addObject:convertedMember];
-                        });
-                    }];
+                [newMembers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    NSDictionary *member = (NSDictionary*)obj;
+                    NSDictionary *convertedMember = @{k_name:           member[@"nickname"],
+                                                      k_membership_id:  member[@"id"],
+                                                      k_image:          [self helpURLFromString:member[@"image_url"]],
+                                                      k_user_id:        member[@"user_id"],
+                                                      k_muted:          [NSNumber numberWithBool:[self helpBooleanFromWord:member[@"muted"]]]};
+                    [newMembersWithImages addObject:convertedMember];
                 }];
-                
                 NSDictionary *userInfo = @{k_members:newMembersWithImages, k_group_id:identifierGroupID};
                 [_notificationCenter postNotificationName:noteMembersAdd object:nil userInfo:userInfo];
                 DebugLog(@"Filtered newly added members: %@", newMembersWithImages);
@@ -398,16 +409,10 @@
         //GROUP AVATAR CHANGED
         else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
             [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
-                if (groupDict[@"image_url"] != [NSNull null]) {
-                    [self helpAsyncDownloadImage:groupDict[@"image_url"] usingBlock:^(NSImage *image) {
-                        if (image) {
-                            [_notificationCenter postNotificationName:noteGroupAvatarChange
-                                                               object:nil
-                                                             userInfo:@{k_image: image,
-                                                                        k_group_id: identifierGroupID}];
-                        }
-                    }];
-                }
+                [_notificationCenter postNotificationName:noteGroupAvatarChange
+                                                   object:nil
+                                                 userInfo:@{k_image: [self helpURLFromString:groupDict[@"image_url"]],
+                                                            k_group_id: identifierGroupID}];
             }];
         }
         //GROUP MEMBER CHANGED NICKNAME
@@ -999,16 +1004,6 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     completeBlock(imageURL);
 }
 
-//Image Service
-//Response should be NSImage, nil if download failed
-- (void)helpAsyncDownloadImage:(NSString*)imageURL usingBlock:(void(^)(NSImage* image))completeBlock
-{
-    NSAssert(imageURL, @"Image URL cannot be nil");
-    
-    id image = nil;
-    //download image here
-    completeBlock(image);
-}
 
 #pragma mark - Helper Methods for Notification Processing
 
