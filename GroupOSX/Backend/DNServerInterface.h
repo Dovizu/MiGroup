@@ -43,6 +43,8 @@
               toGroup:(NSString*)groupID;
 - (void)removeMember:(NSString*)membershipID
            fromGroup:(NSString*)groupID;
+//relies on Message Router for comeback update
+
 //Groups
 - (void)fetchAllGroups;
 - (void)fetchFormerGroups;

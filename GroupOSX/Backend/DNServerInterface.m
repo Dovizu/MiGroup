@@ -61,9 +61,9 @@
     AFNetworkReachabilityManager *_reachabilityManager;
     AFHTTPRequestOperationManager *_HTTPRequestManager;
     FayeClient *_socketClient;
+    NSNotificationCenter *_notificationCenter;
     
     //Book keeping
-    NSDictionary *_paramConversion;
     NSMutableSet *_recentGUIDs;
     NSString* _userToken;
     NSDictionary *_userInfo;
@@ -77,7 +77,6 @@
     NSInteger _currentPageNum;
     NSMutableArray *_prevResults;
     BOOL _currentlyPollingForGroups;
-    NSNotificationCenter *_notificationCenter;
     
 }
 
@@ -87,59 +86,55 @@
 {
     self = [super init];
     if (self){
-        //Create dictionary for parameter conversion
-        _paramConversion = @{k_name:          @"name",
-                            k_user_id:        @"user_id",
-                            k_phone_number:   @"phone_number",
-                            k_email:          @"email"};
-        //Configure HTTP Request Manager
+        //Modules
         _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
         NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
         [acceptableTypes addObject:@"text/html"];
         _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
         _reachabilityManager = [_HTTPRequestManager reachabilityManager];
-        //FayeClient initialization needs to wait for userInformation to be populated
+        //FayeClient initialization needs to wait for userInformation to be populated or (void)setup to be called
         _notificationCenter = [NSNotificationCenter defaultCenter];
+        
+        //Book keeping
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
-        _userInfo =  (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
+        _userInfo = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
+        _recentGUIDs = [[NSMutableSet alloc] init];
+
         #ifdef DEBUG_BACKEND
-        _userToken = nil;
+        _userToken = nil; //force re-authenticate
         #endif
+        
         if (_userToken) {
             _authenticated = YES;
         }
-        [self establishObserversForNetworkEvents];
+        
+        //For network reachability change
+        __weak DNServerInterface* block_self = self;
+        BOOL *_listening_pointer = &_listening;
+        [_reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+            NSLog(@"Reachability changed to %ld (blocks)", status);
+            switch (status) {
+                case AFNetworkReachabilityStatusReachableViaWiFi:
+                case AFNetworkReachabilityStatusReachableViaWWAN:
+                    DebugLog(@"GroupMe now reachable");
+                    [block_self authenticate];
+                    [block_self establishSockets];
+                    break;
+                case AFNetworkReachabilityStatusNotReachable:
+                {//variable assignment not allowed inside switch without explicit scope
+                    DebugLog(@"Lost Connection to GroupMe");
+                    *_listening_pointer = NO;
+                    NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
+                    [block_self.loginSheetController.mainWindowController presentError:error];
+                    break;
+                }
+                case AFNetworkReachabilityStatusUnknown:
+                default:
+                    break;
+            }
+        }];
     }
     return self;
-}
-
-- (void)establishObserversForNetworkEvents
-{
-    //For network reachability change
-    __weak DNServerInterface* block_self = self;
-    BOOL *_listening_pointer = &_listening;
-    [_reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-        NSLog(@"Reachability changed to %ld (blocks)", status);
-        switch (status) {
-            case AFNetworkReachabilityStatusReachableViaWiFi:
-            case AFNetworkReachabilityStatusReachableViaWWAN:
-                DebugLog(@"GroupMe now reachable");
-                [block_self authenticate];
-                [block_self establishSockets];
-                break;
-            case AFNetworkReachabilityStatusNotReachable:
-            {//variable assignment not allowed inside switch without explicit scope
-                DebugLog(@"Lost Connection to GroupMe");
-                *_listening_pointer = NO;
-                NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
-                [block_self.loginSheetController.mainWindowController presentError:error];
-                break;
-            }
-            case AFNetworkReachabilityStatusUnknown:
-            default:
-                break;
-        }
-    }];
 }
 
 #pragma mark - User Actions
@@ -152,6 +147,65 @@
 }
 
 #pragma mark - Notification Processing
+
+- (void)messageCentralRouter:(NSDictionary *)messageDict
+{
+    DebugLog(@"%@", messageDict);
+    DebugLogCD(@"Server received raw message:\n%@", messageDict[@"alert"]);
+    
+    return;
+    
+    NSDictionary *identifiersSubject    =   [messageDict objectForKey:@"subject"];
+    NSString *identifierAlert           =   [messageDict objectForKey:@"alert"];
+    NSString *identifierGroupID         =   [identifiersSubject objectForKey:@"group_id"];
+    NSString *identifierName            =   [identifiersSubject objectForKey:@"name"];
+    NSString *identifierUserID          =   [identifiersSubject objectForKey:@"user_id"];
+    NSString *identifierGUID            =   [identifiersSubject objectForKey:@"source_guid"];
+    
+    //SYSTEM MESSAGES
+    if ([identifierName isEqualToString:@"GroupMe"] && [identifierUserID isEqualToString:@"0"]) {
+        NSString *name = nil;
+        if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
+            //GROUP MEMBER REMOVED
+            [self notifyMembersRemoveActionWithMemberName:name andGroupID:identifierGroupID];
+        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
+            //GROUP MEMBER ADDED
+            if (identifierGUID && [_recentGUIDs containsObject:identifierGUID]) {
+                //do nothing, this system message is generated by user action and is already taken care of
+            }else{
+                [_recentGUIDs addObject:identifierGUID];
+                
+            }
+        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
+            //GROUP NAME CHANGED
+            [self notifyGroupNameChangeActionWithName:name GroupID:identifierGroupID];
+        }else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
+            //GROUP AVATAR CHANGED
+            [self notifyGroupAvatarChangeActionWithGroupID:identifierGroupID];
+        }else if ([identifierAlert rangeOfString:@" changed name to "].location != NSNotFound) {
+            //GROUP MEMBER CHANGED NICKNAME
+            NSString *oldName, *newName;
+            NSError *error = nil;
+            NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"(.+) changed name to (.+)" options:0 error:&error];
+            NSTextCheckingResult *regexResult = [regEx firstMatchInString:identifierAlert options:0 range:NSMakeRange(0, [identifierAlert length])];
+            if ([regexResult numberOfRanges] == 3) {
+                oldName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:1]];
+                newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
+                [self notifyGroupMemberNickNameChangeActionWithOldName:oldName newName:newName];
+            }else{
+                DebugLog(@"Parsing %@ failed, Error: %@", identifierAlert, error);
+            }
+        }
+    }
+    //ALL MESSAGES
+    if ([self isUser:identifierName]) {
+        //OWNER MESSAGE
+        [self notifyMessageFromSelf:messageDict[@"subject"]];
+    }else{
+        //GENERIC MESSAGE
+        [self notifyMessageFromGeneric: messageDict[@"subject"]];
+    }
+}
 
 - (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID
 {
@@ -318,67 +372,12 @@
     [_socketClient connectToServerWithExt:externalInformation];
 }
 
-//This is a giant router of raw messages, the type of message dictates the next method to call, or nothing at all
+
+
+
 - (void)messageReceived:(NSDictionary*)messageDict channel:(NSString* __unused)channel
 {
-    DebugLog(@"%@", messageDict);
-    DebugLogCD(@"Server received raw message:\n%@", messageDict[@"alert"]);
-    
-    return;
-    
-    NSDictionary *identifiersSubject    =   [messageDict objectForKey:@"subject"];
-    NSString *identifierAlert           =   [messageDict objectForKey:@"alert"];
-    NSString *identifierGroupID         =   [identifiersSubject objectForKey:@"group_id"];
-    NSString *identifierName            =   [identifiersSubject objectForKey:@"name"];
-    NSString *identifierUserID          =   [identifiersSubject objectForKey:@"user_id"];
-    
-    //SYSTEM MESSAGES
-    if ([identifierName isEqualToString:@"GroupMe"] && [identifierUserID isEqualToString:@"0"]) {
-        NSString *name = nil;
-        if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
-            //GROUP MEMBER REMOVED
-            [self notifyMembersRemoveActionWithMemberName:name andGroupID:identifierGroupID];
-        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
-            //GROUP MEMBER ADDED
-            [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", identifierGroupID, identifiersSubject[@"source_guid"])
-                          parameters:@{@"token": _userToken,
-                                       @"results_id": identifiersSubject[@"source_guid"]}
-                             success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                                 DebugLog(@"yes results obtained \n%@", responseObject);
-                             }
-                             failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                                 DebugLog(@"Nope this doesn't work: \n%@", error);
-                             }];
-            [self notifyMembersAddActionWithMemberNames:@[name] andGroupID:identifierGroupID];
-        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
-            //GROUP NAME CHANGED
-            [self notifyGroupNameChangeActionWithName:name GroupID:identifierGroupID];
-        }else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
-            //GROUP AVATAR CHANGED
-            [self notifyGroupAvatarChangeActionWithGroupID:identifierGroupID];
-        }else if ([identifierAlert rangeOfString:@" changed name to "].location != NSNotFound) {
-            //GROUP MEMBER CHANGED NICKNAME
-            NSString *oldName, *newName;
-            NSError *error = nil;
-            NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"(.+) changed name to (.+)" options:0 error:&error];
-            NSTextCheckingResult *regexResult = [regEx firstMatchInString:identifierAlert options:0 range:NSMakeRange(0, [identifierAlert length])];
-            if ([regexResult numberOfRanges] == 3) {
-                oldName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:1]];
-                newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
-                [self notifyGroupMemberNickNameChangeActionWithOldName:oldName newName:newName];
-            }else{
-                DebugLog(@"Parsing %@ failed, Error: %@", identifierAlert, error);
-            }
-        }
-    }
-    //ALL MESSAGES
-    if ([self isUser:identifierName]) {
-        //OWNER MESSAGE
-        [self notifyMessageFromSelf:messageDict[@"subject"]];
-    }else{
-        //GENERIC MESSAGE
-        [self notifyMessageFromGeneric: messageDict[@"subject"]];
-    }
+    [self messageCentralRouter:messageDict];
 }
 
 - (void)connectedToServer {
