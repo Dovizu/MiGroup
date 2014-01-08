@@ -33,7 +33,6 @@
 - (void)sendNewMessage:(NSString*)message
                toGroup:(NSString*)groupID
        withAttachments:(NSArray*)attachments;
-//Upon completion, will send 
 - (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
                                inGroup:(NSString*)groupID;
 - (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
@@ -41,6 +40,7 @@
 //Members
 - (void)addNewMembers:(NSArray*)members
               toGroup:(NSString*)groupID;
+//relies on result fetching for comeback update
 - (void)removeMember:(NSString*)membershipID
            fromGroup:(NSString*)groupID;
 //relies on Message Router for comeback update

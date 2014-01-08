@@ -86,13 +86,13 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock;
 //        DebugLog(@"%@", responseBody);
 //    }];
     
-//    NSArray *membersToAdd = @[
-//                              @{@"nickname": @"Kha",
-//                                @"phone_number":@"+1 9255664491"},
-//                              @{@"nickname":@"Omer",
-//                                @"phone_number":@"+1 2097519635"}];
-//    [server MembersAdd:membersToAdd toGroup:@"6736514" andCompleteBlock:^() {
-//    }];
+    NSArray *membersToAdd = @[
+                              @{@"nickname": @"Kha",
+                                @"phone_number":@"+1 9255664491"},
+                              @{@"nickname":@"Omer",
+                                @"phone_number":@"+1 2097519635"}];
+    [server MembersAdd:membersToAdd toGroup:@"6736514" andCompleteBlock:^() {
+    }];
     
 //    [server MembersRemoveUser:@"35121596" fromGroup:@"6736514" andCompleteBlock:^() {
 //    }];

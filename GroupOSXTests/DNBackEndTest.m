@@ -19,6 +19,7 @@
 - (void)convertRawDictionary:(NSDictionary*)oldDict usingBlock:(void(^)(NSDictionary* newDict))block;
 - (void)GroupsShow:(NSString*)groupID andCompleteBlock:(void(^)(NSDictionary* groupsShowData))completeBlock;
 - (NSString*)helpFindStringWithPattern:(NSString*)regExPattern inString:(NSString*)string;
+- (NSArray*)helpFindNamesInStringOfNames:(NSString*)string;
 @end
 
 @implementation DNBackEndTest
@@ -72,8 +73,8 @@
     result = [server helpFindStringWithPattern:@"(.+) changed name to (.+)" inString:@"Donny Reynolds changed name to Donny"];
     XCTAssert([result isEqualToString:@"Donny Reynolds"], @"Regex Failed");
     
-    result = [server helpFindStringWithPattern:@"([^,]+)(?:, )?(?:and )?" inString:@"Henry Chen, Steven Chau, and Nanavati Low"];
-    XCTAssert([result isEqualToString:@"Henry Chen"], @"Regex Failed");
+    NSArray *results = [server helpFindNamesInStringOfNames:@"Steven Chau and Omer Azam"];
+    NSLog(@"%@", results);
 }
 
 

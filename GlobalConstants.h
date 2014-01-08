@@ -34,11 +34,14 @@ extern NSString * const JSONObjectEmojiPlaceholderString;
 //Network observer names
 extern NSString * const noteUserInfoReceivedReadyForSockets;
 
+extern NSString * const noteMessage;
 extern NSString * const noteFirstTimeLogon;
+extern NSString * const noteMemberNameChange;
 extern NSString * const noteAllGroupsFetch;
-
+extern NSString * const noteGroupNameChange;
 extern NSString * const noteMembersRemove;
 extern NSString * const noteMembersAdd;
+extern NSString * const noteGroupAvatarChange;
 
 //Database attribute names
 extern NSString * const k_name;
@@ -54,8 +57,11 @@ extern NSString * const k_members;
 extern NSString * const k_messages;
 extern NSString * const k_muted;
 extern NSString * const k_user_id;
-//not actually in database
+extern NSString * const k_membership_id;
+//not actually in database, used to communicate between server and controller
+extern NSString * const k_message;
 extern NSString * const k_email;
+extern NSString * const k_new_name;
 extern NSString * const k_phone_number;
 
 

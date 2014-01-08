@@ -45,13 +45,7 @@
 
 @interface DNServerInterface ()
 
-- (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID;
-- (void)notifyMembersAddActionWithMemberNames:(NSArray*)names andGroupID:(NSString*)identifierGroupID;
-- (void)notifyGroupAvatarChangeActionWithGroupID:(NSString*)identifierGroupID;
-- (void)notifyGroupNameChangeActionWithName:(NSString*)name GroupID:(NSString*)identifierGroupID;
-- (void)notifyGroupMemberNickNameChangeActionWithOldName:(NSString*)old newName:(NSString*)new;
-- (void)notifyMessageFromSelf:(NSDictionary*)messageDict;
-- (void)notifyMessageFromGeneric:(NSDictionary*)messageDict;
+
 @end
 
 
@@ -139,11 +133,199 @@
 
 #pragma mark - User Actions
 
+//Messages
+- (void)sendNewMessage:(NSString*)message
+               toGroup:(NSString*)groupID
+       withAttachments:(NSArray*)attachments
+{
+    
+}
+
+- (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
+                               inGroup:(NSString*)groupID
+{
+    
+}
+
+- (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
+                                        inGroup:(NSString*)groupID
+{
+    
+}
+
+//Members
+- (void)addNewMembers:(NSArray*)members
+              toGroup:(NSString*)groupID
+{
+    
+}
+
+//relies on result fetching for comeback update
+- (void)removeMember:(NSString*)membershipID
+           fromGroup:(NSString*)groupID
+{
+    
+}
+//relies on Message Router for comeback update
+
 - (void)fetchAllGroups
 {
     [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
         [_notificationCenter postNotificationName:noteAllGroupsFetch object:nil userInfo:@{kGetContentKey: groupList}];
     }];
+}
+
+
+- (void)fetchFormerGroups
+{
+    
+}
+
+- (void)fetchInformationForGroup:(NSString*)groupID
+{
+    
+}
+
+- (void)createGroupNamed:(NSString*)name
+             description:(NSString*)description
+                   image:(id)image
+                andShare:(BOOL)allowShare
+{
+    
+}
+
+- (void)updateGroup:(NSString*)groupID
+           withName:(NSString*)name
+        description:(NSString*)description
+              image:(id)image
+           andShare:(BOOL)allowShare
+{
+    
+}
+
+- (void)deleteGroup:(NSString*)groupID
+{
+    
+}
+
+
+- (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
+{
+    NSAssert(block, @"completion block cannot be nil");
+    
+    if (!_prevResults && !_currentlyPollingForGroups) {
+        //first call
+        _currentlyPollingForGroups = YES;
+        _currentPageNum = 1;
+        _prevResults = [[NSMutableArray alloc] init];
+    }else if ([newestResult count] != 0){
+        //new results arrived
+        [_prevResults addObjectsFromArray:newestResult];
+        _currentPageNum += 1;
+    }else{
+        //no more groups, post notification with complete results
+        NSArray *rawGroupList = _prevResults;
+        dispatch_queue_t queue = dispatch_queue_create("com.dovizu.grouposx.groupProcessing", 0ul);
+        dispatch_async(queue, ^{
+            NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
+            [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSDictionary *group = (NSDictionary*)obj;
+                group = [self helpConvertRawDictionary:group];
+                [groupList addObject:group];
+            }];
+            block(groupList);
+        });
+        _currentlyPollingForGroups = NO;
+        _prevResults = nil;
+        return;
+    }
+    
+    DebugLogCD(@"Group Polling page: %d", (int)_currentPageNum);
+    NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
+#ifdef DEBUG_BACKEND
+    num = 1; //Small to see if repeated polling works or not
+#endif
+    
+    [self GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+        [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
+    }];
+}
+
+- (NSDate *)helpConvertToDateFromStringOfSeconds:(NSString *)secondsString
+{
+    NSDate *date = nil;
+    NSRegularExpression *dateRegEx = nil;
+    dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
+                                                     options:NSRegularExpressionCaseInsensitive error:nil];
+    NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:secondsString
+                                                              options:0
+                                                                range:NSMakeRange(0, [secondsString length])];
+    if (regexResult) {
+        //Milliseconds to seconds
+        NSTimeInterval seconds = [[secondsString substringWithRange:[regexResult rangeAtIndex:1]] doubleValue];
+        //Timezone offset
+        if ([regexResult rangeAtIndex:2].location != NSNotFound) {
+            //Offset sign
+            NSString *sign = [secondsString substringWithRange:[regexResult rangeAtIndex:2]];
+            //Offset hours
+            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:3]]] doubleValue] * 60.0 * 60.0;
+            //Offset minutes
+            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
+        }
+        date = [NSDate dateWithTimeIntervalSince1970:seconds];
+    }else{
+        //                DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
+        //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
+        date = [NSDate date];
+    }
+    return date;
+}
+
+//Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
+- (NSDictionary*)helpConvertRawDictionary:(NSDictionary*)oldDict
+{
+    NSMutableDictionary *newDict = [oldDict mutableCopy];
+    [oldDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL __unused *stop) {
+        NSString *strKey = [NSString stringWithFormat:@"%@", key];
+        NSString *strObj = [NSString stringWithFormat:@"%@", obj];
+        
+        //is a date, GroupMe uses "dddddd" seconds after 1970
+        if ([strKey isEqualToString:@"created_at"] || [strKey isEqualToString:@"updated_at"]) {
+            [newDict setObject:[self helpConvertToDateFromStringOfSeconds:strObj] forKey:strKey];
+        }
+        //is an image, either in message, or in an attachment, or user
+        else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
+            NSURL *imageUrl = [NSURL URLWithString:strObj];
+            NSImage *image = nil;
+            if (imageUrl) {
+                NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+                if (imageData) {
+                    image = [[NSImage alloc] initWithData:imageData];
+                }
+            }
+            if (!image) {
+                [newDict setObject:[NSNull null] forKey:k_image];
+            }else{
+                [newDict setObject:image forKey:k_image];
+            }
+        }
+        //is generic url (as in the case of "share_url")
+        else if ([strKey hasSuffix:@"url"]){
+            NSURL *url = [NSURL URLWithString:strObj];
+            if (url) {
+                [newDict setObject:url forKey:strKey];
+            }else{
+                [newDict setObject:[NSNull null] forKey:strKey];
+            }
+        }
+        //is boolean
+        else if ([strObj isEqualToString:@"false"] || [strObj isEqualToString:@"true"]){
+            BOOL value = [strObj isEqualToString:@"true"];
+            [newDict setObject:[NSNumber numberWithBool:value] forKey:strKey];
+        }
+        //all other cases, leave as is
+    }];
+    return newDict;
 }
 
 #pragma mark - Notification Processing
@@ -152,8 +334,6 @@
 {
     DebugLog(@"%@", messageDict);
     DebugLogCD(@"Server received raw message:\n%@", messageDict[@"alert"]);
-    
-    return;
     
     NSDictionary *identifiersSubject    =   [messageDict objectForKey:@"subject"];
     NSString *identifierAlert           =   [messageDict objectForKey:@"alert"];
@@ -165,25 +345,73 @@
     //SYSTEM MESSAGES
     if ([identifierName isEqualToString:@"GroupMe"] && [identifierUserID isEqualToString:@"0"]) {
         NSString *name = nil;
+        //GROUP MEMBER REMOVED
         if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
-            //GROUP MEMBER REMOVED
-            [self notifyMembersRemoveActionWithMemberName:name andGroupID:identifierGroupID];
-        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
-            //GROUP MEMBER ADDED
-            if (identifierGUID && [_recentGUIDs containsObject:identifierGUID]) {
-                //do nothing, this system message is generated by user action and is already taken care of
-            }else{
-                [_recentGUIDs addObject:identifierGUID];
-                
+            NSDictionary *userInfo = @{k_name:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
+            [_notificationCenter postNotificationName:noteMembersRemove object:nil userInfo:userInfo];
+        }
+        //GROUP MEMBER ADDED
+        else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
+            //Because there is currently no way to identify whether the members are added by the user or another member in the GroupMe notifications, we have to get the names out of the alert and blindly fetch a list of members and compare in the background. If the action is generated by the user, then those users would have already been in the database. (*This class is only responsible for fetching a list of members and submit via Notification Center)
+            NSArray *names = [self helpFindNamesInStringOfNames:name];
+            if ([names count] == 0) {
+                DebugLog(@"Failed to find any names in alert string");
             }
-        }else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
-            //GROUP NAME CHANGED
-            [self notifyGroupNameChangeActionWithName:name GroupID:identifierGroupID];
-        }else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
-            //GROUP AVATAR CHANGED
-            [self notifyGroupAvatarChangeActionWithGroupID:identifierGroupID];
-        }else if ([identifierAlert rangeOfString:@" changed name to "].location != NSNotFound) {
-            //GROUP MEMBER CHANGED NICKNAME
+            [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
+                NSArray *allMembers = groupDict[@"members"];
+                //Filter only users with "nickname" in names array
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF[%@] IN %@)", @"nickname", names];
+                NSArray *newMembers = [allMembers filteredArrayUsingPredicate:predicate];
+                if ([names count] != [newMembers count]) {
+                    DebugLog(@"Failed to obtain all the added members, will add the found ones anyway");
+                }else if ([newMembers count] == 0){
+                    DebugLog(@"Failed to obtain any added members");
+                }
+                NSMutableArray *newMembersWithImages = [[NSMutableArray alloc] initWithCapacity:[newMembers count]];
+                dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx.imageProcessing", DISPATCH_QUEUE_SERIAL);
+                [newMembers enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, __unused BOOL *stop) {
+                    NSMutableDictionary *convertedMember = [(NSDictionary*)obj mutableCopy];
+                    [convertedMember setObject:convertedMember[@"nickname"] forKey:k_name];
+                    [convertedMember setObject:convertedMember[@"id"] forKey:k_membership_id];
+                    [self helpAsyncDownloadImage:convertedMember[@"image_url"] usingBlock:^(NSImage *image) {
+                        if (image) {
+                            [convertedMember setObject:image forKey:@"image"];
+                        }
+                        dispatch_async(serial_queue, ^{
+                            [newMembersWithImages addObject:convertedMember];
+                        });
+                    }];
+                }];
+                
+                NSDictionary *userInfo = @{k_members:newMembersWithImages, k_group_id:identifierGroupID};
+                [_notificationCenter postNotificationName:noteMembersAdd object:nil userInfo:userInfo];
+                DebugLog(@"Filtered newly added members: %@", newMembersWithImages);
+            }];
+        }
+        //GROUP NAME CHANGED
+        else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
+            [_notificationCenter postNotificationName:noteGroupNameChange
+                                               object:nil
+                                             userInfo:@{k_name: name,
+                                                        k_group_id: identifierGroupID}];
+        }
+        //GROUP AVATAR CHANGED
+        else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
+            [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
+                if (groupDict[@"image_url"] != [NSNull null]) {
+                    [self helpAsyncDownloadImage:groupDict[@"image_url"] usingBlock:^(NSImage *image) {
+                        if (image) {
+                            [_notificationCenter postNotificationName:noteGroupAvatarChange
+                                                               object:nil
+                                                             userInfo:@{k_image: image,
+                                                                        k_group_id: identifierGroupID}];
+                        }
+                    }];
+                }
+            }];
+        }
+        //GROUP MEMBER CHANGED NICKNAME
+        else if ([identifierAlert rangeOfString:@" changed name to "].location != NSNotFound) {
             NSString *oldName, *newName;
             NSError *error = nil;
             NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:@"(.+) changed name to (.+)" options:0 error:&error];
@@ -191,74 +419,55 @@
             if ([regexResult numberOfRanges] == 3) {
                 oldName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:1]];
                 newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
-                [self notifyGroupMemberNickNameChangeActionWithOldName:oldName newName:newName];
+                [_notificationCenter postNotificationName:noteMemberNameChange
+                                                   object:nil
+                                                 userInfo:@{k_name: oldName,
+                                                            k_new_name: newName,
+                                                            k_group_id: identifierGroupID}];
             }else{
                 DebugLog(@"Parsing %@ failed, Error: %@", identifierAlert, error);
             }
         }
     }
-    //ALL MESSAGES
-    if ([self isUser:identifierName]) {
-        //OWNER MESSAGE
-        [self notifyMessageFromSelf:messageDict[@"subject"]];
-    }else{
-        //GENERIC MESSAGE
-        [self notifyMessageFromGeneric: messageDict[@"subject"]];
+    
+    //MESSAGES BY USER
+    else if (identifierGUID && [_recentGUIDs containsObject:identifierGUID]) {
+        DebugLog(@"Received duplicate message: '%@'", identifierAlert);
+    }
+    //MESSAGES BY ANOTHER MEMBER
+    else{
+        NSMutableDictionary *message = [identifiersSubject mutableCopy];
+        message[@"message_id"] = messageDict[@"id"];
+        //No attachment support yet
+        [_notificationCenter postNotificationName:noteMessage
+                                           object:nil
+                                         userInfo:@{k_message: message}];
     }
 }
 
-- (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID
+- (NSString*)helpFindStringWithPattern:(NSString*)regExPattern inString:(NSString*)string
 {
-    NSDictionary *userInfo = @{k_name:name, k_group_id:identifierGroupID};
-    [_notificationCenter postNotificationName:noteMembersRemove object:nil userInfo:userInfo];
+    NSError *error = nil;
+    NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:regExPattern options:0 error:&error];
+    if (!regEx) {
+        DebugLog(@"Regular expression error: %@ on pattern %@", error, regExPattern);
+        return nil;
+    }
+    NSTextCheckingResult *result = [regEx firstMatchInString:string options:0 range:NSMakeRange(0, [string length])];
+    if (result) {
+        NSRange range = [result rangeAtIndex:1];
+        return [string substringWithRange:range];
+    }
+    return nil;
 }
 
-- (void)notifyMembersAddActionWithMemberNames:(NSArray*)names andGroupID:(NSString*)identifierGroupID
+- (NSArray*)helpFindNamesInStringOfNames:(NSString*)string
 {
-    [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupsShowData) {
-        NSArray *allMembers = groupsShowData[@"members"];
-        DebugLog(@"Got unfiltered members: %@", allMembers);
-        //Filter only users with "nickname" in names array
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF[%@] IN %@)", @"nickname", names];
-        NSArray *filteredMembers = [allMembers filteredArrayUsingPredicate:predicate];
-        if ([names count] == [filteredMembers count]) {
-            DebugLog(@"Newly added members: %@", filteredMembers);
-            NSMutableArray *filteredConvertedMembers = [[NSMutableArray alloc] initWithCapacity:[filteredMembers count]];
-            dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx", DISPATCH_QUEUE_SERIAL);
-            [filteredMembers enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                NSDictionary *convertedMember = [self convertRawDictionary:(NSDictionary*)obj];
-                dispatch_async(serial_queue, ^{
-                    [filteredConvertedMembers addObject:convertedMember];
-                });
-            }];
-            NSDictionary *userInfo = @{k_members:filteredConvertedMembers, k_group_id:identifierGroupID};
-            [_notificationCenter postNotificationName:noteMembersAdd object:nil userInfo:userInfo];
-            DebugLog(@"Filtered newly added members: %@", filteredConvertedMembers);
-        }else{
-            DebugLog(@"Failed to obtain all the added members");
-        }
-    }];
-}
-
-- (void)notifyGroupAvatarChangeActionWithGroupID:(NSString*)identifierGroupID
-{
-    
-}
-- (void)notifyGroupNameChangeActionWithName:(NSString*)name GroupID:(NSString*)identifierGroupID
-{
-    
-}
-- (void)notifyGroupMemberNickNameChangeActionWithOldName:(NSString*)old newName:(NSString*)new
-{
-    
-}
-- (void)notifyMessageFromSelf:(NSDictionary*)messageDict
-{
-    
-}
-- (void)notifyMessageFromGeneric:(NSDictionary*)messageDict
-{
-    
+    string = [string stringByReplacingOccurrencesOfString:@"\\s*(?:(?:and|,)\\s*)+"
+                                             withString:@","
+                                                options:NSRegularExpressionSearch
+                                                  range:(NSRange){0, [string length]}];
+    return [string componentsSeparatedByString:@","];
 }
 
 #pragma mark - Authentication/Token Retrieval
@@ -352,7 +561,7 @@
     return _authenticated && [_userInfo[@"name"] isEqualToString:name];
 }
 
-#pragma mark - Notification Reception (Web Sockets)
+#pragma mark - Web Socket
 
 - (void)establishSockets
 {
@@ -435,6 +644,7 @@
                          }
                          failure:^(AFHTTPRequestOperation *operation, NSError *error){
                              report_request_error;
+                             completeBlock(nil);
                          }];
 }
 
@@ -457,6 +667,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                          }
                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                              report_request_error;
+                             completeBlock(nil);
                          }];
 }
 
@@ -473,6 +684,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                          }
                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                              report_request_error;
+                             completeBlock(nil);
                          }];
 }
 
@@ -492,6 +704,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                          }
                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                              report_request_error;
+                             completeBlock(nil);
                          }];
 }
 
@@ -520,6 +733,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                           }
                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                               report_request_error;
+                              completeBlock(nil);
                           }];
 
     };
@@ -559,6 +773,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                           }
                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                               report_request_error;
+                              completeBlock(nil);
                           }];
     };
     if (image) {
@@ -585,6 +800,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                           //Do not expect a response but does check statusCode
                           if ([[operation response] statusCode] / 100 == 2) {
                               completeBlock(groupID);
+                              completeBlock(nil);
                           }else{
                               report_request_error;
                           }
@@ -593,7 +809,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 
 //Members - Add
 //Response should be a dictionary
-- (void)MembersAdd:(NSArray*)members toGroup:(NSString*)groupID andCompleteBlock:(void(^)())completeBlock
+- (void)MembersAdd:(NSArray*)members toGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* addedMembers))completeBlock
 {
     NSAssert((members), @"members param cannot be nil");
     NSAssert([members count], @"members param cannot be empty array");
@@ -603,7 +819,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     
     [members enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, BOOL __unused *stop) {
         NSDictionary *member = (NSDictionary*)obj;
-        NSAssert(member[@"name"], @"One or more users don't have a valid nickname");
+        NSAssert(member[@"nickname"], @"One or more users don't have a valid nickname");
     }];
     
     NSDictionary *userInfo = @{@"members": members,
@@ -611,29 +827,20 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/add", groupID)
                    parameters:userInfo
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          //Implement gettting results
-//                          NSString *results_id = (NSString*)responseObject[HTTPParamResponse][HTTPParamResultsID];
-//                          NSDictionary *params = @{HTTPParamToken: _userToken,
-//                                                   HTTPParamResultsID: results_id};
-//                          [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", groupID, results_id)
-//                                        parameters:params
-//                                           success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//                                               completeBlock((NSArray*)responseObject[HTTPParamResponse][HTTPParamMembers]);
-//                                           }
-//                                           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//                                               report_request_error;
-//                                           }];
-                          completeBlock();
+                          [self MembersResults:((NSDictionary*)responseObject)[@"response"][@"results_id"]
+                                       inGroup:groupID
+                              andCompleteBlock:completeBlock
+                                       attempt:1];
                       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                           report_request_error;
                       }];
 }
 
 //Members - Remove
-//Response should be a status
+//Response should be the removed member's membership ID
 - (void)MembersRemoveUser:(NSString*)membershipID
             fromGroup:(NSString*)groupID
-     andCompleteBlock:(void(^)())completeBlock
+     andCompleteBlock:(void(^)(NSString* removedMembershipID))completeBlock
 {
     NSAssert(membershipID, @"membershipID param cannot be nil");
     NSAssert(groupID, @"groupID param cannot be nil");
@@ -643,16 +850,51 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, membershipID)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          DebugLog(@"%@", responseObject);
-                           completeBlock();
+                           completeBlock(membershipID);
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                           if ([[operation response] statusCode] / 100 == 2) {
-                               completeBlock();
-                           }else{
-                               report_request_error;
-                           }
+                          report_request_error;
+                          completeBlock(nil);
                       }];
+}
+
+//Members - Results
+//Response should be an array
+- (void)MembersResults:(NSString*)resultsID
+               inGroup:(NSString*)groupID
+      andCompleteBlock:(void(^)(NSArray* addedMembers))completeBlock
+               attempt:(NSInteger)nthAttempt
+{
+    NSAssert(resultsID, @"resultsID param cannot be nil");
+    NSAssert(completeBlock, @"completeBlock cannot be nil");
+    NSAssert(nthAttempt, @"nthAttempt cannot be nil or 0");
+    if (nthAttempt > 10) {
+        DebugLog(@"Error fetching results for newly added members");
+        completeBlock(nil);
+        return;
+    }
+    
+    NSDictionary *params = @{@"token": _userToken,
+                            @"results_id": resultsID};
+    [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", groupID, resultsID)
+                  parameters:params
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         completeBlock(((NSDictionary*)responseObject)[@"response"][@"members"]);
+                     }
+                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         report_request_error;
+                         dispatch_queue_t queue = dispatch_queue_create("com.dovizu.grouposx.resultsFetching", DISPATCH_QUEUE_CONCURRENT);
+                         dispatch_async(queue, ^{
+                             NSLog(@"%@", [NSThread currentThread]);
+                             usleep(1000000); //wait for 1 second and try again
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [self MembersResults:resultsID
+                                              inGroup:groupID
+                                     andCompleteBlock:completeBlock
+                                              attempt:nthAttempt+1];
+                             });
+                         });
+                     }];
 }
 
 //Messages - Index Before
@@ -672,6 +914,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          report_request_error;
+                         completeBlock(nil);
                      }];
 }
 
@@ -694,6 +937,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          report_request_error;
+                         completeBlock(nil);
                      }];
 }
 
@@ -708,21 +952,15 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(text, @"text param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
+
+    arrayOfAttach = nil; //Not releasing this feature yet
     if (arrayOfAttach){
         NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[arrayOfAttach count]];
-        dispatch_queue_t serial_queue = dispatch_queue_create("com.dovizu.grouposx.messageProcessing", DISPATCH_QUEUE_SERIAL);
         
         //The block that processes an attachment
         void (^processAttachment)(NSDictionary*) = ^void(NSDictionary* attachment){
             if ([attachment[@"type"]  isEqual: @"image"]) {
-                //not sure about releasing image functionality yet
-//                [self helpAsyncUploadImageToGroupMe:attachment[HTTPParamAttachURL]
-//                                         usingBlock:^(NSString *imageURL) {
-//                                             dispatch_async(serial_queue, ^{
-//                                                 [convertedAttachments addObject:@{HTTPParamAttachType: @"image",
-//                                                                                   HTTPParamAttachURL: imageURL}];
-//                                             });
-//                                         }];
+                //do something about the image, check its validity
             }else if ([attachment[@"type"] isEqualToString:@"location"]){
                 //do something about location, check its validity
             }else if ([attachment[@"type"] isEqualToString:@"split"]){
@@ -739,179 +977,44 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
         arrayOfAttach = convertedAttachments;
     }
     NSDictionary *params = @{@"source_guid": @"source_guid_here",
-                             @"text": text,
-                             @"attachments": arrayOfAttach};
+                             @"text": text};
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages", groupID)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          if (completeBlock) {
-                              completeBlock((NSDictionary*)responseObject[@"message"]);
-                          }
+                          completeBlock((NSDictionary*)responseObject[@"message"]);
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                           report_request_error;
+                          completeBlock(nil);
                       }];
 }
 
 //Image Service
-//Response should be a string of URL
+//Response should be a string of URL, nil if upload failed
 - (void)helpAsyncUploadImageToGroupMe:(id)image usingBlock:(void(^)(NSString* imageURL))completeBlock
 {
     NSAssert(image, @"Image cannot be nil");
-    
     NSString *imageURL = nil;
     //upload image
     completeBlock(imageURL);
 }
 
 //Image Service
-//Response should be a NSImage
-- (void)helpAsyncDownloadImage:(NSString*)imageURL usingBlock:(void(^)(NSImage* IMAGE))completeBlock
+//Response should be NSImage, nil if download failed
+- (void)helpAsyncDownloadImage:(NSString*)imageURL usingBlock:(void(^)(NSImage* image))completeBlock
 {
     NSAssert(imageURL, @"Image URL cannot be nil");
     
-    NSImage *image = nil;
+    id image = nil;
     //download image here
     completeBlock(image);
 }
 
 #pragma mark - Helper Methods for Notification Processing
 
-- (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
-{
-    NSAssert(block, @"completion block cannot be nil");
-    
-    if (!_prevResults && !_currentlyPollingForGroups) {
-        //first call
-        _currentlyPollingForGroups = YES;
-        _currentPageNum = 1;
-        _prevResults = [[NSMutableArray alloc] init];
-    }else if ([newestResult count] != 0){
-        //new results arrived
-        [_prevResults addObjectsFromArray:newestResult];
-        _currentPageNum += 1;
-    }else{
-        //no more groups, post notification with complete results
-        NSArray *rawGroupList = _prevResults;
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
-        dispatch_async(queue, ^{
-            NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
-            [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                NSDictionary *group = (NSDictionary*)obj;
-                group = [self convertRawDictionary:group];
-                [groupList addObject:group];
-            }];
-            block(groupList);
-        });
-        _currentlyPollingForGroups = NO;
-        _prevResults = nil;
-        return;
-    }
-    
-    DebugLogCD(@"Group Polling page: %d", (int)_currentPageNum);
-    NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
-#ifdef DEBUG_BACKEND
-    num = 1; //Small to see if repeated polling works or not
-#endif
-    
-    [self GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
-        [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
-    }];
-}
-
-//Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
-- (NSDictionary*)convertRawDictionary:(NSDictionary*)oldDict
-{
-    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
-    [oldDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        NSString *strKey = [NSString stringWithFormat:@"%@", key];
-        NSString *strObj = [NSString stringWithFormat:@"%@", obj];
-        
-        //is a date, GroupMe uses "ddddd" seconds after 1970
-        if ([strKey isEqualToString:@"created_at"] || [strKey isEqualToString:@"updated_at"]) {
-            NSDate *date = nil;
-            NSRegularExpression *dateRegEx = nil;
-            dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
-                                                             options:NSRegularExpressionCaseInsensitive error:nil];
-            NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:strObj
-                                                                      options:0
-                                                                        range:NSMakeRange(0, [strObj length])];
-            if (regexResult) {
-                //Milliseconds to seconds
-                NSTimeInterval seconds = [[strObj substringWithRange:[regexResult rangeAtIndex:1]] doubleValue];
-                //Timezone offset
-                if ([regexResult rangeAtIndex:2].location != NSNotFound) {
-                    //Offset sign
-                    NSString *sign = [strObj substringWithRange:[regexResult rangeAtIndex:2]];
-                    //Offset hours
-                    seconds += [[NSString stringWithFormat:@"%@%@", sign, [strObj substringWithRange:[regexResult rangeAtIndex:3]]] doubleValue] * 60.0 * 60.0;
-                    //Offset minutes
-                    seconds += [[NSString stringWithFormat:@"%@%@", sign, [strObj substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
-                }
-                date = [NSDate dateWithTimeIntervalSince1970:seconds];
-            }else{
-                DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
-                //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
-                date = [NSDate date];
-            }
-            [newDict setObject:date forKey:strKey];
-            //is an image, either in message, or in an attachment, or user
-        }else if ([strKey isEqualToString:@"image_url"] || ([strKey isEqualToString:@"url"] && [oldDict[@"type"] isEqualToString:@"image"])){
-            NSURL *imageUrl = [NSURL URLWithString:strObj];
-            NSImage *image = nil;
-            if (imageUrl) {
-                NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
-                if (imageData) {
-                    image = [[NSImage alloc] initWithData:imageData];
-                }
-            }
-            if (!image) {
-                [newDict setObject:[NSNull null] forKey:k_image];
-            }else{
-                [newDict setObject:image forKey:k_image];
-            }
-
-            //is generic url (as in the case of "share_url"
-        }else if ([strKey hasSuffix:@"url"]){
-            NSURL *url = [NSURL URLWithString:strObj];
-            if (url) {
-                [newDict setObject:url forKey:strKey];
-            }else{
-                [newDict setObject:[NSNull null] forKey:strKey];
-            }
-            //is boolean
-        }else if ([strObj isEqualToString:@"false"] || [strObj isEqualToString:@"true"]){
-            BOOL value = [strObj isEqualToString:@"true"];
-            [newDict setObject:[NSNumber numberWithBool:value] forKey:strKey];
-            //all other cases, treat as string
-        }else{
-            if (![obj isKindOfClass:[NSString class]]) {
-                strObj = obj;
-            }
-            [newDict setObject:strObj forKey:strKey];
-        }
-    }];
-    return newDict;
-}
 
 
-#pragma mark - Helper Methods
-- (NSString*)helpFindStringWithPattern:(NSString*)regExPattern inString:(NSString*)string
-{
-    NSError *error = nil;
-    NSRegularExpression *regEx = [NSRegularExpression regularExpressionWithPattern:regExPattern options:0 error:&error];
-    if (!regEx) {
-        DebugLog(@"Regular expression error: %@ on pattern %@", error, regExPattern);
-        return nil;
-    }
-    NSTextCheckingResult *result = [regEx firstMatchInString:string options:0 range:NSMakeRange(0, [string length])];
-    if (result) {
-        NSRange range = [result rangeAtIndex:1];
-        return [string substringWithRange:range];
-    }else{
-        DebugLog(@"Parsing %@ with pattern %@ failed, Error: %@", string, regExPattern, error);
-        return nil;
-    }
-}
+
+
 
 @end

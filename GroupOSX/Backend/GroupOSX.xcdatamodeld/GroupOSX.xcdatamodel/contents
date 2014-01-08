@@ -26,14 +26,10 @@
     </entity>
     <entity name="Member" representedClassName="Member" syncable="YES">
         <attribute name="image" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="membership_id" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="muted" optional="YES" attributeType="Boolean" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="user_id" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="created_group" optional="YES" maxCount="1" deletionRule="Nullify" ordered="YES" destinationEntity="Group" inverseName="creator" inverseEntity="Group" syncable="YES"/>
-        <relationship name="favorited_messages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="favoritors" inverseEntity="Message" syncable="YES"/>
         <relationship name="membership_group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="members" inverseEntity="Group" syncable="YES"/>
-        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="creator" inverseEntity="Message" syncable="YES"/>
+        <relationship name="names" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Name" inverseName="owner" inverseEntity="Name" syncable="YES"/>
     </entity>
     <entity name="Message" representedClassName="Message" syncable="YES">
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
@@ -41,14 +37,23 @@
         <attribute name="system" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment" syncable="YES"/>
-        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="messages" inverseEntity="Member" syncable="YES"/>
-        <relationship name="favoritors" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Member" inverseName="favorited_messages" inverseEntity="Member" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Name" inverseName="messages" inverseEntity="Name" syncable="YES"/>
+        <relationship name="favoritors" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Name" inverseName="favorited_messages" inverseEntity="Name" syncable="YES"/>
         <relationship name="target_group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="messages" inverseEntity="Group" syncable="YES"/>
     </entity>
+    <entity name="Name" syncable="YES">
+        <attribute name="membership_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="muted" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="favorited_messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="favoritors" inverseEntity="Message" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="creator" inverseEntity="Message" syncable="YES"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="names" inverseEntity="Member" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Attachment" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Group" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Member" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Message" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Attachment" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="Group" positionX="187" positionY="450" width="128" height="210"/>
+        <element name="Member" positionX="-234" positionY="35" width="128" height="163"/>
+        <element name="Message" positionX="-225" positionY="312" width="128" height="165"/>
+        <element name="Name" positionX="160" positionY="192" width="128" height="88"/>
     </elements>
 </model>

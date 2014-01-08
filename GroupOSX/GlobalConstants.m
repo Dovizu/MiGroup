@@ -39,6 +39,10 @@ NSString * const kGetTypeKey = @"type";
 NSString * const kGetContentKey = @"message";
 
 //Messages posted by DNServerInterface
+NSString * const noteMessage = @"com.dovizu.grouposx.noteMessage";
+NSString * const noteMemberNameChange = @"com.dovizu.grouposx.noteMemberNameChange";
+NSString * const noteGroupAvatarChange = @"com.dovizu.grouposx.noteGroupAvatarChange";
+NSString * const noteGroupNameChange = @"com.dovizu.grouposx.noteGroupNameChange";
 NSString * const noteMembersRemove = @"com.dovizu.grouposx.noteMembersRemove";
 NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
 NSString * const noteAllGroupsFetch = @"com.dovizu.grouposx.forceRequestGroupData";
@@ -51,6 +55,10 @@ NSString * const k_image = @"image";
 NSString * const k_email = @"email";
 NSString * const k_phone_number = @"phone_number";
 NSString * const k_user_id = @"user_id";
+NSString * const k_membership_id = @"membership_id";
+NSString * const k_new_name = @"new_name";
+NSString * const k_message = @"messages";
+NSString * const k_messages = @"messages";
 
 //Triggers that caused polling methods to be called
 //organic triggers
