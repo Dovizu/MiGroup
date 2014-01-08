@@ -45,16 +45,6 @@
 
 @interface DNServerInterface ()
 
-//Internal bookkeeping
-@property BOOL authenticated;
-@property BOOL listening;
-@property AFHTTPRequestOperationManager *HTTPRequestManager;
-@property FayeClient *socketClient;
-
-//User information
-@property NSDictionary *userInfo;
-@property NSString *userToken;
-
 - (void)notifyMembersRemoveActionWithMemberName:(NSString*)name andGroupID:(NSString*)identifierGroupID;
 - (void)notifyMembersAddActionWithMemberNames:(NSArray*)names andGroupID:(NSString*)identifierGroupID;
 - (void)notifyGroupAvatarChangeActionWithGroupID:(NSString*)identifierGroupID;
@@ -67,11 +57,21 @@
 
 @implementation DNServerInterface
 {
-    
+    //Modules
     AFNetworkReachabilityManager *_reachabilityManager;
-    NSDictionary *_paramConversion;
+    AFHTTPRequestOperationManager *_HTTPRequestManager;
+    FayeClient *_socketClient;
     
+    //Book keeping
+    NSDictionary *_paramConversion;
+    NSMutableSet *_recentGUIDs;
+    NSString* _userToken;
+    NSDictionary *_userInfo;
+    
+    //State variables
     BOOL _authenticating;
+    BOOL _authenticated;
+    BOOL _listening;
     
     //Used by -(void)requestNextGroupsWithNewestResult:newestResult completionBlock:block
     NSInteger _currentPageNum;
@@ -117,6 +117,7 @@
 {
     //For network reachability change
     __weak DNServerInterface* block_self = self;
+    BOOL *_listening_pointer = &_listening;
     [_reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         NSLog(@"Reachability changed to %ld (blocks)", status);
         switch (status) {
@@ -129,7 +130,7 @@
             case AFNetworkReachabilityStatusNotReachable:
             {//variable assignment not allowed inside switch without explicit scope
                 DebugLog(@"Lost Connection to GroupMe");
-                block_self.listening = NO;
+                *_listening_pointer = NO;
                 NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
                 [block_self.loginSheetController.mainWindowController presentError:error];
                 break;
@@ -211,9 +212,9 @@
 //The almighty setup always makes sure everything is set up
 - (void)setup
 {
-    if (!self.authenticated) {
+    if (!_authenticated) {
         [self authenticate];
-    }else if(!self.listening){
+    }else if(!_listening){
         [self establishMessageSocket];
     }
 }
@@ -234,14 +235,14 @@
 {
     //To-Do: true logout includes logout in webview
     DebugLog(@"Deauthenticating...");
-    self.userToken = nil;
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:DNUserDefaultsUserToken];
-    self.userInfo = nil;
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:DNUserDefaultsUserInfo];
-    self.authenticated = NO;
+    _userToken = nil;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserToken];
+    _userInfo = nil;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserInfo];
+    _authenticated = NO;
     
-    [self.socketClient disconnectFromServer];
-    self.listening = NO;
+    [_socketClient disconnectFromServer];
+    _listening = NO;
         
     [self authenticate];
 }
@@ -252,11 +253,11 @@
     NSString *token = [url nxoauth2_valueForQueryParameterKey:@"access_token"];
     
     if (token) {
-        self.authenticated = YES;
+        _authenticated = YES;
         [self.loginSheetController closeLoginSheet];
         DebugLog(@"Server successfully authenticated with token: %@", token);
-        self.userToken = token;
-        [[NSUserDefaults standardUserDefaults] setObject:self.userToken forKey:DNUserDefaultsUserToken];
+        _userToken = token;
+        [[NSUserDefaults standardUserDefaults] setObject:_userToken forKey:DNUserDefaultsUserToken];
         _authenticating = NO;
         #ifdef DEBUG_BACKEND
         [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
@@ -267,16 +268,16 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
         
         [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
-            self.userInfo = userInfo;
+            _userInfo = userInfo;
             NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
             [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
-            DebugLog(@"UserInformation Changed: %@", self.userInfo);
+            DebugLog(@"UserInformation Changed: %@", _userInfo);
             [self establishSockets];
         }];
         
     }else{
         DebugLog(@"Server failed to retrieve token, authentication restart...");
-        self.authenticated = NO; //just to be sure
+        _authenticated = NO; //just to be sure
         [self.loginSheetController closeLoginSheet];
         [self authenticate]; //do it again
     }
@@ -284,24 +285,24 @@
 
 - (BOOL)isLoggedIn
 {
-    return self.authenticated;
+    return _authenticated;
 }
 
 - (BOOL)isListening
 {
-    return self.listening;
+    return _listening;
 }
 
 - (BOOL)isUser:(NSString*)name
 {
-    return self.authenticated && [self.userInfo[@"name"] isEqualToString:name];
+    return _authenticated && [_userInfo[@"name"] isEqualToString:name];
 }
 
 #pragma mark - Notification Reception (Web Sockets)
 
 - (void)establishSockets
 {
-    if (self.authenticated && !self.listening && _reachabilityManager.reachable) {
+    if (_authenticated && !_listening && _reachabilityManager.reachable) {
         [self establishMessageSocket];
     }
 }
@@ -309,12 +310,12 @@
 //One message socket is needed for the entire application
 - (void)establishMessageSocket
 {
-    self.socketClient = [[FayeClient alloc] initWithURLString:@"https://push.groupme.com/faye"
-                                         channel:[NSString stringWithFormat:@"/user/%@",self.userInfo[@"id"]]];
-    self.socketClient.delegate = self;
-    NSDictionary *externalInformation = @{@"access_token":self.userToken,
+    _socketClient = [[FayeClient alloc] initWithURLString:@"https://push.groupme.com/faye"
+                                         channel:[NSString stringWithFormat:@"/user/%@",_userInfo[@"id"]]];
+    _socketClient.delegate = self;
+    NSDictionary *externalInformation = @{@"access_token":_userToken,
                                           @"timestamp":[[NSDate date] description]};
-    [self.socketClient connectToServerWithExt:externalInformation];
+    [_socketClient connectToServerWithExt:externalInformation];
 }
 
 //This is a giant router of raw messages, the type of message dictates the next method to call, or nothing at all
@@ -395,7 +396,7 @@
 - (void)didSubscribeToChannel:(NSString *)channel
 {
     DebugLog(@"Subscribed to channel: %@", channel);
-    self.listening = YES;
+    _listening = YES;
 }
 - (void)didUnsubscribeFromChannel:(NSString *)channel
 {
@@ -428,7 +429,7 @@
 {
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    [self.HTTPRequestManager GET:@"users/me"
+    [_HTTPRequestManager GET:@"users/me"
                       parameters:@{@"token":_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject){
                              completeBlock((NSDictionary*)responseObject[@"response"]);
@@ -448,7 +449,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(groups, @"groups param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    [self.HTTPRequestManager GET:@"groups"
+    [_HTTPRequestManager GET:@"groups"
                       parameters:@{@"token":_userToken,
                                    @"page":NSNumber(nthPage),
                                    @"per_page":NSNumber(groups)}
@@ -466,7 +467,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 {
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    [self.HTTPRequestManager GET:@"groups/former"
+    [_HTTPRequestManager GET:@"groups/former"
                       parameters:@{@"token":_userToken}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              completeBlock((NSArray*)responseObject[@"response"]);
@@ -484,7 +485,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(groupID, @"groupID param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    [self.HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
+    [_HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
                       parameters:@{@"token":_userToken,
                                    @"id":groupID}
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
