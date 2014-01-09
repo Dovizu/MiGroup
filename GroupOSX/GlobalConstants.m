@@ -14,7 +14,6 @@ NSString * const DNOAuth2AuthorizationURL = @"https://api.groupme.com/oauth/auth
 NSString * const DNOAuth2TokenURL = @"gosx://token/";
 NSString * const DNOAuth2RedirectURL = @"gosx://token/";
 NSString * const DNOAuth2TokenArgumentKey = @"access_token";
-NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
 
 //RESTful constants
 NSString * const HTTPMethod = @"HTTPMethod";
@@ -57,6 +56,7 @@ NSString * const k_image = @"image_url";
 NSString * const k_email = @"email";
 NSString * const k_phone_number = @"phone_number";
 NSString * const k_user_id = @"user_id";
+NSString * const k_share_url = @"share_url";
 NSString * const k_membership_id = @"id";
 NSString * const k_new_name = @"new_name";
 NSString * const k_message = @"messages";

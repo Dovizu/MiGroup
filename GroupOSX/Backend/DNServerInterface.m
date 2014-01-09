@@ -7,7 +7,7 @@
 //
 
 #import "DNServerInterface.h"
-
+#import "DNRESTAPIInterface.h"
 #import "DNLoginSheetController.h"
 #import "DNMainWindowController.h"
 
@@ -57,8 +57,7 @@ enum DNJSONDictionaryType {
 @implementation DNServerInterface
 {
     //Modules
-    AFNetworkReachabilityManager *_reachabilityManager;
-    AFHTTPRequestOperationManager *_HTTPRequestManager;
+    DNRESTAPIInterface *API;
     FayeClient *_socketClient;
     NSNotificationCenter *_notificationCenter;
     
@@ -85,13 +84,7 @@ enum DNJSONDictionaryType {
 {
     self = [super init];
     if (self){
-        //Modules
-        _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
-        NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
-        [acceptableTypes addObject:@"text/html"];
-        _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
-        _reachabilityManager = [_HTTPRequestManager reachabilityManager];
-        //FayeClient initialization needs to wait for userInformation to be populated or (void)setup to be called
+        
         _notificationCenter = [NSNotificationCenter defaultCenter];
         
         //Book keeping
@@ -103,14 +96,11 @@ enum DNJSONDictionaryType {
         _userToken = nil; //force re-authenticate
         #endif
         
-        if (_userToken) {
-            _authenticated = YES;
-        }
-        
-        //For network reachability change
+        //API Setup
+        API = [[DNRESTAPIInterface alloc] init];
         __weak DNServerInterface* block_self = self;
         BOOL *_listening_pointer = &_listening;
-        [_reachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        [API setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
             NSLog(@"Reachability changed to %ld (blocks)", status);
             switch (status) {
                 case AFNetworkReachabilityStatusReachableViaWiFi:
@@ -132,6 +122,10 @@ enum DNJSONDictionaryType {
                     break;
             }
         }];
+        if (_userToken) {
+            _authenticated = YES;
+            [API setUserToken:_userToken];
+        }
     }
     return self;
 }
@@ -251,7 +245,7 @@ enum DNJSONDictionaryType {
     num = 1; //Small to see if repeated polling works or not
 #endif
     
-    [self GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+    [API GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
         [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
     }];
 }
@@ -347,7 +341,6 @@ enum DNJSONDictionaryType {
         default:
             break;
     }
-
     return newDict;
 }
 
@@ -370,7 +363,7 @@ enum DNJSONDictionaryType {
         NSString *name = nil;
         //GROUP MEMBER REMOVED
         if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
-            NSDictionary *userInfo = @{k_name:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
+            NSDictionary *userInfo = @{k_name_member:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
             [_notificationCenter postNotificationName:noteMembersRemove object:nil userInfo:userInfo];
         }
         //GROUP MEMBER ADDED
@@ -380,7 +373,7 @@ enum DNJSONDictionaryType {
             if ([names count] == 0) {
                 DebugLog(@"Failed to find any names in alert string");
             }
-            [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
+            [API GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
                 NSArray *allMembers = groupDict[@"members"];
                 //Filter only users with "nickname" in names array
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF[%@] IN %@)", @"nickname", names];
@@ -393,11 +386,11 @@ enum DNJSONDictionaryType {
                 NSMutableArray *newMembersWithImages = [[NSMutableArray alloc] initWithCapacity:[newMembers count]];
                 [newMembers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                     NSDictionary *member = (NSDictionary*)obj;
-                    NSDictionary *convertedMember = @{k_name:           member[@"nickname"],
-                                                      k_membership_id:  member[@"id"],
-                                                      k_image:          [self helpURLFromString:member[@"image_url"]],
-                                                      k_user_id:        member[@"user_id"],
-                                                      k_muted:          [self helpBooleanFromWord:member[@"muted"]]};
+                    NSDictionary *convertedMember = @{k_name_member:           member[k_name_member],
+                                                      k_membership_id:  member[k_membership_id],
+                                                      k_image:          [self helpURLFromString:member[k_image]],
+                                                      k_user_id:        member[k_user_id],
+                                                      k_muted:          [self helpBooleanFromWord:member[k_muted]]};
                     [newMembersWithImages addObject:convertedMember];
                 }];
                 NSDictionary *userInfo = @{k_members:newMembersWithImages, k_group_id:identifierGroupID};
@@ -409,12 +402,12 @@ enum DNJSONDictionaryType {
         else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
             [_notificationCenter postNotificationName:noteGroupNameChange
                                                object:nil
-                                             userInfo:@{k_name: name,
+                                             userInfo:@{k_name_group: name,
                                                         k_group_id: identifierGroupID}];
         }
         //GROUP AVATAR CHANGED
         else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
-            [self GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
+            [API GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
                 [_notificationCenter postNotificationName:noteGroupAvatarChange
                                                    object:nil
                                                  userInfo:@{k_image: [self helpURLFromString:groupDict[@"image_url"]],
@@ -432,7 +425,7 @@ enum DNJSONDictionaryType {
                 newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
                 [_notificationCenter postNotificationName:noteMemberNameChange
                                                    object:nil
-                                                 userInfo:@{k_name: oldName,
+                                                 userInfo:@{k_name_member: oldName,
                                                             k_new_name: newName,
                                                             k_group_id: identifierGroupID}];
             }else{
@@ -495,8 +488,8 @@ enum DNJSONDictionaryType {
 
 - (void)authenticate
 {
-    DebugLog(@"Reachability: %hhd", _reachabilityManager.reachable);
-    if (!_authenticating && !_authenticated && _reachabilityManager.reachable) {
+    DebugLog(@"Reachability: %hhd", [API isReachable]);
+    if (!_authenticating && !_authenticated && [API isReachable]) {
         _authenticating = YES;
         NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
@@ -531,6 +524,7 @@ enum DNJSONDictionaryType {
         [self.loginSheetController closeLoginSheet];
         DebugLog(@"Server successfully authenticated with token: %@", token);
         _userToken = token;
+        [API setUserToken:token];
         [[NSUserDefaults standardUserDefaults] setObject:_userToken forKey:DNUserDefaultsUserToken];
         _authenticating = NO;
         #ifdef DEBUG_BACKEND
@@ -541,7 +535,7 @@ enum DNJSONDictionaryType {
         //First time log-on
         [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
         
-        [self UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
+        [API UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
             _userInfo = userInfo;
             NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
             [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
@@ -576,7 +570,7 @@ enum DNJSONDictionaryType {
 
 - (void)establishSockets
 {
-    if (_authenticated && !_listening && _reachabilityManager.reachable) {
+    if (_authenticated && !_listening && [API isReachable]) {
         [self establishMessageSocket];
     }
 }
@@ -638,384 +632,5 @@ enum DNJSONDictionaryType {
     callback(messageDict); //callback is critical, it actually sends the message
 }
 #endif
-
-
-#pragma mark - HTTP Requests Methods (Low-Level)
-
-//Users - me
-//Response should be a dictionary
-- (void)UsersGetInformationAndCompleteBlock:(void(^)(NSDictionary* userDict))completeBlock
-{
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [_HTTPRequestManager GET:@"users/me"
-                      parameters:@{@"token":_userToken}
-                         success:^(AFHTTPRequestOperation *operation, id responseObject){
-                             completeBlock((NSDictionary*)responseObject[@"response"]);
-                         }
-                         failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                             report_request_error;
-                             completeBlock(nil);
-                         }];
-}
-
-//Groups - Index
-//Response should be an array of dictionaries
-- (void)GroupsIndexPage:(NSInteger)nthPage
-                   with:(NSInteger)groups
-perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
-{
-    NSAssert(nthPage, @"nthPage param cannot be nil");
-    NSAssert(groups, @"groups param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [_HTTPRequestManager GET:@"groups"
-                      parameters:@{@"token":_userToken,
-                                   @"page":NSNumber(nthPage),
-                                   @"per_page":NSNumber(groups)}
-                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             completeBlock((NSArray*)responseObject[@"response"]);
-                         }
-                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             report_request_error;
-                             completeBlock(nil);
-                         }];
-}
-
-//Groups - Former
-//Response should be an array of dictionaries
-- (void)GroupsFormerAndCompleteBlock:(void(^)(NSArray* formerGroupArray))completeBlock
-{
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [_HTTPRequestManager GET:@"groups/former"
-                      parameters:@{@"token":_userToken}
-                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             completeBlock((NSArray*)responseObject[@"response"]);
-                         }
-                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             report_request_error;
-                             completeBlock(nil);
-                         }];
-}
-
-//Groups - Show
-//Response should be a dictionary
-- (void)GroupsShow:(NSString*)groupID
-  andCompleteBlock:(void(^)(NSDictionary* groupDict))completeBlock
-{
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [_HTTPRequestManager GET:concatStrings(@"groups/%@", groupID)
-                      parameters:@{@"token":_userToken,
-                                   @"id":groupID}
-                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             completeBlock((NSDictionary*)responseObject[@"response"]);
-                         }
-                         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             report_request_error;
-                             completeBlock(nil);
-                         }];
-}
-
-//Groups - Create
-//Response should be a dictionary
-- (void)GroupsCreateName:(NSString*)name
-             description:(NSString*)description
-                   image:(id)image
-                share:(BOOL)allowShare
-              andCompleteBlock:(void(^)(NSDictionary* createdGroupDict))completeBlock
-{
-    NSAssert(name, @"name param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    void (^createGroup)(NSString*) = ^void(NSString* imageURL){
-        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        [params setObject:name          forKey:@"name"];
-        [params setObject:_userToken    forKey:@"token"];
-        if (description)    {[params setObject:description  forKey:@"description"];}
-        if (imageURL)       {[params setObject:imageURL     forKey:@"image_url"];}
-        if (allowShare)     {[params setObject:@"true"      forKey:@"share"];}
-        [_HTTPRequestManager POST:@"groups"
-                       parameters:params
-                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                              completeBlock((NSDictionary*)responseObject[@"response"]);
-                          }
-                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                              report_request_error;
-                              completeBlock(nil);
-                          }];
-
-    };
-    if (image) {
-        [self helpAsyncUploadImageToGroupMe:image usingBlock:^(NSString *imageURL) {
-            createGroup(imageURL);
-        }];
-    }else{
-        createGroup(nil);
-    }
-}
-
-//Groups - Update
-//Response should be a dictionary
-- (void)GroupsUpdate:(NSString*)groupID
-            withName:(NSString*)name
-         description:(NSString*)description
-               image:(id)image
-             orShare:(BOOL)allowShare
-    andCompleteBlock:(void(^)(NSDictionary* updatedGroupDict))completeBlock
-{
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    void (^updateGroup)(NSString*) = ^void(NSString* imageURL){
-        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        [params setObject:_userToken forKey:@"token"];
-        if (name)           {[params setObject:name forKey:@"name"];}
-        if (description)    {[params setObject:description forKey:@"description"];}
-        if (allowShare)     {[params setObject:@"true" forKey:@"share"];}else{[params setObject:@"false" forKey:@"share"];}
-        if (imageURL)       {[params setObject:imageURL forKey:@"image"];}
-        //"baseURL/groups/group_id/update"
-        [_HTTPRequestManager POST:concatStrings(@"groups/%@/update", groupID)
-                       parameters:params
-                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                              completeBlock((NSDictionary*)responseObject[@"response"]);
-                          }
-                          failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                              report_request_error;
-                              completeBlock(nil);
-                          }];
-    };
-    if (image) {
-        [self helpAsyncUploadImageToGroupMe:image usingBlock:^(NSString *imageURL) {
-            updateGroup(imageURL);
-        }];
-    }else{
-        updateGroup(nil);
-    }
-}
-
-//Groups - Destroy
-//Response should be a status
-- (void)GroupsDestroy:(NSString*)groupID andCompleteBlock:(void(^)(NSString* deleted_group_id))completeBlock
-{
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/destroy", groupID)
-                   parameters:@{@"token": _userToken}
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          completeBlock(groupID);
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          //Do not expect a response but does check statusCode
-                          if ([[operation response] statusCode] / 100 == 2) {
-                              completeBlock(groupID);
-                              completeBlock(nil);
-                          }else{
-                              report_request_error;
-                          }
-                      }];
-}
-
-//Members - Add
-//Response should be a dictionary
-- (void)MembersAdd:(NSArray*)members toGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* addedMembers))completeBlock
-{
-    NSAssert((members), @"members param cannot be nil");
-    NSAssert([members count], @"members param cannot be empty array");
-    NSAssert([members[0] isKindOfClass:[NSDictionary class]], @"members param does not contain dictionaries");
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    [members enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id obj, NSUInteger __unused idx, BOOL __unused *stop) {
-        NSDictionary *member = (NSDictionary*)obj;
-        NSAssert(member[@"nickname"], @"One or more users don't have a valid nickname");
-    }];
-    
-    NSDictionary *userInfo = @{@"members": members,
-                               @"token": _userToken};
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/add", groupID)
-                   parameters:userInfo
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          [self MembersResults:((NSDictionary*)responseObject)[@"response"][@"results_id"]
-                                       inGroup:groupID
-                              andCompleteBlock:completeBlock
-                                       attempt:1];
-                      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          report_request_error;
-                      }];
-}
-
-//Members - Remove
-//Response should be the removed member's membership ID
-- (void)MembersRemoveUser:(NSString*)membershipID
-            fromGroup:(NSString*)groupID
-     andCompleteBlock:(void(^)(NSString* removedMembershipID))completeBlock
-{
-    NSAssert(membershipID, @"membershipID param cannot be nil");
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    NSDictionary *params = @{@"token": _userToken};
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/members/%@/remove", groupID, membershipID)
-                   parameters:params
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                           completeBlock(membershipID);
-                      }
-                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          report_request_error;
-                          completeBlock(nil);
-                      }];
-}
-
-//Members - Results
-//Response should be an array
-- (void)MembersResults:(NSString*)resultsID
-               inGroup:(NSString*)groupID
-      andCompleteBlock:(void(^)(NSArray* addedMembers))completeBlock
-               attempt:(NSInteger)nthAttempt
-{
-    NSAssert(resultsID, @"resultsID param cannot be nil");
-    NSAssert(completeBlock, @"completeBlock cannot be nil");
-    NSAssert(nthAttempt, @"nthAttempt cannot be nil or 0");
-    if (nthAttempt > 10) {
-        DebugLog(@"Error fetching results for newly added members");
-        completeBlock(nil);
-        return;
-    }
-    
-    NSDictionary *params = @{@"token": _userToken,
-                            @"results_id": resultsID};
-    [_HTTPRequestManager GET:concatStrings(@"groups/%@/members/results/%@", groupID, resultsID)
-                  parameters:params
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         completeBlock(((NSDictionary*)responseObject)[@"response"][@"members"]);
-                     }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         report_request_error;
-                         dispatch_queue_t queue = dispatch_queue_create("com.dovizu.grouposx.resultsFetching", DISPATCH_QUEUE_CONCURRENT);
-                         dispatch_async(queue, ^{
-                             NSLog(@"%@", [NSThread currentThread]);
-                             usleep(1000000); //wait for 1 second and try again
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 [self MembersResults:resultsID
-                                              inGroup:groupID
-                                     andCompleteBlock:completeBlock
-                                              attempt:nthAttempt+1];
-                             });
-                         });
-                     }];
-}
-
-//Messages - Index Before
-//Response should be a dictionary
-- (void)MessagesIndex20BeforeID:(NSString*)beforeID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
-{
-    NSAssert(beforeID, @"beforeID param cannot be nil");
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    NSDictionary *params = @{@"token":    _userToken,
-                             @"before_id": beforeID};
-    [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
-                  parameters:params
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         completeBlock(((NSDictionary*)responseObject)[@"messages"]);
-                     }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         report_request_error;
-                         completeBlock(nil);
-                     }];
-}
-
-//Messages - Index Since
-//Response should be a dictionary
-- (void)MessagesIndexMostRecent20SinceID:(NSString*)sinceID inGroup:(NSString*)groupID andCompleteBlock:(void(^)(NSArray* messages))completeBlock
-{
-    NSAssert(sinceID, @"sinceID cannot be nil");
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-    NSDictionary *params = @{@"token":    _userToken,
-                             @"since_id": sinceID};
-    [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
-                  parameters:params
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         if (completeBlock) {
-                             completeBlock(((NSDictionary*)responseObject)[@"messages"]);
-                         }
-                     }
-                     failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         report_request_error;
-                         completeBlock(nil);
-                     }];
-}
-
-//Messages - Create
-//Response should be a dictionary
-- (void)MessagesCreateInGroup:(NSString*)groupID
-                         text:(NSString*)text
-                  attachments:(NSArray*)arrayOfAttach
-             andCompleteBlock:(void(^)(NSDictionary* sentMessage))completeBlock
-{
-    NSAssert(groupID, @"groupID param cannot be nil");
-    NSAssert(text, @"text param cannot be nil");
-    NSAssert(completeBlock, @"completion block cannot be nil");
-    
-
-    arrayOfAttach = nil; //Not releasing this feature yet
-    if (arrayOfAttach){
-        NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[arrayOfAttach count]];
-        
-        //The block that processes an attachment
-        void (^processAttachment)(NSDictionary*) = ^void(NSDictionary* attachment){
-            if ([attachment[@"type"]  isEqual: @"image"]) {
-                //do something about the image, check its validity
-            }else if ([attachment[@"type"] isEqualToString:@"location"]){
-                //do something about location, check its validity
-            }else if ([attachment[@"type"] isEqualToString:@"split"]){
-                //do something about the split, check its validity
-            }else if ([attachment[@"type"] isEqualToString:@"emoji"]){
-                //do something about this emoji, check its validity
-            }
-        };
-        
-        [arrayOfAttach enumerateObjectsWithOptions:NSEnumerationConcurrent
-                                        usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                                            processAttachment((NSDictionary*)obj);
-                                        }];
-        arrayOfAttach = convertedAttachments;
-    }
-    NSDictionary *params = @{@"source_guid": @"source_guid_here",
-                             @"text": text};
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages", groupID)
-                   parameters:params
-                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          completeBlock((NSDictionary*)responseObject[@"message"]);
-                      }
-                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                          report_request_error;
-                          completeBlock(nil);
-                      }];
-}
-
-//Image Service
-//Response should be a string of URL, nil if upload failed
-- (void)helpAsyncUploadImageToGroupMe:(id)image usingBlock:(void(^)(NSString* imageURL))completeBlock
-{
-    NSAssert(image, @"Image cannot be nil");
-    NSString *imageURL = nil;
-    //upload image
-    completeBlock(imageURL);
-}
-
-
-#pragma mark - Helper Methods for Notification Processing
-
-
-
-
-
 
 @end

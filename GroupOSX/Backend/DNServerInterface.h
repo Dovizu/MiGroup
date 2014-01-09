@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking.h>
 #import <FayeClient.h>
 #import "NSURL+NXOAuth2.h"
 
+@class DNRESTAPIInterface;
 @class DNLoginSheetController;
 @class DNMainWindowController;
 

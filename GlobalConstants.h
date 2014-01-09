@@ -16,7 +16,6 @@ extern NSString * const DNOAuth2AuthorizationURL;
 extern NSString * const DNOAuth2TokenURL;
 extern NSString * const DNOAuth2RedirectURL;
 extern NSString * const DNOAuth2TokenArgumentKey;
-extern NSString * const DNRESTAPIBaseAddress;
 
 //RESTful constants
 extern NSString * const HTTPMethod;
@@ -44,7 +43,8 @@ extern NSString * const noteMembersAdd;
 extern NSString * const noteGroupAvatarChange;
 
 //Database attribute names
-extern NSString * const k_name;
+extern NSString * const k_name_group;
+extern NSString * const k_name_member;
 extern NSString * const k_group_id;
 extern NSString * const k_created_at;
 extern NSString * const k_type;
