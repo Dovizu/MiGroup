@@ -37,14 +37,25 @@ extern NSString * const noteMessage;
 extern NSString * const noteFirstTimeLogon;
 extern NSString * const noteMemberNameChange;
 extern NSString * const noteAllGroupsFetch;
+extern NSString * const noteGroupInfoFetch;
 extern NSString * const noteGroupNameChange;
+extern NSString * const noteGroupCreate;
+extern NSString * const noteGroupUpdate;
+extern NSString * const noteGroupRemove;
 extern NSString * const noteMembersRemove;
 extern NSString * const noteMembersAdd;
 extern NSString * const noteGroupAvatarChange;
+extern NSString * const noteMessageBeforeFetch;
+extern NSString * const noteMessageSinceFetch;
+extern NSString * const noteFormerGroupsFetch;
+
 
 //Database attribute names
 extern NSString * const k_name_group;
 extern NSString * const k_name_member;
+extern NSString * const k_fetched_groups;
+extern NSString * const k_fetched_group;
+extern NSString * const k_group;
 extern NSString * const k_group_id;
 extern NSString * const k_created_at;
 extern NSString * const k_type;

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
 
-@interface DNRESTAPIInterface : NSObject
+@interface DNRESTAPI : NSObject
 
 #pragma mark - Initialization and State Control
 - (id)init;

@@ -42,11 +42,20 @@ NSString * const noteMessage = @"com.dovizu.grouposx.noteMessage";
 NSString * const noteMemberNameChange = @"com.dovizu.grouposx.noteMemberNameChange";
 NSString * const noteGroupAvatarChange = @"com.dovizu.grouposx.noteGroupAvatarChange";
 NSString * const noteGroupNameChange = @"com.dovizu.grouposx.noteGroupNameChange";
+NSString * const noteGroupUpdate = @"com.dovizu.grouposx.noteGroupUpdate";
+NSString * const noteGroupRemove = @"com.dovizu.grouposx.noteGroupRemove";
+NSString * const noteGroupInfoFetch = @"com.dovizu.grouposx.noteGroupInfoFetch";
+NSString * const noteGroupCreate = @"com.dovizu.grouposx.noteGroupCreate";
 NSString * const noteMembersRemove = @"com.dovizu.grouposx.noteMembersRemove";
 NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
 NSString * const noteAllGroupsFetch = @"com.dovizu.grouposx.forceRequestGroupData";
-
+NSString * const noteFormerGroupsFetch = @"com.dovizu.grouposx.forceRequestFormerGroupData";
+NSString * const noteMessageBeforeFetch = @"com.dovizu.grouposx.messageBeforeFetch";
+NSString * const noteMessageSinceFetch = @"com.dovizu.grouposx.messageSinceFetch";
 //Database attribute names
+NSString * const k_fetched_groups = @"fetched_groups";
+NSString * const k_fetched_group = @"fetched_group";
+NSString * const k_group = @"group";
 NSString * const k_name_group = @"name";
 NSString * const k_name_member = @"nickname";
 NSString * const k_group_id = @"id";

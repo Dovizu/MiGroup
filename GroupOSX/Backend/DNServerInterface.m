@@ -7,7 +7,7 @@
 //
 
 #import "DNServerInterface.h"
-#import "DNRESTAPIInterface.h"
+#import "DNRESTAPI.h"
 #import "DNLoginSheetController.h"
 #import "DNMainWindowController.h"
 
@@ -57,7 +57,7 @@ enum DNJSONDictionaryType {
 @implementation DNServerInterface
 {
     //Modules
-    DNRESTAPIInterface *API;
+    DNRESTAPI *API;
     FayeClient *_socketClient;
     NSNotificationCenter *_notificationCenter;
     
@@ -97,7 +97,7 @@ enum DNJSONDictionaryType {
         #endif
         
         //API Setup
-        API = [[DNRESTAPIInterface alloc] init];
+        API = [[DNRESTAPI alloc] init];
         __weak DNServerInterface* block_self = self;
         BOOL *_listening_pointer = &_listening;
         [API setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
@@ -137,52 +137,102 @@ enum DNJSONDictionaryType {
                toGroup:(NSString*)groupID
        withAttachments:(NSArray*)attachments
 {
+    [API MessagesCreateInGroup:groupID
+                          text:message
+                   attachments:nil
+              andCompleteBlock:^(NSDictionary *sentMessage) {
+                  [_notificationCenter postNotificationName:noteMessage
+                                                     object:nil
+                                                   userInfo:[self helpConvertRawDictionary:sentMessage
+                                                                                    ofType:DNMessageJSONDictionary]];
+              }];
     
 }
 
 - (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
                                inGroup:(NSString*)groupID
 {
-    
+    [API MessagesIndex20BeforeID:beforeID
+                         inGroup:groupID
+                andCompleteBlock:^(NSArray *messages) {
+                    NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+                    for (NSDictionary* msg in messages) {
+                        [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
+                    }
+                    [_notificationCenter postNotificationName:noteMessageBeforeFetch
+                                                       object:nil userInfo:@{k_messages: messagesConverted}];
+                }];
 }
 
 - (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
                                         inGroup:(NSString*)groupID
 {
-    
+    [API MessagesIndexMostRecent20SinceID:sinceID
+                                  inGroup:groupID
+                         andCompleteBlock:^(NSArray *messages) {
+                             NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+                             for (NSDictionary* msg in messages) {
+                                 [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
+                             }
+                             [_notificationCenter postNotificationName:noteMessageSinceFetch
+                                                                object:nil userInfo:@{k_messages: messagesConverted}];
+                         }];
 }
 
 //Members
 - (void)addNewMembers:(NSArray*)members
               toGroup:(NSString*)groupID
 {
-    
+    [API MembersAdd:members toGroup:groupID
+   andCompleteBlock:^(NSArray *addedMembers) {
+       //Do nothing because Central Message Router will take care of this comeback notification
+   }];
 }
 
 //relies on result fetching for comeback update
 - (void)removeMember:(NSString*)membershipID
            fromGroup:(NSString*)groupID
 {
-    
+    [API MembersRemoveUser:membershipID
+                 fromGroup:groupID
+          andCompleteBlock:^(NSString *removedMembershipID) {
+              //Do nothing because Central Message Router will take care of this comeback notification
+          }];
 }
 //relies on Message Router for comeback update
 
 - (void)fetchAllGroups
 {
     [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
-        [_notificationCenter postNotificationName:noteAllGroupsFetch object:nil userInfo:@{kGetContentKey: groupList}];
+        [_notificationCenter postNotificationName:noteAllGroupsFetch
+                                           object:nil
+                                         userInfo:@{k_fetched_groups: groupList}];
     }];
 }
 
 
 - (void)fetchFormerGroups
 {
-    
+    [API GroupsFormerAndCompleteBlock:^(NSArray *formerGroupArray) {
+        NSMutableArray *formerGroupsConverted = [[NSMutableArray alloc] initWithCapacity:[formerGroupArray count]];
+        for (NSDictionary* formerGroup in formerGroupArray) {
+            [formerGroupsConverted addObject:[self helpConvertRawDictionary:formerGroup ofType:DNGroupJSONDictionary]];
+        }
+        [_notificationCenter postNotificationName:noteFormerGroupsFetch
+                                           object:nil
+                                         userInfo:@{k_fetched_groups: formerGroupsConverted}];
+    }];
 }
 
 - (void)fetchInformationForGroup:(NSString*)groupID
 {
-    
+    [API GroupsShow:groupID
+   andCompleteBlock:^(NSDictionary *groupDict) {
+       [_notificationCenter postNotificationName:noteGroupInfoFetch
+                                          object:nil
+                                        userInfo:@{k_fetched_group: [self helpConvertRawDictionary:groupDict
+                                                                                            ofType:DNGroupJSONDictionary]}];
+   }];
 }
 
 - (void)createGroupNamed:(NSString*)name
@@ -190,7 +240,16 @@ enum DNJSONDictionaryType {
                    image:(id)image
                 andShare:(BOOL)allowShare
 {
-    
+    [API GroupsCreateName:name
+              description:description
+                    image:image
+                    share:allowShare
+         andCompleteBlock:^(NSDictionary *createdGroupDict) {
+             [_notificationCenter postNotificationName:noteGroupCreate
+                                                object:nil
+                                              userInfo:@{k_group: [self helpConvertRawDictionary:createdGroupDict
+                                                                                          ofType:DNGroupJSONDictionary]}];
+         }];
 }
 
 - (void)updateGroup:(NSString*)groupID
@@ -199,12 +258,27 @@ enum DNJSONDictionaryType {
               image:(id)image
            andShare:(BOOL)allowShare
 {
-    
+    [API GroupsUpdate:groupID
+             withName:name
+          description:description
+                image:image
+              orShare:allowShare
+     andCompleteBlock:^(NSDictionary *updatedGroupDict) {
+         [_notificationCenter postNotificationName:noteGroupUpdate
+                                            object:nil
+                                          userInfo:@{k_group: [self helpConvertRawDictionary:updatedGroupDict
+                                                                                      ofType:DNGroupJSONDictionary]}];
+     }];
 }
 
 - (void)deleteGroup:(NSString*)groupID
 {
-    
+    [API GroupsDestroy:groupID
+      andCompleteBlock:^(NSString *deleted_group_id) {
+          [_notificationCenter postNotificationName:noteGroupRemove
+                                             object:nil
+                                           userInfo:@{k_group_id: deleted_group_id}];
+      }];
 }
 
 
@@ -250,10 +324,11 @@ enum DNJSONDictionaryType {
     }];
 }
 
-- (NSDate*)helpConvertToDateFromStringOfSeconds:(NSString *)secondsString
+- (NSDate*)helpConvertToDateFromSeconds:(NSNumber*)seconds
 {
     NSDate *date = nil;
     NSRegularExpression *dateRegEx = nil;
+    NSString *secondsString = [NSString stringWithFormat:@"%@", seconds];
     dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
                                                      options:NSRegularExpressionCaseInsensitive error:nil];
     NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:secondsString
@@ -306,9 +381,9 @@ enum DNJSONDictionaryType {
     switch (type) {
         case DNGroupJSONDictionary:{
             newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
-            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_updated_at]]);
+            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromSeconds:oldDict[k_updated_at]]);
             newDict[k_share_url] = ifThen(oldDict[k_share_url], [self helpURLFromString:oldDict[k_share_url]]);
-            newDict[k_created_at] = ifThen(oldDict[k_created_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_created_at]]);
+            newDict[k_created_at] = ifThen(oldDict[k_created_at], [self helpConvertToDateFromSeconds:oldDict[k_created_at]]);
             if (oldDict[k_members]) {
                 NSMutableArray *convertedMembers = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_members] count]];
                 for (NSDictionary* member in oldDict[k_members]) {
@@ -319,12 +394,10 @@ enum DNJSONDictionaryType {
             break;
         }
         case DNMemberJSONDictionary:{
-            newDict[k_muted] = ifThen(oldDict[k_muted], [self helpBooleanFromWord:oldDict[k_muted]]);
             newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
             break;
         }
         case DNMessageJSONDictionary:{
-            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromStringOfSeconds:oldDict[k_updated_at]]);
             if (oldDict[k_attachments]) {
                 NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
                 for (NSDictionary* attachment in oldDict[k_attachments]) {
@@ -386,11 +459,11 @@ enum DNJSONDictionaryType {
                 NSMutableArray *newMembersWithImages = [[NSMutableArray alloc] initWithCapacity:[newMembers count]];
                 [newMembers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                     NSDictionary *member = (NSDictionary*)obj;
-                    NSDictionary *convertedMember = @{k_name_member:           member[k_name_member],
+                    NSDictionary *convertedMember = @{k_name_member:    member[k_name_member],
                                                       k_membership_id:  member[k_membership_id],
                                                       k_image:          [self helpURLFromString:member[k_image]],
                                                       k_user_id:        member[k_user_id],
-                                                      k_muted:          [self helpBooleanFromWord:member[k_muted]]};
+                                                      k_muted:          member[k_muted]};
                     [newMembersWithImages addObject:convertedMember];
                 }];
                 NSDictionary *userInfo = @{k_members:newMembersWithImages, k_group_id:identifierGroupID};
@@ -406,7 +479,7 @@ enum DNJSONDictionaryType {
                                                         k_group_id: identifierGroupID}];
         }
         //GROUP AVATAR CHANGED
-        else if ([identifierAlert rangeOfString:@"(?:.+) changed the group's avatar"].location != NSNotFound){
+        else if ([identifierAlert rangeOfString:@"changed the group's avatar"].location != NSNotFound){
             [API GroupsShow:identifierGroupID andCompleteBlock:^(NSDictionary *groupDict) {
                 [_notificationCenter postNotificationName:noteGroupAvatarChange
                                                    object:nil
@@ -440,12 +513,11 @@ enum DNJSONDictionaryType {
     }
     //MESSAGES BY ANOTHER MEMBER
     else{
-        NSMutableDictionary *message = [identifiersSubject mutableCopy];
-        message[@"message_id"] = messageDict[@"id"];
         //No attachment support yet
         [_notificationCenter postNotificationName:noteMessage
                                            object:nil
-                                         userInfo:@{k_message: message}];
+                                         userInfo:[self helpConvertRawDictionary:identifiersSubject
+                                                                          ofType:DNMessageJSONDictionary]];
     }
 }
 
@@ -610,6 +682,11 @@ enum DNJSONDictionaryType {
 {
     DebugLog(@"Subscribed to channel: %@", channel);
     _listening = YES;
+//    [self addNewMembers:@[@{k_name_member:@"kha", k_user_id:@"11201736"}] toGroup:@"6736514"];
+//    [self removeMember:@"35121596" fromGroup:@"6736514"];
+//    [self fetchAllGroups];
+//    [self fetch20MessagesBeforeMessageID:@"138923697178086374" inGroup:@"4011747"];
+    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
 }
 - (void)didUnsubscribeFromChannel:(NSString *)channel
 {

@@ -36,7 +36,7 @@
 		F1840B9C1877B25600C399DA /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B9B1877B25600C399DA /* Group.m */; };
 		F1840B9F1877B25700C399DA /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = F1840B9E1877B25600C399DA /* Message.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
-		F1A4F59B187E18D9004838DE /* DNRESTAPIInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A4F59A187E18D9004838DE /* DNRESTAPIInterface.m */; };
+		F1A4F59B187E18D9004838DE /* DNRESTAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A4F59A187E18D9004838DE /* DNRESTAPI.m */; };
 		F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
 		F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */ = {isa = PBXBuildFile; fileRef = F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */; };
 		F1F5C5EE186CF52500C407A3 /* DNMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F1F5C5ED186CF52500C407A3 /* DNMainWindowController.m */; };
@@ -137,8 +137,8 @@
 		F1840B9D1877B25600C399DA /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = GroupOSX/Backend/Message.h; sourceTree = "<group>"; };
 		F1840B9E1877B25600C399DA /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = GroupOSX/Backend/Message.m; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		F1A4F599187E18D9004838DE /* DNRESTAPIInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNRESTAPIInterface.h; path = GroupOSX/Backend/DNRESTAPIInterface.h; sourceTree = "<group>"; };
-		F1A4F59A187E18D9004838DE /* DNRESTAPIInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNRESTAPIInterface.m; path = GroupOSX/Backend/DNRESTAPIInterface.m; sourceTree = "<group>"; };
+		F1A4F599187E18D9004838DE /* DNRESTAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNRESTAPI.h; path = GroupOSX/Backend/DNRESTAPI.h; sourceTree = "<group>"; };
+		F1A4F59A187E18D9004838DE /* DNRESTAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNRESTAPI.m; path = GroupOSX/Backend/DNRESTAPI.m; sourceTree = "<group>"; };
 		F1B21D4018793FF700E3E6E2 /* GroupOSX 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GroupOSX 2.xcdatamodel"; sourceTree = "<group>"; };
 		F1BD286B18715BA600D797A9 /* NSURLConnection+Tagged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURLConnection+Tagged.h"; path = "GroupOSX/Backend/NSURLConnection+Tagged.h"; sourceTree = "<group>"; };
 		F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURLConnection+Tagged.m"; path = "GroupOSX/Backend/NSURLConnection+Tagged.m"; sourceTree = "<group>"; };
@@ -182,8 +182,8 @@
 			children = (
 				F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */,
 				F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */,
-				F1A4F599187E18D9004838DE /* DNRESTAPIInterface.h */,
-				F1A4F59A187E18D9004838DE /* DNRESTAPIInterface.m */,
+				F1A4F599187E18D9004838DE /* DNRESTAPI.h */,
+				F1A4F59A187E18D9004838DE /* DNRESTAPI.m */,
 				F18314191870EADC00930D5E /* Augmented */,
 				F158A65518726F91009DC7C1 /* DNAsynchronousUnitTesting.h */,
 				F158A65618726F91009DC7C1 /* DNAsynchronousUnitTesting.m */,
@@ -573,7 +573,7 @@
 				F1840B9F1877B25700C399DA /* Message.m in Sources */,
 				F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */,
 				F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */,
-				F1A4F59B187E18D9004838DE /* DNRESTAPIInterface.m in Sources */,
+				F1A4F59B187E18D9004838DE /* DNRESTAPI.m in Sources */,
 				F1840B9C1877B25600C399DA /* Group.m in Sources */,
 				F1840B961877B25500C399DA /* Attachment.m in Sources */,
 				F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */,

@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Dovizu Network. All rights reserved.
 //
 
-#import "DNRESTAPIInterface.h"
+#import "DNRESTAPI.h"
 
 #define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
 #define user_token (_userToken ? _userToken : [NSNull null])
 NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
 
-@implementation DNRESTAPIInterface
+@implementation DNRESTAPI
 {
     AFHTTPRequestOperationManager *_HTTPRequestManager;
     AFNetworkReachabilityManager *_reachabilityManager;
@@ -331,7 +331,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     [_HTTPRequestManager GET:concatStrings(@"groups/%@/messages", groupID)
                   parameters:params
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         completeBlock(((NSDictionary*)responseObject)[@"messages"]);
+                         completeBlock(((NSDictionary*)responseObject[@"response"])[@"messages"]);
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                          report_request_error;
@@ -353,7 +353,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                   parameters:params
                      success:^(AFHTTPRequestOperation *operation, id responseObject) {
                          if (completeBlock) {
-                             completeBlock(((NSDictionary*)responseObject)[@"messages"]);
+                             completeBlock(((NSDictionary*)responseObject[@"response"])[@"messages"]);
                          }
                      }
                      failure:^(AFHTTPRequestOperation *operation, NSError *error) {

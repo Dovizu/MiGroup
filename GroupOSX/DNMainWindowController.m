@@ -56,29 +56,28 @@
 {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     //First time logon
-    [center addObserver:self selector:@selector(firstTimeLogonSetup:) name:noteFirstTimeLogon object:nil];
-    //Group changes
-    [center addObserver:self selector:@selector(groupInfoChanged:) name:noteAllGroupsFetch object:nil];
+//    [center addObserver:self selector:@selector(firstTimeLogonSetup:) name:noteFirstTimeLogon object:nil];
+    [center addObserverForName:noteMembersRemove object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLogCD(@"%@: %@", note.name, note.userInfo);
+    }];
+    [center addObserverForName:noteMembersAdd object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLogCD(@"%@: %@", note.name, note.userInfo);
+    }];
+    [center addObserverForName:noteAllGroupsFetch object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLogCD(@"%@: %@", note.name, note.userInfo);
+    }];
+    [center addObserverForName:noteMessageBeforeFetch object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLogCD(@"%@: %@", note.name, note.userInfo);
+    }];
+    [center addObserverForName:noteMessageSinceFetch object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+        DebugLogCD(@"%@: %@", note.name, note.userInfo);
+    }];
 }
 
-//noteMemberMessageReceived
-- (void)messageReceived:(NSNotification*)note
-{
-    NSDictionary *details = note.userInfo[kGetContentKey];
-    DebugLogCD(@"%@ sent a message: %@", sender, details[@"text"]);
-}
-
-
-- (void)groupInfoChanged:(NSNotification*)note
-{
-
-    
-}
 
 //first time logon procedure
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
-    NSArray *groupList = note.userInfo[kGetContentKey];
 }
 
 #pragma mark - GUI Actions
