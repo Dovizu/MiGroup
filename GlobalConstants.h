@@ -33,26 +33,26 @@ extern NSString * const JSONObjectEmojiPlaceholderString;
 //Network observer names
 extern NSString * const noteUserInfoReceivedReadyForSockets;
 
-extern NSString * const noteMessage;
+extern NSString * const noteNewMessage;
 extern NSString * const noteFirstTimeLogon;
 extern NSString * const noteMemberNameChange;
-extern NSString * const noteAllGroupsFetch;
+extern NSString * const noteGroupsAllFetch;
 extern NSString * const noteGroupInfoFetch;
 extern NSString * const noteGroupNameChange;
 extern NSString * const noteGroupCreate;
 extern NSString * const noteGroupUpdate;
 extern NSString * const noteGroupRemove;
-extern NSString * const noteMembersRemove;
+extern NSString * const noteMemberRemove;
 extern NSString * const noteMembersAdd;
 extern NSString * const noteGroupAvatarChange;
-extern NSString * const noteMessageBeforeFetch;
-extern NSString * const noteMessageSinceFetch;
-extern NSString * const noteFormerGroupsFetch;
+extern NSString * const noteMessagesBeforeFetch;
+extern NSString * const noteMessagesSinceFetch;
+extern NSString * const noteGroupsFormerFetch;
 
 
 //Database attribute names
-extern NSString * const k_name_group;
-extern NSString * const k_name_member;
+extern NSString * const k_name_of_group;
+extern NSString * const k_name_of_member;
 extern NSString * const k_fetched_groups;
 extern NSString * const k_fetched_group;
 extern NSString * const k_group;

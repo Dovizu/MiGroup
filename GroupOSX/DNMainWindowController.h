@@ -8,6 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "Group.h"
+#import "Name.h"
+#import "Attachment.h"
+#import "Message.h"
+#import "Member.h"
+
 @class DNServerInterface;
 @class DNAppDelegate;
 

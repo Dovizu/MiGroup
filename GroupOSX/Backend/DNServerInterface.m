@@ -141,7 +141,7 @@ enum DNJSONDictionaryType {
                           text:message
                    attachments:nil
               andCompleteBlock:^(NSDictionary *sentMessage) {
-                  [_notificationCenter postNotificationName:noteMessage
+                  [_notificationCenter postNotificationName:noteNewMessage
                                                      object:nil
                                                    userInfo:[self helpConvertRawDictionary:sentMessage
                                                                                     ofType:DNMessageJSONDictionary]];
@@ -159,7 +159,7 @@ enum DNJSONDictionaryType {
                     for (NSDictionary* msg in messages) {
                         [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
                     }
-                    [_notificationCenter postNotificationName:noteMessageBeforeFetch
+                    [_notificationCenter postNotificationName:noteMessagesBeforeFetch
                                                        object:nil userInfo:@{k_messages: messagesConverted}];
                 }];
 }
@@ -174,7 +174,7 @@ enum DNJSONDictionaryType {
                              for (NSDictionary* msg in messages) {
                                  [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
                              }
-                             [_notificationCenter postNotificationName:noteMessageSinceFetch
+                             [_notificationCenter postNotificationName:noteMessagesSinceFetch
                                                                 object:nil userInfo:@{k_messages: messagesConverted}];
                          }];
 }
@@ -204,7 +204,7 @@ enum DNJSONDictionaryType {
 - (void)fetchAllGroups
 {
     [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
-        [_notificationCenter postNotificationName:noteAllGroupsFetch
+        [_notificationCenter postNotificationName:noteGroupsAllFetch
                                            object:nil
                                          userInfo:@{k_fetched_groups: groupList}];
     }];
@@ -218,7 +218,7 @@ enum DNJSONDictionaryType {
         for (NSDictionary* formerGroup in formerGroupArray) {
             [formerGroupsConverted addObject:[self helpConvertRawDictionary:formerGroup ofType:DNGroupJSONDictionary]];
         }
-        [_notificationCenter postNotificationName:noteFormerGroupsFetch
+        [_notificationCenter postNotificationName:noteGroupsFormerFetch
                                            object:nil
                                          userInfo:@{k_fetched_groups: formerGroupsConverted}];
     }];
@@ -436,8 +436,8 @@ enum DNJSONDictionaryType {
         NSString *name = nil;
         //GROUP MEMBER REMOVED
         if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
-            NSDictionary *userInfo = @{k_name_member:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
-            [_notificationCenter postNotificationName:noteMembersRemove object:nil userInfo:userInfo];
+            NSDictionary *userInfo = @{k_name_of_member:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
+            [_notificationCenter postNotificationName:noteMemberRemove object:nil userInfo:userInfo];
         }
         //GROUP MEMBER ADDED
         else if ((name = [self helpFindStringWithPattern:@"(?:.+) added (.+) to the group" inString:identifierAlert])) {
@@ -459,7 +459,7 @@ enum DNJSONDictionaryType {
                 NSMutableArray *newMembersWithImages = [[NSMutableArray alloc] initWithCapacity:[newMembers count]];
                 [newMembers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
                     NSDictionary *member = (NSDictionary*)obj;
-                    NSDictionary *convertedMember = @{k_name_member:    member[k_name_member],
+                    NSDictionary *convertedMember = @{k_name_of_member:    member[k_name_of_member],
                                                       k_membership_id:  member[k_membership_id],
                                                       k_image:          [self helpURLFromString:member[k_image]],
                                                       k_user_id:        member[k_user_id],
@@ -475,7 +475,7 @@ enum DNJSONDictionaryType {
         else if ((name = [self helpFindStringWithPattern:@"(?:.+) changed the group's name to (.+)" inString:identifierAlert])) {
             [_notificationCenter postNotificationName:noteGroupNameChange
                                                object:nil
-                                             userInfo:@{k_name_group: name,
+                                             userInfo:@{k_name_of_group: name,
                                                         k_group_id: identifierGroupID}];
         }
         //GROUP AVATAR CHANGED
@@ -498,7 +498,7 @@ enum DNJSONDictionaryType {
                 newName = [identifierAlert substringWithRange:[regexResult rangeAtIndex:2]];
                 [_notificationCenter postNotificationName:noteMemberNameChange
                                                    object:nil
-                                                 userInfo:@{k_name_member: oldName,
+                                                 userInfo:@{k_name_of_member: oldName,
                                                             k_new_name: newName,
                                                             k_group_id: identifierGroupID}];
             }else{
@@ -514,7 +514,7 @@ enum DNJSONDictionaryType {
     //MESSAGES BY ANOTHER MEMBER
     else{
         //No attachment support yet
-        [_notificationCenter postNotificationName:noteMessage
+        [_notificationCenter postNotificationName:noteNewMessage
                                            object:nil
                                          userInfo:[self helpConvertRawDictionary:identifiersSubject
                                                                           ofType:DNMessageJSONDictionary]];
@@ -686,7 +686,7 @@ enum DNJSONDictionaryType {
 //    [self removeMember:@"35121596" fromGroup:@"6736514"];
 //    [self fetchAllGroups];
 //    [self fetch20MessagesBeforeMessageID:@"138923697178086374" inGroup:@"4011747"];
-    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
+//    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
 }
 - (void)didUnsubscribeFromChannel:(NSString *)channel
 {

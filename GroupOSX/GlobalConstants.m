@@ -38,26 +38,31 @@ NSString * const kGetTypeKey = @"type";
 NSString * const kGetContentKey = @"message";
 
 //Messages posted by DNServerInterface
-NSString * const noteMessage = @"com.dovizu.grouposx.noteMessage";
+NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
+
 NSString * const noteMemberNameChange = @"com.dovizu.grouposx.noteMemberNameChange";
+NSString * const noteMemberRemove = @"com.dovizu.grouposx.noteMembersRemove";
+NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
+
 NSString * const noteGroupAvatarChange = @"com.dovizu.grouposx.noteGroupAvatarChange";
 NSString * const noteGroupNameChange = @"com.dovizu.grouposx.noteGroupNameChange";
 NSString * const noteGroupUpdate = @"com.dovizu.grouposx.noteGroupUpdate";
 NSString * const noteGroupRemove = @"com.dovizu.grouposx.noteGroupRemove";
 NSString * const noteGroupInfoFetch = @"com.dovizu.grouposx.noteGroupInfoFetch";
 NSString * const noteGroupCreate = @"com.dovizu.grouposx.noteGroupCreate";
-NSString * const noteMembersRemove = @"com.dovizu.grouposx.noteMembersRemove";
-NSString * const noteMembersAdd = @"com.dovizu.grouposx.noteMembersAdd";
-NSString * const noteAllGroupsFetch = @"com.dovizu.grouposx.forceRequestGroupData";
-NSString * const noteFormerGroupsFetch = @"com.dovizu.grouposx.forceRequestFormerGroupData";
-NSString * const noteMessageBeforeFetch = @"com.dovizu.grouposx.messageBeforeFetch";
-NSString * const noteMessageSinceFetch = @"com.dovizu.grouposx.messageSinceFetch";
-//Database attribute names
+NSString * const noteGroupsAllFetch = @"com.dovizu.grouposx.forceRequestGroupData";
+NSString * const noteGroupsFormerFetch = @"com.dovizu.grouposx.forceRequestFormerGroupData";
+
+NSString * const noteNewMessage = @"com.dovizu.grouposx.noteMessage";
+NSString * const noteMessagesBeforeFetch = @"com.dovizu.grouposx.messageBeforeFetch";
+NSString * const noteMessagesSinceFetch = @"com.dovizu.grouposx.messageSinceFetch";
+
+//Web JSON object keys
 NSString * const k_fetched_groups = @"fetched_groups";
 NSString * const k_fetched_group = @"fetched_group";
 NSString * const k_group = @"group";
-NSString * const k_name_group = @"name";
-NSString * const k_name_member = @"nickname";
+NSString * const k_name_of_group = @"name";
+NSString * const k_name_of_member = @"nickname";
 NSString * const k_group_id = @"id";
 NSString * const k_type = @"type";
 NSString * const k_members = @"members";
@@ -89,7 +94,7 @@ NSString * const finalUserOwnMessageReceived = @"kJSONObjectNotifierTypeMessageR
 NSString * const finalMemberMessageReceived = @"kJSONObjectNotifierTypeMemberMessageReceived";
 
 //deterministic triggers
-NSString * const noteFirstTimeLogon = @"com.dovizu.grouposx.noteFirstTimeLogon";
+
 
 NSString * const finalGroupSpecificResultArrived = @"com.dovizu.grouposx.finalSpecificGroupResultArrived";
 
