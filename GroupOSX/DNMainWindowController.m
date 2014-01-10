@@ -117,7 +117,19 @@
 }
 - (void)didFetchAllGroups:(NSNotification*)note
 {
-    
+    NSArray *fetchedGroups = note.userInfo[k_fetched_groups];
+    for (NSDictionary *group in fetchedGroups) {
+        Group *newGroup = [Group MR_createEntity];
+        newGroup.name = group[k_name_of_group];
+        newGroup.desc = group[k_desc];
+        newGroup.image = group[k_image];
+        newGroup.created_at = group[k_created_at];
+        newGroup.group_id = group[k_group_id];
+        newGroup.type = group[k_type];
+        newGroup.updated_at = group[k_updated_at];
+        newGroup.creator = [Member MR_findByAttribute:@"user_id" withValue:group[k_creator_group]][0];
+//        newGroup.members = [self helpFindMembersInDatabaseFromArrayOfMembers:(NSArray*)group[k_members]];
+    }
 }
 - (void)didFetchFormerGroups:(NSNotification*)note
 {

@@ -380,6 +380,7 @@ enum DNJSONDictionaryType {
 
     switch (type) {
         case DNGroupJSONDictionary:{
+            
             newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
             newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromSeconds:oldDict[k_updated_at]]);
             newDict[k_share_url] = ifThen(oldDict[k_share_url], [self helpURLFromString:oldDict[k_share_url]]);
@@ -687,6 +688,9 @@ enum DNJSONDictionaryType {
 //    [self fetchAllGroups];
 //    [self fetch20MessagesBeforeMessageID:@"138923697178086374" inGroup:@"4011747"];
 //    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
+#ifdef DEBUG_CORE_DATA
+    [_notificationCenter postNotificationName:noteFirstTimeLogon object:nil];
+#endif
 }
 - (void)didUnsubscribeFromChannel:(NSString *)channel
 {

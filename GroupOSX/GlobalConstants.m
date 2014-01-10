@@ -85,6 +85,7 @@ NSString * const k_created_at = @"created_at";
 NSString * const k_updated_at = @"updated_at";
 NSString * const k_attachments = @"attachments";
 NSString * const k_url = @"url";
+NSString * const k_desc = @"description";
 //Triggers that caused polling methods to be called
 //organic triggers
 NSString * const finalGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";
