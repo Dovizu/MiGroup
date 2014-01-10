@@ -29,60 +29,134 @@
 - (void)didReceiveURL:(NSString*)urlString;
 
 #pragma mark - GroupMe Interface
-//Messages
+
+#pragma mark Messages
+/**
+ *  Send a new message
+ *
+ *  @param message     the pure text form of the message
+ *  @param groupID     target group
+ *  @param attachments an array of attachment, currently not supported
+ *  @discussion on completion, posts "noteMessage" notificaiton, the userInfo contains:
+ *      k_text, k_target_group, k_creator_message, k_created_at
+ */
 - (void)sendNewMessage:(NSString*)message
                toGroup:(NSString*)groupID
        withAttachments:(NSArray*)attachments;
-//Post noteMessage notification on success, extract from userInfo:
-//k_text, k_target_group, k_creator_message, k_created_at
 
+/**
+ *  Fetch 20 Messages immediately before the message specified by beforeID
+ *
+ *  @param beforeID the message before which 20 earlier messages will be fetched
+ *  @param groupID  target group
+ *  @discussion on completion, posts "noteMessageBeforeFetch" notification, the userInfo contains:
+ *      k_messages
+ */
 - (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
                                inGroup:(NSString*)groupID;
-//Post noteMessageBeforeFetch, extract from userInfo:
-//k_messages, an array of messages
 
+/**
+ *  Fetch 20 _most recent_ messages since message specified by sinceID
+ *
+ *  @param sinceID the message after which most recent 20 messages will be fetched
+ *  @param groupID target group
+ *  @discussion on completion, posts "noteMessageSinceFetch" notification, the userInfo contains:
+ *      k_messages
+ */
 - (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
                                         inGroup:(NSString*)groupID;
-//Post noteMessageSinceFetch, extract from userInfo:
-//k_messages, an array of messages, k_group_id
 
-//Members
+#pragma mark Members
+
+/**
+ *  Add a new member
+ *
+ *  @param members an NSArray of member dictionaries to be added
+ *  @param groupID target group
+ *  @discussion On completion, posts "noteMembersAdd" notification, the userInfo contains:
+ *      k_members, k_group_id
+ */
 - (void)addNewMembers:(NSArray*)members
               toGroup:(NSString*)groupID;
-//Post noteMembersAdd, extract from userInfo:
-//k_members, an array of members, k_group_id
+
+/**
+ *  Remove a member from a group
+ *
+ *  @param membershipID the membership_id of the user
+ *  @param groupID      target group
+ *  @warning    membership_id is not user_id, a user may have multiple membership_id's but only a single user_id
+ *  @discussion On completion, posts "noteMembersRemove" notification, the userInfo contains:
+ *      k_name_member, k_group_id
+ */
 - (void)removeMember:(NSString*)membershipID
            fromGroup:(NSString*)groupID;
-//Post noteMembersRemove, extract from userInfo:
-//k_name_member, k_group_id
 
+#pragma mark Groups
 
-//Groups
+/**
+ *  Fetch all the groups the user is in
+ *  @discussion On completion, posts "noteAllGroupsFetch", the userInfo contains:
+ *      k_fetched_groups
+ */
 - (void)fetchAllGroups;
-//Post noteAllGroupsFetch, extrac from userInfo:
-//k_fetched_groups, an array of groups
+
+/**
+ *  Fetch all the former groups the user was in, but can rejoin
+ *  @discussion On completion, posts "noteFormerGroupsFetch", the userInfo contains:
+ *      k_fetched_groups
+ */
 - (void)fetchFormerGroups;
-//Post noteFormerGroupsFetch, extrac from userInfo:
-//k_fetched_groups, an array of groups
+
+/**
+ *  Fetch information for a specific group
+ *
+ *  @param groupID target group
+ *  @discussion On completion, posts "noteGroupInfoFetch", the userInfo contains:
+ *      k_fetched_group
+ */
 - (void)fetchInformationForGroup:(NSString*)groupID;
-//Post noteGroupInfoFetch, extract from userInfo:
-//k_fetched_group
+
+/**
+ *  Create a group with given parameters
+ *
+ *  @param name        (required) the name of the group
+ *  @param description (optional) the description of the group
+ *  @param image       (optional) the ________ of the image
+ *  @param allowShare  (optional) whether the group can be shared via a share_url
+ *  @discussion On completion, posts "noteGroupCreate", the userInfo contains:
+ *      k_group (dictionary with the newly created group information)
+ */
 - (void)createGroupNamed:(NSString*)name
              description:(NSString*)description
                    image:(id)image
                 andShare:(BOOL)allowShare;
-//Post noteGroupCreate, extract from userInfo:
-//k_group
+
+/**
+ *  Update a group with given information
+ *
+ *  @param groupID     (required) the ID of the group to be updated
+ *  @param name        (optional) new name
+ *  @param description (optional) new description
+ *  @param image       (optional) ______ of new image
+ *  @param allowShare  (optional) new boolean value for whether the group can be shared via a share_url
+ *  @discussion On completion, posts "noteGroupUpdate", the userInfo contains:
+ *      k_group (dictionary with updated information)
+ */
 - (void)updateGroup:(NSString*)groupID
            withName:(NSString*)name
         description:(NSString*)description
               image:(id)image
            andShare:(BOOL)allowShare;
-//Post noteGroupUpdate, extract from userInfo:
-//k_group
+
+/**
+ *  Delete a group
+ *
+ *  @param groupID the group to be deleted
+ *  @discussion On Completion, posts "noteGroupRemove", the userInfo contains:
+ *      k_group_id (the id of the group removed)
+ */
 - (void)deleteGroup:(NSString*)groupID;
-//Post noteGroupRemove, extract from userInfo:
-//k_group_id
+
 
 //Other notifications this class posts
 
