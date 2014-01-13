@@ -57,35 +57,50 @@ NSString * const noteNewMessage = @"com.dovizu.grouposx.noteMessage";
 NSString * const noteMessagesBeforeFetch = @"com.dovizu.grouposx.messageBeforeFetch";
 NSString * const noteMessagesSinceFetch = @"com.dovizu.grouposx.messageSinceFetch";
 
-//Web JSON object keys
+/**
+ *  Keys to access fetched dictionaries from server
+ */
+//Groups
+NSString * const k_group = @"group";
+NSString * const k_group_id = @"id";
 NSString * const k_fetched_groups = @"fetched_groups";
 NSString * const k_fetched_group = @"fetched_group";
-NSString * const k_group = @"group";
 NSString * const k_name_of_group = @"name";
+NSString * const k_type_of_group = @"type";
+NSString * const k_share_url = @"share_url";
+NSString * const k_messages = @"messages";
+NSString * const k_last_message = @"last_message";
+NSString * const k_creator_group = @"creator_user_id";
+NSString * const k_updated_at = @"updated_at";
+NSString * const k_desc = @"description";
+//Members
 NSString * const k_name_of_member = @"nickname";
-NSString * const k_group_id = @"id";
-NSString * const k_type = @"type";
 NSString * const k_members = @"members";
 NSString * const k_image = @"image_url";
 NSString * const k_email = @"email";
 NSString * const k_phone_number = @"phone_number";
 NSString * const k_user_id = @"user_id";
-NSString * const k_share_url = @"share_url";
 NSString * const k_membership_id = @"id";
 NSString * const k_new_name = @"new_name";
-NSString * const k_message = @"messages";
-NSString * const k_messages = @"messages";
 NSString * const k_muted = @"muted";
+//Messages
+NSString * const k_message = @"messages";
 NSString * const k_message_id = @"id";
 NSString * const k_target_group = @"group_id";
 NSString * const k_text = @"text";
-NSString * const k_creator_group = @"creator_user_id";
-NSString * const k_creator_message = @"user_id";
+NSString * const k_creator_of_message = @"user_id";
 NSString * const k_created_at = @"created_at";
-NSString * const k_updated_at = @"updated_at";
-NSString * const k_attachments = @"attachments";
+//Attachments
 NSString * const k_url = @"url";
-NSString * const k_desc = @"description";
+NSString * const k_attachments = @"attachments";
+NSString * const k_attachment_type = @"type";
+NSString * const k_attach_type_image = @"image";
+NSString * const k_attach_type_location = @"location";
+NSString * const k_attach_type_split = @"split";
+NSString * const k_attach_type_emoji = @"emoji";
+
+
+
 //Triggers that caused polling methods to be called
 //organic triggers
 NSString * const finalGroupMemberAdded = @"kJSONObjectNotifierTypeGroupMemberAdded";

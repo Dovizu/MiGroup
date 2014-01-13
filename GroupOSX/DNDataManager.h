@@ -1,5 +1,5 @@
 //
-//  DNMainWindowController.h
+//  DNDataManager.h
 //  GroupOSX
 //
 //  Created by Donny Reynolds on 12/26/13.
@@ -9,19 +9,17 @@
 #import <Cocoa/Cocoa.h>
 
 #import "Group.h"
-#import "Name.h"
 #import "Attachment.h"
 #import "Message.h"
 #import "Member.h"
+#import <AFNetworking.h>
 
 @class DNServerInterface;
 @class DNAppDelegate;
 
-@interface DNMainWindowController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
+@interface DNDataManager : NSObject
 
 @property (nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property DNServerInterface *server;
-@property DNAppDelegate *appDelegate;
 
 @end

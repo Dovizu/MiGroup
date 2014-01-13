@@ -21,6 +21,7 @@
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="created_group" inverseEntity="Member" syncable="YES"/>
+        <relationship name="last_message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" syncable="YES"/>
         <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Member" inverseName="membership_group" inverseEntity="Member" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Message" inverseName="target_group" inverseEntity="Message" syncable="YES"/>
     </entity>

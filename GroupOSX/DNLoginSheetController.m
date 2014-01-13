@@ -7,8 +7,7 @@
 //
 
 #import "DNLoginSheetController.h"
-
-#import "DNMainWindowController.h"
+#import "DNMainController.h"
 @interface DNLoginSheetController ()
 
 @property IBOutlet WebView *loginWebView;

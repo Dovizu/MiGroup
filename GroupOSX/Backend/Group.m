@@ -2,7 +2,7 @@
 //  Group.m
 //  GroupOSX
 //
-//  Created by Donny Reynolds on 1/9/14.
+//  Created by Donny Reynolds on 1/11/14.
 //  Copyright (c) 2014 Dovizu Network. All rights reserved.
 //
 
@@ -24,5 +24,6 @@
 @dynamic creator;
 @dynamic members;
 @dynamic messages;
+@dynamic last_message;
 
 @end

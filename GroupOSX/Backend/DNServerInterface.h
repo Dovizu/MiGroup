@@ -10,9 +10,7 @@
 #import <FayeClient.h>
 #import "NSURL+NXOAuth2.h"
 
-@class DNRESTAPI;
-@class DNLoginSheetController;
-@class DNMainWindowController;
+@class DNDataManager, DNMainController, DNLoginSheetController, DNRESTAPI;
 
 #ifdef DEBUG_BACKEND
 @class DNAsynchronousUnitTesting;
@@ -21,7 +19,7 @@
 @interface DNServerInterface : NSObject <FayeClientDelegate>
 
 @property DNLoginSheetController *loginSheetController;
-@property DNMainWindowController *mainWindowController;
+@property DNMainController *mainWindowController;
 
 - (id)init;
 - (void)setup;

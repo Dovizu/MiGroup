@@ -8,11 +8,11 @@
     #import <Cocoa/Cocoa.h>
     #import <CoreData/CoreData.h>
     #import "GlobalConstants.h"
+    #define MR_SHORTHAND
     #import <MagicalRecord/CoreData+MagicalRecord.h>
     #import <dispatch/dispatch.h>
 #endif
 
-#define MR_SHORTHAND
 
 //#define DEBUG_BACKEND
 #define DEBUG_CORE_DATA

@@ -9,7 +9,8 @@
 #import "DNServerInterface.h"
 #import "DNRESTAPI.h"
 #import "DNLoginSheetController.h"
-#import "DNMainWindowController.h"
+#import "DNDataManager.h"
+#import "DNMainController.h"
 
 #ifdef DEBUG_BACKEND
 #import "DNAsynchronousUnitTesting.h"
@@ -306,7 +307,9 @@ enum DNJSONDictionaryType {
                 group = [self helpConvertRawDictionary:group ofType:DNGroupJSONDictionary];
                 [groupList addObject:group];
             }];
-            block(groupList);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(groupList);
+            });
         });
         _currentlyPollingForGroups = NO;
         _prevResults = nil;
@@ -377,14 +380,16 @@ enum DNJSONDictionaryType {
 {
     NSMutableDictionary *newDict = [oldDict mutableCopy];
     #define ifThen(first, second) (first ? second : [NSNull null])
+    #define isNull(object) [object isKindOfClass: [NSNull class]]
+    #define newNull [NSNull null]
 
     switch (type) {
         case DNGroupJSONDictionary:{
-            
-            newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
-            newDict[k_updated_at] = ifThen(oldDict[k_updated_at], [self helpConvertToDateFromSeconds:oldDict[k_updated_at]]);
-            newDict[k_share_url] = ifThen(oldDict[k_share_url], [self helpURLFromString:oldDict[k_share_url]]);
-            newDict[k_created_at] = ifThen(oldDict[k_created_at], [self helpConvertToDateFromSeconds:oldDict[k_created_at]]);
+            newDict[k_desc] = isNull(oldDict[k_desc]) ? @"" : oldDict[k_desc];
+            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
+            newDict[k_share_url] = oldDict[k_share_url] ? oldDict[k_share_url] : [self helpURLFromString:oldDict[k_share_url]];
+            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
+            newDict[k_updated_at] = [self helpConvertToDateFromSeconds:oldDict[k_updated_at]];
             if (oldDict[k_members]) {
                 NSMutableArray *convertedMembers = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_members] count]];
                 for (NSDictionary* member in oldDict[k_members]) {
@@ -392,13 +397,21 @@ enum DNJSONDictionaryType {
                 }
                 newDict[k_members] = convertedMembers;
             }
+            NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
+                                          k_created_at: oldDict[k_messages][@"last_message_created_at"],
+                                          k_name_of_member: oldDict[k_messages][@"preview"][@"nickname"],
+                                          k_text: oldDict[k_messages][@"preview"][@"text"],
+                                          k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
+            lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
+            newDict[k_last_message] = lastMessage;
             break;
         }
         case DNMemberJSONDictionary:{
-            newDict[k_image] = ifThen(oldDict[k_image], [self helpURLFromString:oldDict[k_image]]);
+            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
             break;
         }
         case DNMessageJSONDictionary:{
+            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
             if (oldDict[k_attachments]) {
                 NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
                 for (NSDictionary* attachment in oldDict[k_attachments]) {

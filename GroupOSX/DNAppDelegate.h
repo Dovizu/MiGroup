@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #include "GlobalConstants.h"
 
-@class DNServerInterface, DNLoginSheetController, DNMainWindowController;
+@class DNServerInterface, DNLoginSheetController, DNDataManager, DNMainController;
 
 @interface DNAppDelegate : NSObject <NSApplicationDelegate>
 
@@ -19,7 +19,8 @@
 
 @property DNServerInterface *server;
 @property DNLoginSheetController *loginSheetController;
-@property DNMainWindowController<NSWindowDelegate> *mainWindowController;
+@property DNMainController<NSWindowDelegate> *mainWindowController;
+@property DNDataManager *dataManager;
 
 - (void)purgeStores;
 

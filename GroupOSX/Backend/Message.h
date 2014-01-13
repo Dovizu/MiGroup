@@ -2,14 +2,14 @@
 //  Message.h
 //  GroupOSX
 //
-//  Created by Donny Reynolds on 1/9/14.
+//  Created by Donny Reynolds on 1/11/14.
 //  Copyright (c) 2014 Dovizu Network. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Attachment, Group;
+@class Attachment, Group, Member;
 
 @interface Message : NSManagedObject
 
@@ -18,8 +18,8 @@
 @property (nonatomic, retain) NSNumber * system;
 @property (nonatomic, retain) NSString * text;
 @property (nonatomic, retain) NSSet *attachments;
-@property (nonatomic, retain) NSManagedObject *creator;
-@property (nonatomic, retain) NSOrderedSet *favoritors;
+@property (nonatomic, retain) Member *creator;
+@property (nonatomic, retain) NSSet *favoritor;
 @property (nonatomic, retain) Group *target_group;
 @end
 
@@ -30,14 +30,9 @@
 - (void)addAttachments:(NSSet *)values;
 - (void)removeAttachments:(NSSet *)values;
 
-- (void)insertObject:(NSManagedObject *)value inFavoritorsAtIndex:(NSUInteger)idx;
-- (void)removeObjectFromFavoritorsAtIndex:(NSUInteger)idx;
-- (void)insertFavoritors:(NSArray *)value atIndexes:(NSIndexSet *)indexes;
-- (void)removeFavoritorsAtIndexes:(NSIndexSet *)indexes;
-- (void)replaceObjectInFavoritorsAtIndex:(NSUInteger)idx withObject:(NSManagedObject *)value;
-- (void)replaceFavoritorsAtIndexes:(NSIndexSet *)indexes withFavoritors:(NSArray *)values;
-- (void)addFavoritorsObject:(NSManagedObject *)value;
-- (void)removeFavoritorsObject:(NSManagedObject *)value;
-- (void)addFavoritors:(NSOrderedSet *)values;
-- (void)removeFavoritors:(NSOrderedSet *)values;
+- (void)addFavoritorObject:(Member *)value;
+- (void)removeFavoritorObject:(Member *)value;
+- (void)addFavoritor:(NSSet *)values;
+- (void)removeFavoritor:(NSSet *)values;
+
 @end

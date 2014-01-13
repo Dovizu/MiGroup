@@ -352,9 +352,6 @@
                         <items>
                             <menuItem title="Log Out" id="BB5-jD-NJ6">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="logout:" target="Lup-4e-br8" id="5Cx-ah-QqO"/>
-                                </connections>
                             </menuItem>
                         </items>
                     </menu>
@@ -491,19 +488,19 @@
                                                                             <rect key="frame" x="1" y="1" width="259" height="79"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
-                                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="thK-Ch-kmN">
-                                                                                    <rect key="frame" x="17" y="7" width="66" height="66"/>
+                                                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="thK-Ch-kmN" userLabel="Group Image">
+                                                                                    <rect key="frame" x="20" y="10" width="60" height="60"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="height" constant="60" id="cXx-1s-B7o"/>
                                                                                         <constraint firstAttribute="width" constant="60" id="eBB-2U-T48"/>
                                                                                     </constraints>
-                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="NSActionTemplate" id="QMm-0a-6kx"/>
+                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="NSActionTemplate" id="QMm-0a-6kx"/>
                                                                                     <connections>
-                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.image" id="fnZ-F2-sON"/>
+                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.image" id="vmZ-MX-UXb"/>
                                                                                     </connections>
                                                                                 </imageView>
-                                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uV9-fs-Sdf">
+                                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uV9-fs-Sdf" userLabel="Last Message">
                                                                                     <rect key="frame" x="86" y="10" width="169" height="35"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="asd" id="hu3-2j-Htu">
@@ -512,10 +509,14 @@
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                     </textFieldCell>
                                                                                     <connections>
-                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.desc" id="vEL-P3-iPJ"/>
+                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.last_message" id="oLy-72-khE">
+                                                                                            <dictionary key="options">
+                                                                                                <string key="NSValueTransformerName">DNLastMessagePreviewTransformer</string>
+                                                                                            </dictionary>
+                                                                                        </binding>
                                                                                     </connections>
                                                                                 </textField>
-                                                                                <textField verticalHuggingPriority="751" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="TYt-Be-f6Z">
+                                                                                <textField verticalHuggingPriority="751" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="TYt-Be-f6Z" userLabel="Group Name">
                                                                                     <rect key="frame" x="86" y="53" width="169" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="0al-hO-5vW">
@@ -620,7 +621,7 @@
                 </constraints>
             </view>
             <connections>
-                <outlet property="delegate" destination="Lup-4e-br8" id="KAT-w4-ZPm"/>
+                <outlet property="delegate" destination="o2x-8h-Byq" id="9kA-3T-L8f"/>
             </connections>
         </window>
         <customObject id="494" customClass="DNAppDelegate">
@@ -629,34 +630,18 @@
             </connections>
         </customObject>
         <customObject id="420" customClass="NSFontManager"/>
-        <customObject id="Lup-4e-br8" userLabel="Main Window Controller" customClass="DNMainWindowController">
+        <customObject id="o2x-8h-Byq" userLabel="Main Controller" customClass="DNMainController">
             <connections>
-                <outlet property="ListViewBottomNewButton" destination="n0j-Tf-S6z" id="krr-DY-vBs"/>
-                <outlet property="chatView" destination="8Hx-mP-DOn" id="ePa-6A-Mba"/>
-                <outlet property="groupInfo" destination="3Je-Lj-8cu" id="R04-W4-W5J"/>
-                <outlet property="listView" destination="xGG-dL-0Ra" id="NQB-5f-ktE"/>
-                <outlet property="listViewBottom" destination="tHI-td-zFU" id="jhl-3U-E75"/>
-                <outlet property="listViewMiddle" destination="l1D-YK-YIO" id="suy-Nw-BO8"/>
-                <outlet property="listViewTop" destination="kXK-RH-EZL" id="g5c-4i-Kh4"/>
-                <outlet property="searchField" destination="WfC-Un-SSJ" id="p7O-80-1AC"/>
-                <outlet property="splitView" destination="qbh-zw-HhF" id="WJV-et-1G8"/>
-                <outlet property="window" destination="371" id="nYr-WT-3bO"/>
+                <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>
         <arrayController mode="entity" entityName="Group" automaticallyPreparesContent="YES" id="kEl-9a-Kxc" userLabel="GroupArrayController">
             <connections>
-                <binding destination="Lup-4e-br8" name="managedObjectContext" keyPath="managedObjectContext" id="zS9-Rh-Kh4"/>
+                <binding destination="o2x-8h-Byq" name="managedObjectContext" keyPath="managedObjectContext" id="3Ae-p4-ZKP"/>
             </connections>
         </arrayController>
-        <collectionViewItem id="5IJ-Ji-cI8">
-            <connections>
-                <outlet property="view" destination="Xdn-an-Vb3" id="8Y0-3N-DU0"/>
-            </connections>
-        </collectionViewItem>
-        <view id="Xdn-an-Vb3">
-            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
-            <autoresizingMask key="autoresizingMask"/>
-        </view>
+        <collectionViewItem id="5IJ-Ji-cI8"/>
+        <userDefaultsController representsSharedInstance="YES" id="Ebh-0V-gVU"/>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

@@ -2,7 +2,7 @@
 //  Attachment.h
 //  GroupOSX
 //
-//  Created by Donny Reynolds on 1/9/14.
+//  Created by Donny Reynolds on 1/11/14.
 //  Copyright (c) 2014 Dovizu Network. All rights reserved.
 //
 
@@ -20,7 +20,7 @@
 @property (nonatomic, retain) NSString * placeholder;
 @property (nonatomic, retain) NSString * token;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSString * url;
+@property (nonatomic, retain) id url;
 @property (nonatomic, retain) Message *message;
 
 @end

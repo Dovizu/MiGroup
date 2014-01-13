@@ -10,7 +10,8 @@
 #import "DNAppDelegate.h"
 #import "DNServerInterface.h"
 #import "DNLoginSheetController.h"
-#import "DNMainWindowController.h"
+#import "DNDataManager.h"
+#import "DNMainController.h"
 
 @implementation DNAppDelegate
 
@@ -19,22 +20,26 @@
     [MagicalRecord setupAutoMigratingCoreDataStack];
     _managedObjectContext = [NSManagedObjectContext MR_defaultContext];
     
-    self.server = [[DNServerInterface alloc] init];
-    self.mainWindowController = (DNMainWindowController*) [self.window delegate];
-    self.loginSheetController = [[DNLoginSheetController alloc] init]; //custom init with xib
+    _server = [[DNServerInterface alloc] init];
+    _mainWindowController = (DNMainController*) [self.window delegate];
+    _loginSheetController = [[DNLoginSheetController alloc] init]; //custom init with xib
+    _dataManager = [[DNDataManager alloc] init];
     
     //set up login sheet controller
-    self.loginSheetController.server = self.server;
-    self.loginSheetController.mainWindowController = self.mainWindowController;
+    _loginSheetController.server = _server;
+    _loginSheetController.mainWindowController = _mainWindowController;
+
+    //set up data manager
+    _dataManager.managedObjectContext = _managedObjectContext;
+    _dataManager.server = _server;
     
     //set up mainWindowController
-    self.mainWindowController.appDelegate = self;
-    self.mainWindowController.server = self.server;
-    self.mainWindowController.managedObjectContext = _managedObjectContext;
+    _mainWindowController.appDelegate = self;
+    _mainWindowController.managedObjectContext = _managedObjectContext;
     
     //set up server
-    self.server.loginSheetController = self.loginSheetController;
-    self.server.mainWindowController = self.mainWindowController;
+    _server.loginSheetController = _loginSheetController;
+    _server.mainWindowController = _mainWindowController;
 
     //set up URI Scheme
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self

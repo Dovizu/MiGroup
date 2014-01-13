@@ -58,16 +58,17 @@ extern NSString * const k_fetched_group;
 extern NSString * const k_group;
 extern NSString * const k_group_id;
 extern NSString * const k_created_at;
-extern NSString * const k_type;
+extern NSString * const k_type_of_group;
 extern NSString * const k_desc;
 extern NSString * const k_image;
 extern NSString * const k_share_url;
-extern NSString * const k_type;
+extern NSString * const k_type_of_group;
 extern NSString * const k_updated_at;
 extern NSString * const k_creator_group;
-extern NSString * const k_creator_message;
+extern NSString * const k_creator_of_message;
 extern NSString * const k_members;
 extern NSString * const k_messages;
+extern NSString * const k_last_message;
 extern NSString * const k_muted;
 extern NSString * const k_user_id;
 extern NSString * const k_membership_id;
@@ -76,12 +77,15 @@ extern NSString * const k_target_group;
 extern NSString * const k_text;
 extern NSString * const k_attachments;
 extern NSString * const k_url;
-//not actually in database, used to communicate between server and controller
 extern NSString * const k_message;
 extern NSString * const k_email;
 extern NSString * const k_new_name;
 extern NSString * const k_phone_number;
-
+extern NSString * const k_attach_type_image;
+extern NSString * const k_attach_type_location;
+extern NSString * const k_attach_type_split;
+extern NSString * const k_attach_type_emoji;
+extern NSString * const k_attachment_type;
 
 extern NSString * const finalGroupMemberAdded;
 extern NSString * const finalGroupMemberRemoved;

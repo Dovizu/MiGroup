@@ -8,11 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-@class DNMainWindowController, DNServerInterface;
+@class DNMainController, DNServerInterface;
 
 @interface DNLoginSheetController : NSWindowController
 
-@property DNMainWindowController *mainWindowController;
+@property DNMainController *mainWindowController;
 @property DNServerInterface *server;
 
 - (id)init;
