@@ -9,5 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface DNLastMessagePreviewTransformer : NSValueTransformer
-
++ (Class)transformedValueClass;
++ (BOOL)allowsReverseTransformation;
+- (id)transformedValue:(id)value;
 @end
