@@ -503,7 +503,7 @@
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uV9-fs-Sdf" userLabel="Last Message">
                                                                                     <rect key="frame" x="86" y="10" width="169" height="35"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="asd" id="hu3-2j-Htu">
+                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Last Message Preview" id="hu3-2j-Htu">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -519,7 +519,7 @@
                                                                                 <textField verticalHuggingPriority="751" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="TYt-Be-f6Z" userLabel="Group Name">
                                                                                     <rect key="frame" x="86" y="53" width="169" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="0al-hO-5vW">
+                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Group Name" id="0al-hO-5vW">
                                                                                         <font key="font" metaFont="systemBold"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -595,6 +595,28 @@
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="3Je-Lj-8cu" userLabel="GroupInfoView">
                                         <rect key="frame" x="0.0" y="450" width="585" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <subviews>
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gCK-yd-TMi" userLabel="Group Image">
+                                                <rect key="frame" x="17" y="12" width="76" height="76"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="Nzm-1s-9UU"/>
+                                                <connections>
+                                                    <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.image" id="ygv-24-iZZ"/>
+                                                </connections>
+                                            </imageView>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Riw-4Y-Uib" userLabel="Group Name">
+                                                <rect key="frame" x="98" y="68" width="109" height="17"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="GdU-iL-vhA">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <connections>
+                                                    <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.name" id="6Gi-Dz-vci"/>
+                                                </connections>
+                                            </textField>
+                                        </subviews>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="100" id="AuL-VN-kgs"/>
                                         </constraints>
@@ -632,12 +654,13 @@
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="o2x-8h-Byq" userLabel="Main Controller" customClass="DNMainController">
             <connections>
+                <outlet property="groupArrayController" destination="kEl-9a-Kxc" id="nmu-jD-6Dn"/>
                 <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>
         <arrayController mode="entity" entityName="Group" automaticallyPreparesContent="YES" id="kEl-9a-Kxc" userLabel="GroupArrayController">
             <connections>
-                <binding destination="o2x-8h-Byq" name="managedObjectContext" keyPath="managedObjectContext" id="3Ae-p4-ZKP"/>
+                <binding destination="o2x-8h-Byq" name="managedObjectContext" keyPath="managedObjectContext" id="pQ8-Lw-xks"/>
             </connections>
         </arrayController>
         <collectionViewItem id="5IJ-Ji-cI8"/>

@@ -27,6 +27,7 @@
     IBOutlet NSButton *_ListViewBottomNewButton;
     
     IBOutlet NSView *groupInfo;
+    IBOutlet NSArrayController *groupArrayController;
 }
 
 - (id)initWithWindow:(NSWindow *)window
