@@ -550,6 +550,7 @@
                                                             </tableColumns>
                                                             <connections>
                                                                 <binding destination="kEl-9a-Kxc" name="content" keyPath="arrangedObjects" id="LO2-Lb-TZv"/>
+                                                                <binding destination="kEl-9a-Kxc" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="LO2-Lb-TZv" id="5el-K6-Mfu"/>
                                                             </connections>
                                                         </tableView>
                                                     </subviews>
