@@ -597,36 +597,98 @@
                                         <rect key="frame" x="0.0" y="450" width="585" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <subviews>
-                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gCK-yd-TMi" userLabel="Group Image">
+                                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gCK-yd-TMi" userLabel="Group Image">
                                                 <rect key="frame" x="17" y="12" width="76" height="76"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="70" id="Dbm-3L-NDZ"/>
+                                                    <constraint firstAttribute="height" constant="70" id="KGQ-YZ-Baq"/>
+                                                </constraints>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="Nzm-1s-9UU"/>
                                                 <connections>
                                                     <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.image" id="ygv-24-iZZ"/>
                                                 </connections>
                                             </imageView>
-                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Riw-4Y-Uib" userLabel="Group Name">
-                                                <rect key="frame" x="98" y="68" width="109" height="17"/>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Riw-4Y-Uib" userLabel="Group Name">
+                                                <rect key="frame" x="98" y="69" width="304" height="16"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="GdU-iL-vhA">
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="300" id="iwM-eo-SpN"/>
+                                                    <constraint firstAttribute="height" constant="16" id="yKc-tr-DWs"/>
+                                                </constraints>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group Name" id="GdU-iL-vhA">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                                 <connections>
                                                     <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.name" id="6Gi-Dz-vci"/>
                                                 </connections>
                                             </textField>
+                                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LAd-6v-Vbp" userLabel="Group Description">
+                                                <rect key="frame" x="100" y="15" width="304" height="46"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Group Description" id="4OG-aM-J1K">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <connections>
+                                                    <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.desc" id="fHw-Q3-ow6"/>
+                                                </connections>
+                                            </textField>
                                         </subviews>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="100" id="AuL-VN-kgs"/>
+                                            <constraint firstItem="Riw-4Y-Uib" firstAttribute="leading" secondItem="LAd-6v-Vbp" secondAttribute="leading" constant="-2" id="GQ7-Zr-cx9"/>
+                                            <constraint firstItem="Riw-4Y-Uib" firstAttribute="leading" secondItem="gCK-yd-TMi" secondAttribute="trailing" constant="10" id="HzE-V8-mH7"/>
+                                            <constraint firstItem="Riw-4Y-Uib" firstAttribute="width" secondItem="LAd-6v-Vbp" secondAttribute="width" id="S38-jF-Uqx"/>
+                                            <constraint firstItem="LAd-6v-Vbp" firstAttribute="top" secondItem="Riw-4Y-Uib" secondAttribute="bottom" constant="8" id="Txz-hG-n7V"/>
+                                            <constraint firstItem="gCK-yd-TMi" firstAttribute="bottom" secondItem="LAd-6v-Vbp" secondAttribute="bottom" id="Y2i-U9-7aE"/>
+                                            <constraint firstItem="gCK-yd-TMi" firstAttribute="top" secondItem="3Je-Lj-8cu" secondAttribute="top" constant="15" id="aZr-Cy-7EW"/>
+                                            <constraint firstItem="Riw-4Y-Uib" firstAttribute="top" secondItem="gCK-yd-TMi" secondAttribute="top" id="ekM-cm-k2S"/>
+                                            <constraint firstAttribute="bottom" secondItem="gCK-yd-TMi" secondAttribute="bottom" constant="15" id="qVf-Bs-gkk"/>
+                                            <constraint firstItem="LAd-6v-Vbp" firstAttribute="leading" secondItem="gCK-yd-TMi" secondAttribute="trailing" constant="12" id="rLG-VW-RhS"/>
+                                            <constraint firstItem="gCK-yd-TMi" firstAttribute="leading" secondItem="3Je-Lj-8cu" secondAttribute="leading" constant="20" id="ubM-Zd-LQo"/>
+                                        </constraints>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="J5X-Tj-u0N" userLabel="ChatLog">
+                                        <rect key="frame" x="0.0" y="38" width="585" height="413"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    </customView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="gNf-IZ-NTu" userLabel="ChatInput">
+                                        <rect key="frame" x="0.0" y="0.0" width="585" height="38"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <subviews>
+                                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Nhf-KZ-Txi">
+                                                <rect key="frame" x="20" y="8" width="545" height="22"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" bezelStyle="round" id="k1e-OX-ODX">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="Nhf-KZ-Txi" firstAttribute="leading" secondItem="gNf-IZ-NTu" secondAttribute="leading" constant="20" symbolic="YES" id="Cvy-PC-NQ6"/>
+                                            <constraint firstItem="Nhf-KZ-Txi" firstAttribute="centerY" secondItem="gNf-IZ-NTu" secondAttribute="centerY" id="E3z-72-JJ3"/>
+                                            <constraint firstAttribute="trailing" secondItem="Nhf-KZ-Txi" secondAttribute="trailing" constant="20" symbolic="YES" id="idj-pO-gl6"/>
                                         </constraints>
                                     </customView>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="gNf-IZ-NTu" secondAttribute="bottom" id="0la-SL-Gyt"/>
                                     <constraint firstAttribute="trailing" secondItem="3Je-Lj-8cu" secondAttribute="trailing" id="6bT-e1-IWb"/>
+                                    <constraint firstAttribute="trailing" secondItem="gNf-IZ-NTu" secondAttribute="trailing" id="9MN-nD-GgD"/>
+                                    <constraint firstItem="J5X-Tj-u0N" firstAttribute="top" secondItem="3Je-Lj-8cu" secondAttribute="bottom" constant="-1" id="9u6-US-Gjn"/>
+                                    <constraint firstItem="gNf-IZ-NTu" firstAttribute="top" secondItem="J5X-Tj-u0N" secondAttribute="bottom" id="A8A-EY-3df"/>
                                     <constraint firstItem="3Je-Lj-8cu" firstAttribute="leading" secondItem="8Hx-mP-DOn" secondAttribute="leading" id="BYM-F5-HhT"/>
+                                    <constraint firstAttribute="trailing" secondItem="J5X-Tj-u0N" secondAttribute="trailing" id="Epb-tV-iKN"/>
+                                    <constraint firstItem="gNf-IZ-NTu" firstAttribute="leading" secondItem="8Hx-mP-DOn" secondAttribute="leading" id="bZe-u9-ccz"/>
                                     <constraint firstItem="3Je-Lj-8cu" firstAttribute="top" secondItem="8Hx-mP-DOn" secondAttribute="top" id="ecy-et-zYG"/>
+                                    <constraint firstAttribute="bottom" secondItem="J5X-Tj-u0N" secondAttribute="bottom" constant="38" id="ett-d2-gZW"/>
+                                    <constraint firstItem="J5X-Tj-u0N" firstAttribute="leading" secondItem="8Hx-mP-DOn" secondAttribute="leading" id="wV3-T9-nWP"/>
                                 </constraints>
                             </customView>
                         </subviews>
