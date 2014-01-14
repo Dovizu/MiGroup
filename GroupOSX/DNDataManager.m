@@ -173,25 +173,36 @@
     }
     //Update members or create new ones, updated members are removed from membersToProcess
     for (NSDictionary* fetchedMember in members) {
-        Member *updatedMember = membersToProcess[fetchedMember[k_membership_id]];
-        if (!updatedMember) {
+        Member *dbMember = membersToProcess[fetchedMember[k_membership_id]];
+        if (!dbMember) {
             //Is new member
-            updatedMember = [Member createInContext:currentContext];
-            updatedMember.user_id = fetchedMember[k_user_id];
-            updatedMember.membership_id = fetchedMember[k_membership_id];
-            updatedMember.group = group;
-            [group addMembersObject:updatedMember];
+            dbMember = [Member createInContext:currentContext];
+            dbMember.user_id = fetchedMember[k_user_id];
+            dbMember.membership_id = fetchedMember[k_membership_id];
+            dbMember.group = group;
+            [group addMembersObject:dbMember];
         }else{
             //Is current member
-            [membersToProcess removeObjectForKey:updatedMember.membership_id];
+            [membersToProcess removeObjectForKey:dbMember.membership_id];
         }
         //Update attributes for both new and current members
-        updatedMember.image = fetchedMember[k_image];
-        updatedMember.name = fetchedMember[k_name_of_member];
-        updatedMember.muted = fetchedMember[k_muted];
+        //Obtain image asynchronously
+        if (![fetchedMember[k_image] isKindOfClass:[NSNull class]]) {
+            [_requestManager GET:[fetchedMember[k_image] absoluteString]
+                      parameters:nil
+                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                             NSImage *image = (NSImage*)responseObject;
+                             dbMember.image = image;
+                             [currentContext saveToPersistentStoreAndWait];
+                         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                             DebugLogCD(@"Failed to obtain image for member: %@, error:\n%@", dbMember.name, error);
+                         }];
+        }
+        dbMember.name = fetchedMember[k_name_of_member];
+        dbMember.muted = fetchedMember[k_muted];
         if ([fetchedMember[k_user_id] isEqualToString:creatorUserID]) {
-            updatedMember.is_creator = [NSNumber numberWithBool:YES];
-            group.creator = updatedMember;
+            dbMember.is_creator = [NSNumber numberWithBool:YES];
+            group.creator = dbMember;
         }
     }
     //Any remaining members in membersToProcess are to be deleted from the group

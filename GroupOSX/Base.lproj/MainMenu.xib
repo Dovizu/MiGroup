@@ -726,7 +726,6 @@
                 <binding destination="o2x-8h-Byq" name="managedObjectContext" keyPath="managedObjectContext" id="pQ8-Lw-xks"/>
             </connections>
         </arrayController>
-        <collectionViewItem id="5IJ-Ji-cI8"/>
         <userDefaultsController representsSharedInstance="YES" id="Ebh-0V-gVU"/>
     </objects>
     <resources>
