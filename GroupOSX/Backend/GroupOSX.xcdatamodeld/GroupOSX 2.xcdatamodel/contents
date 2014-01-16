@@ -42,7 +42,7 @@
         <attribute name="system" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment" syncable="YES"/>
-        <relationship name="creator" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="messages" inverseEntity="Member" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="messages" inverseEntity="Member" syncable="YES"/>
         <relationship name="favoritor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Member" inverseName="favorited_messages" inverseEntity="Member" syncable="YES"/>
         <relationship name="target_group" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="messages" inverseEntity="Group" syncable="YES"/>
     </entity>

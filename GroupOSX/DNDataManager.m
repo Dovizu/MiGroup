@@ -118,7 +118,7 @@
         dbGroup.share_url = fetchedGroup[k_share_url];
         dbGroup.type = fetchedGroup[k_type_of_group];
         dbGroup.updated_at = fetchedGroup[k_updated_at];
-        [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup createdBy:fetchedGroup[k_creator_group]];
+        [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup.objectID createdBy:fetchedGroup[k_creator_group]];
         //Obtain image asynchronously
         if (![fetchedGroup[k_image] isKindOfClass:[NSNull class]]) {
             [_requestManager GET:[fetchedGroup[k_image] absoluteString]
@@ -140,14 +140,15 @@
         Message *lastMessage = [Message createInContext:_managedObjectContext];
         lastMessage.creator = lastMessageCreator;
         lastMessage.text = fetchedGroup[k_last_message][k_text];
-        [self helpProcessAttachmentArray:fetchedGroup[k_last_message][k_attachments] inMessage:lastMessage];
         lastMessage.created_at = fetchedGroup[k_last_message][k_created_at];
         lastMessage.message_id = fetchedGroup[k_last_message][k_message_id];
+        lastMessage.target_group = dbGroup;
         [dbGroup addMessagesObject:lastMessage];
         dbGroup.last_message = lastMessage;
-        [_server fetch20MessagesBeforeMessageID:lastMessage.message_id inGroup:dbGroup.group_id];
-        
         [_managedObjectContext saveToPersistentStoreAndWait];
+        
+        [self helpProcessAttachmentArray:fetchedGroup[k_last_message][k_attachments] inMessage:lastMessage.objectID];
+        [_server fetch20MessagesBeforeMessageID:lastMessage.message_id inGroup:dbGroup.group_id];
     }
 }
 - (void)didFetchFormerGroups:(NSNotification*)note
@@ -156,20 +157,62 @@
 }
 - (void)didFetchMessagesBefore:(NSNotification*)note
 {
-    
+    NSArray *fetchedMessages = note.userInfo[k_messages];
+    NSString *groupID = fetchedMessages[0][k_target_group];
+    if ([fetchedMessages count] != 0) {
+        [self helpProcessMessages:fetchedMessages intoGroup:groupID];
+    }
 }
 - (void)didFetchMessagesSince:(NSNotification*)note
 {
     
 }
 
-- (void)helpProcessMemberArray:(NSArray*)members intoGroup:(Group*)group createdBy:(NSString*)creatorUserID
+- (void)helpProcessMessages:(NSArray*)fetchedMessages intoGroup:(NSString*)groupID
+{
+    NSAssert([fetchedMessages count] != 0, @"0-length messages array is passed in");
+    
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Group *group = [[Group findByAttribute:@"group_id" withValue:groupID inContext:currentContext] firstObject];
+    for (NSDictionary *fetchedMessage in fetchedMessages) {
+        Message *dbMessage = [[group.messages filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"message_id == %@", fetchedMessage[k_message_id]]] anyObject];
+        if (!dbMessage) {
+            dbMessage = [Message createInContext:currentContext];
+            dbMessage.message_id = fetchedMessage[k_message_id];
+            dbMessage.text = fetchedMessage[k_text];
+            dbMessage.target_group = group;
+            dbMessage.created_at = fetchedMessage[k_created_at];
+            dbMessage.creator = [[Member findByAttribute:@"user_id" withValue:fetchedMessage[k_creator_of_message] inContext:currentContext] firstObject];
+            [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
+        }
+    }
+    [currentContext saveToPersistentStoreAndWait];
+}
+
+- (void)helpProcessMemberArray:(NSArray*)members intoGroup:(NSManagedObjectID*)groupID createdBy:(NSString*)creator_user_id
 {
     NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Group *group = (Group*)[currentContext objectWithID:groupID];
+
+    NSLog(@"group members count: %d", (int)[group.members count]);
     //Obtain all current members in membership_id-member pairs
     NSMutableDictionary *membersToProcess = [[NSMutableDictionary alloc] initWithCapacity:[group.members count]];
     for (Member *member in group.members) {
-        membersToProcess[member.membership_id] = member;
+        if (![member.user_id isEqualToString:@"system"]) {
+            membersToProcess[member.membership_id] = member;
+        }
+    }
+    
+    //First, create "system" member if this is a new group
+    if ([group.members count] == 0) {
+        Member *system = [Member createInContext:currentContext];
+        system.name = @"System";
+        system.membership_id = @"system";
+        system.user_id = @"system";
+        system.is_creator = NO;
+        system.muted = NO;
+        system.group = group;
+        [group addMembersObject:system];
     }
     //Update members or create new ones, updated members are removed from membersToProcess
     for (NSDictionary* fetchedMember in members) {
@@ -200,21 +243,21 @@
         }
         dbMember.name = fetchedMember[k_name_of_member];
         dbMember.muted = fetchedMember[k_muted];
-        if ([fetchedMember[k_user_id] isEqualToString:creatorUserID]) {
+        if ([fetchedMember[k_user_id] isEqualToString:creator_user_id]) {
             dbMember.is_creator = [NSNumber numberWithBool:YES];
             group.creator = dbMember;
         }
     }
     //Any remaining members in membersToProcess are to be deleted from the group
-//    [group removeMembers:[[NSOrderedSet alloc] initWithArray:[membersToProcess allValues]]];
     [group removeMembers:[NSSet setWithArray:[membersToProcess allValues]]];
     
     [currentContext saveToPersistentStoreAndWait];
 }
 
-- (void)helpProcessAttachmentArray:(NSArray*)attachments inMessage:(Message*)message
+- (void)helpProcessAttachmentArray:(NSArray*)attachments inMessage:(NSManagedObjectID*)messageID
 {
     NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Message *message = (Message*)[currentContext objectWithID:messageID];
     for (NSDictionary* attachment in attachments) {
         Attachment *newAttachment = [Attachment createInContext:currentContext];
         newAttachment.message = message;
