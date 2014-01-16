@@ -36,7 +36,7 @@
  *  @param groupID     target group
  *  @param attachments an array of attachment, currently not supported
  *  @discussion on completion, posts "noteMessage" notificaiton, the userInfo contains:
- *      k_text, k_target_group, k_creator_message, k_created_at
+ *      k_text, k_target_group, k_creator_message, k_created_at, k_message_id
  */
 - (void)sendNewMessage:(NSString*)message
                toGroup:(NSString*)groupID

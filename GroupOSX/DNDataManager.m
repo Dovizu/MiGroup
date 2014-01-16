@@ -62,12 +62,13 @@
 
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
-    [_server fetchAllGroups];
+//    [_server fetchAllGroups];
 }
 
 - (void)didReceiveMessage:(NSNotification*)note
 {
-    
+    NSArray *messages = @[note.userInfo];
+    [self helpProcessMessages:messages];
 }
 - (void)didChangeMemberName:(NSNotification*)note
 {
@@ -158,9 +159,8 @@
 - (void)didFetchMessagesBefore:(NSNotification*)note
 {
     NSArray *fetchedMessages = note.userInfo[k_messages];
-    NSString *groupID = fetchedMessages[0][k_target_group];
     if ([fetchedMessages count] != 0) {
-        [self helpProcessMessages:fetchedMessages intoGroup:groupID];
+        [self helpProcessMessages:fetchedMessages];
     }
 }
 - (void)didFetchMessagesSince:(NSNotification*)note
@@ -168,12 +168,12 @@
     
 }
 
-- (void)helpProcessMessages:(NSArray*)fetchedMessages intoGroup:(NSString*)groupID
+- (void)helpProcessMessages:(NSArray*)fetchedMessages
 {
     NSAssert([fetchedMessages count] != 0, @"0-length messages array is passed in");
     
     NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
-    Group *group = [[Group findByAttribute:@"group_id" withValue:groupID inContext:currentContext] firstObject];
+    Group *group = [[Group findByAttribute:@"group_id" withValue:[fetchedMessages firstObject][k_target_group]] firstObject];
     for (NSDictionary *fetchedMessage in fetchedMessages) {
         Message *dbMessage = [[group.messages filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"message_id == %@", fetchedMessage[k_message_id]]] anyObject];
         if (!dbMessage) {
@@ -183,6 +183,9 @@
             dbMessage.target_group = group;
             dbMessage.created_at = fetchedMessage[k_created_at];
             dbMessage.creator = [[Member findByAttribute:@"user_id" withValue:fetchedMessage[k_creator_of_message] inContext:currentContext] firstObject];
+            if ([group.last_message.created_at compare:dbMessage.created_at] == NSOrderedAscending) {
+                group.last_message = dbMessage;
+            }
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
     }
