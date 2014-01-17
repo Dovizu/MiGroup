@@ -35,6 +35,7 @@
 		F164F9671882725500FF4C62 /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F9661882725500FF4C62 /* Attachment.m */; };
 		F164F96D18837B3300FF4C62 /* DNMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96C18837B3300FF4C62 /* DNMainController.m */; };
 		F164F97018839B4500FF4C62 /* DNValueTransformers.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96F18839B4500FF4C62 /* DNValueTransformers.m */; };
+		F1669344188913100018BC01 /* DNChatLogSingleView.m in Sources */ = {isa = PBXBuildFile; fileRef = F1669343188913100018BC01 /* DNChatLogSingleView.m */; };
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
 		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
@@ -138,6 +139,8 @@
 		F164F96C18837B3300FF4C62 /* DNMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainController.m; path = GroupOSX/DNMainController.m; sourceTree = "<group>"; };
 		F164F96E18839B4500FF4C62 /* DNValueTransformers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNValueTransformers.h; path = GroupOSX/DNValueTransformers.h; sourceTree = "<group>"; };
 		F164F96F18839B4500FF4C62 /* DNValueTransformers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNValueTransformers.m; path = GroupOSX/DNValueTransformers.m; sourceTree = "<group>"; };
+		F1669342188913100018BC01 /* DNChatLogSingleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNChatLogSingleView.h; path = GroupOSX/DNChatLogSingleView.h; sourceTree = "<group>"; };
+		F1669343188913100018BC01 /* DNChatLogSingleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNChatLogSingleView.m; path = GroupOSX/DNChatLogSingleView.m; sourceTree = "<group>"; };
 		F18314131870E95900930D5E /* NSString+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+NXOAuth2.h"; path = "GroupOSX/Backend/NSString+NXOAuth2.h"; sourceTree = "<group>"; };
 		F18314141870E95900930D5E /* NSString+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+NXOAuth2.m"; path = "GroupOSX/Backend/NSString+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "GroupOSX/Backend/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
@@ -333,6 +336,8 @@
 				F164F96C18837B3300FF4C62 /* DNMainController.m */,
 				F164F96E18839B4500FF4C62 /* DNValueTransformers.h */,
 				F164F96F18839B4500FF4C62 /* DNValueTransformers.m */,
+				F1669342188913100018BC01 /* DNChatLogSingleView.h */,
+				F1669343188913100018BC01 /* DNChatLogSingleView.m */,
 			);
 			name = MainWindow;
 			path = ..;
@@ -590,6 +595,7 @@
 				F1A4F59B187E18D9004838DE /* DNRESTAPI.m in Sources */,
 				F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */,
 				F1049C2E1877915E00F79610 /* GroupOSX.xcdatamodeld in Sources */,
+				F1669344188913100018BC01 /* DNChatLogSingleView.m in Sources */,
 				F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
