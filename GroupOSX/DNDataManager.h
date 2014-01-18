@@ -7,11 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
 #import "Group.h"
 #import "Attachment.h"
 #import "Message.h"
 #import "Member.h"
+
 #import <AFNetworking.h>
 
 @class DNServerInterface;

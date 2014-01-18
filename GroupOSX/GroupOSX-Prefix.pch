@@ -11,6 +11,7 @@
     #define MR_SHORTHAND
     #import <MagicalRecord/CoreData+MagicalRecord.h>
     #import <dispatch/dispatch.h>
+
 #endif
 
 

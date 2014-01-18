@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 @class DNAppDelegate, DNDataManager;
 
-@interface DNMainController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate>
+@interface DNMainController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate, NSTableViewDelegate>
 
 @property DNAppDelegate *appDelegate;
 @property DNDataManager *dataManager;
