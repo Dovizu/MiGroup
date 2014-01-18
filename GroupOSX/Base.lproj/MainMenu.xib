@@ -419,11 +419,19 @@
                                             <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WfC-Un-SSJ">
                                                 <rect key="frame" x="20" y="8" width="224" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="7HZ-Tu-ezv">
+                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="predicate" usesSingleLineMode="YES" bezelStyle="round" id="7HZ-Tu-ezv">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </searchFieldCell>
+                                                <connections>
+                                                    <binding destination="kEl-9a-Kxc" name="predicate" keyPath="filterPredicate" id="iY4-Id-Wxc">
+                                                        <dictionary key="options">
+                                                            <string key="NSDisplayName">predicate</string>
+                                                            <string key="NSPredicateFormat">(name contains $value) OR (ANY messages.text contains $value)</string>
+                                                        </dictionary>
+                                                    </binding>
+                                                </connections>
                                             </searchField>
                                         </subviews>
                                         <constraints>
