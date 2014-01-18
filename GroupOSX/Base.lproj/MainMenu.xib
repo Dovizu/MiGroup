@@ -704,44 +704,57 @@
                                                                     <rect key="frame" x="1" y="1" width="582" height="49"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OMJ-74-J1y">
-                                                                            <rect key="frame" x="17" y="2" width="46" height="46"/>
+                                                                        <imageView identifier="avatar" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OMJ-74-J1y" userLabel="Avatar">
+                                                                            <rect key="frame" x="17" y="3" width="46" height="46"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <constraints>
-                                                                                <constraint firstAttribute="height" constant="40" id="UXX-L6-JVa"/>
-                                                                                <constraint firstAttribute="width" constant="40" id="Yj0-I2-tGf"/>
+                                                                                <constraint firstAttribute="height" constant="40" id="Jwa-sT-7lV"/>
+                                                                                <constraint firstAttribute="width" constant="40" id="WOh-Tx-uZV"/>
                                                                             </constraints>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="IIE-j8-EfG"/>
                                                                             <connections>
                                                                                 <binding destination="cl6-be-UET" name="value" keyPath="objectValue.creator.image" id="gki-iu-7Sq"/>
                                                                             </connections>
                                                                         </imageView>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MTI-GQ-HRo">
-                                                                            <rect key="frame" x="66" y="4" width="498" height="41"/>
+                                                                        <textField identifier="message" verticalHuggingPriority="999" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="999" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MTI-GQ-HRo" userLabel="Message">
+                                                                            <rect key="frame" x="66" y="12" width="498" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                            <constraints>
-                                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="41" id="XJE-0c-krw"/>
-                                                                            </constraints>
                                                                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Multiline Label" id="LZE-io-wzb">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                             <connections>
-                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.text" id="aNr-an-40b"/>
+                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.text" id="u2y-zw-7hf"/>
+                                                                            </connections>
+                                                                        </textField>
+                                                                        <textField identifier="sender" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="AdM-4w-xhR" userLabel="Sender">
+                                                                            <rect key="frame" x="66" y="29" width="498" height="17"/>
+                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="8e0-8K-jas">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                            <connections>
+                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.creator.name" id="8YX-SN-t5r"/>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
                                                                     <constraints>
-                                                                        <constraint firstItem="OMJ-74-J1y" firstAttribute="leading" secondItem="cl6-be-UET" secondAttribute="leading" constant="20" symbolic="YES" id="59A-mB-aLp"/>
-                                                                        <constraint firstItem="OMJ-74-J1y" firstAttribute="top" secondItem="cl6-be-UET" secondAttribute="top" constant="4" id="DIX-l9-YMx"/>
-                                                                        <constraint firstItem="MTI-GQ-HRo" firstAttribute="top" secondItem="cl6-be-UET" secondAttribute="top" constant="4" id="PCF-BW-rfe"/>
-                                                                        <constraint firstItem="MTI-GQ-HRo" firstAttribute="leading" secondItem="OMJ-74-J1y" secondAttribute="trailing" constant="8" symbolic="YES" id="bf1-z2-knL"/>
-                                                                        <constraint firstAttribute="bottom" secondItem="MTI-GQ-HRo" secondAttribute="bottom" constant="4" id="cYR-sa-k3t"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="MTI-GQ-HRo" secondAttribute="trailing" constant="20" symbolic="YES" id="swo-ud-1tt"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="MTI-GQ-HRo" secondAttribute="bottom" constant="12" id="BMv-QL-Wis"/>
+                                                                        <constraint firstItem="OMJ-74-J1y" firstAttribute="top" secondItem="cl6-be-UET" secondAttribute="top" constant="3" id="JIS-Ne-Nqb"/>
+                                                                        <constraint firstItem="MTI-GQ-HRo" firstAttribute="top" secondItem="AdM-4w-xhR" secondAttribute="bottom" id="U2U-ch-C71"/>
+                                                                        <constraint firstItem="OMJ-74-J1y" firstAttribute="leading" secondItem="cl6-be-UET" secondAttribute="leading" constant="20" id="fTV-EG-NQ6"/>
+                                                                        <constraint firstItem="MTI-GQ-HRo" firstAttribute="leading" secondItem="OMJ-74-J1y" secondAttribute="trailing" constant="8" symbolic="YES" id="goq-4S-ame"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="MTI-GQ-HRo" secondAttribute="trailing" constant="20" id="kAv-qw-8wI"/>
+                                                                        <constraint firstItem="OMJ-74-J1y" firstAttribute="top" secondItem="AdM-4w-xhR" secondAttribute="top" id="w00-Hz-G9F"/>
+                                                                        <constraint firstItem="AdM-4w-xhR" firstAttribute="leading" secondItem="OMJ-74-J1y" secondAttribute="trailing" constant="8" symbolic="YES" id="xCY-2n-oRE"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="AdM-4w-xhR" secondAttribute="trailing" constant="20" id="zyt-JD-ZkW"/>
                                                                     </constraints>
                                                                     <connections>
                                                                         <outlet property="imageView" destination="OMJ-74-J1y" id="6aF-k0-qWl"/>
+                                                                        <outlet property="senderField" destination="AdM-4w-xhR" id="rXO-p2-B7F"/>
                                                                         <outlet property="textField" destination="MTI-GQ-HRo" id="zBG-eV-0QE"/>
                                                                     </connections>
                                                                 </tableCellView>
@@ -750,6 +763,7 @@
                                                     </tableColumns>
                                                     <connections>
                                                         <binding destination="jgX-pN-FcD" name="content" keyPath="arrangedObjects" id="TSO-CV-GLM"/>
+                                                        <outlet property="delegate" destination="o2x-8h-Byq" id="1Nz-6E-CPg"/>
                                                     </connections>
                                                 </tableView>
                                             </subviews>
@@ -804,6 +818,11 @@
         <customObject id="420" customClass="NSFontManager"/>
         <customObject id="o2x-8h-Byq" userLabel="Main Controller" customClass="DNMainController">
             <connections>
+                <outlet property="_messagesArrayController" destination="jgX-pN-FcD" id="kDz-1X-Qc9"/>
+                <outlet property="_samplingView" destination="eYw-pg-Vml" id="DZQ-tm-ay2"/>
+                <outlet property="_samplingViewImage" destination="zfZ-b8-rTz" id="COm-cf-Gi2"/>
+                <outlet property="_samplingViewMessage" destination="7Vu-bk-1Sr" id="YyI-TR-ND3"/>
+                <outlet property="_samplingViewSender" destination="7gB-07-x0m" id="QWW-0f-kZM"/>
                 <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>
@@ -818,6 +837,64 @@
                 <binding destination="kEl-9a-Kxc" name="contentSet" keyPath="selection.messages" id="gwT-2b-QL0"/>
             </connections>
         </arrayController>
+        <tableCellView id="eYw-pg-Vml" userLabel="Sampling View" customClass="DNMessageTableCellView">
+            <rect key="frame" x="0.0" y="0.0" width="751" height="49"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView identifier="avatar" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zfZ-b8-rTz" userLabel="Avatar">
+                    <rect key="frame" x="17" y="3" width="46" height="46"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="E8e-zY-q0q"/>
+                        <constraint firstAttribute="height" constant="40" id="vdB-oq-2f9"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="DZs-jr-Zup"/>
+                    <connections>
+                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.creator.image" id="qSH-7u-Jga"/>
+                    </connections>
+                </imageView>
+                <textField identifier="message" verticalHuggingPriority="999" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="999" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Vu-bk-1Sr" userLabel="Message">
+                    <rect key="frame" x="66" y="12" width="667" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" truncatesLastVisibleLine="YES" sendsActionOnEndEditing="YES" title="Multiline Label" id="hsr-hu-W6m">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.text" id="JT7-P7-aNW"/>
+                    </connections>
+                </textField>
+                <textField identifier="sender" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="7gB-07-x0m" userLabel="Sender">
+                    <rect key="frame" x="66" y="29" width="667" height="17"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="QfS-AU-Hhd">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.creator.name" id="OBx-qg-3v2"/>
+                    </connections>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstItem="zfZ-b8-rTz" firstAttribute="top" secondItem="eYw-pg-Vml" secondAttribute="top" constant="3" id="44I-P9-9fo"/>
+                <constraint firstAttribute="trailing" secondItem="7Vu-bk-1Sr" secondAttribute="trailing" constant="20" id="5LS-Gd-gQh"/>
+                <constraint firstItem="7gB-07-x0m" firstAttribute="leading" secondItem="zfZ-b8-rTz" secondAttribute="trailing" constant="8" symbolic="YES" id="OEm-nA-X9N"/>
+                <constraint firstItem="zfZ-b8-rTz" firstAttribute="top" secondItem="7gB-07-x0m" secondAttribute="top" id="VF1-gO-stk"/>
+                <constraint firstAttribute="bottom" secondItem="7Vu-bk-1Sr" secondAttribute="bottom" constant="12" id="gq2-sm-dpx"/>
+                <constraint firstAttribute="trailing" secondItem="7gB-07-x0m" secondAttribute="trailing" constant="20" id="q07-aK-Bv9"/>
+                <constraint firstItem="zfZ-b8-rTz" firstAttribute="leading" secondItem="eYw-pg-Vml" secondAttribute="leading" constant="20" id="t5b-x3-1DE"/>
+                <constraint firstItem="7Vu-bk-1Sr" firstAttribute="top" secondItem="7gB-07-x0m" secondAttribute="bottom" id="z7A-UB-nUd"/>
+                <constraint firstItem="7Vu-bk-1Sr" firstAttribute="leading" secondItem="zfZ-b8-rTz" secondAttribute="trailing" constant="8" symbolic="YES" id="zBd-3M-b0l"/>
+            </constraints>
+            <connections>
+                <outlet property="imageView" destination="zfZ-b8-rTz" id="Lac-xa-tpx"/>
+                <outlet property="senderField" destination="7gB-07-x0m" id="LcS-Oa-edF"/>
+                <outlet property="textField" destination="7Vu-bk-1Sr" id="ayr-Q5-XhJ"/>
+            </connections>
+        </tableCellView>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

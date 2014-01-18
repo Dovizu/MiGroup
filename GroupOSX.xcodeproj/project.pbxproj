@@ -334,10 +334,10 @@
 				F144E185186A5CD100C42636 /* MainMenu.xib */,
 				F164F96B18837B3300FF4C62 /* DNMainController.h */,
 				F164F96C18837B3300FF4C62 /* DNMainController.m */,
-				F164F96E18839B4500FF4C62 /* DNValueTransformers.h */,
-				F164F96F18839B4500FF4C62 /* DNValueTransformers.m */,
 				F19875CF188A662A00C7E229 /* DNMessageTableCellView.h */,
 				F19875D0188A662A00C7E229 /* DNMessageTableCellView.m */,
+				F164F96E18839B4500FF4C62 /* DNValueTransformers.h */,
+				F164F96F18839B4500FF4C62 /* DNValueTransformers.m */,
 			);
 			name = MainWindow;
 			path = ..;

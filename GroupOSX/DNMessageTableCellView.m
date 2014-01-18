@@ -11,15 +11,24 @@
 @implementation DNMessageTableCellView
 {
     BOOL _didSetupConstraints;
+    IBOutlet NSTextField *senderField;
 }
 
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+}
+
+- (void)updateConstraints
+{
+    [super updateConstraints];
 }
 
 - (void)drawRect:(NSRect)dirtyRect

@@ -16,7 +16,11 @@
 
 @implementation DNMainController
 {
+    IBOutlet NSArrayController *_messagesArrayController;
     IBOutlet NSTableCellView *_samplingView;
+    IBOutlet NSTextField *_samplingViewSender;
+    IBOutlet NSTextField *_samplingViewMessage;
+    IBOutlet NSImageView *_samplingViewImage;
 }
 
 - (id)initWithWindow:(NSWindow *)window
@@ -39,25 +43,31 @@
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
 {
-    NSString *text = ((Message*)[tableView preparedCellAtColumn:0 row:row].objectValue).text;
-    NSTextField *textField;
-    for (NSView *subview in tableView.subviews) {
-        if ([subview isKindOfClass:[NSTextField class]]) {
-            textField = (NSTextField*)subview;
-        }
+    [_samplingViewMessage setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+    [_samplingViewSender setAutoresizingMask:NSViewNotSizable];
+    [_samplingViewImage setAutoresizingMask:NSViewNotSizable];
+    
+    Message *message = [[_messagesArrayController arrangedObjects] objectAtIndex:row];
+    _samplingView.objectValue = message;
+    
+    CGFloat width = [[[tableView tableColumns] objectAtIndex:0] width];
+    [_samplingView setFrameSize:NSMakeSize(width, CGFLOAT_MAX)];
+    width = _samplingViewMessage.frame.size.width;
+
+    NSTextFieldCell *cell = _samplingViewMessage.cell;
+    NSSize optimalSize = [cell cellSizeForBounds:NSMakeRect(0, 0, width, CGFLOAT_MAX)];
+    CGFloat senderHeight = _samplingViewSender.frame.size.height;
+    CGFloat optimalHeight = optimalSize.height + senderHeight;
+    optimalHeight += 18; //compensation
+    if (optimalHeight < _samplingViewImage.frame.size.height) {
+        optimalHeight = _samplingViewImage.frame.size.height;
     }
-    NSRect rect = [text boundingRectWithSize:CGSizeMake(textField.frame.size.width, CGFLOAT_MAX)
-                       options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading
-                    attributes:@{NSFontAttributeName: textField.font}];
-    
-    return rect.size.height;
-    
+    return optimalHeight;
     
 }
 
 #pragma mark - GUI Actions
 - (IBAction)logout:(id)sender
 {
-
 }
 @end
