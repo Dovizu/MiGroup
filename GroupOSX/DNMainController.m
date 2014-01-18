@@ -39,6 +39,13 @@
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
+#pragma mark - NSArrayController
+
+- (NSArray*)messagesSortDescriptors
+{
+    return [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:YES]];
+}
+
 #pragma mark - NSTableViewDelegate
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
@@ -63,7 +70,6 @@
         optimalHeight = _samplingViewImage.frame.size.height;
     }
     return optimalHeight;
-    
 }
 
 #pragma mark - GUI Actions

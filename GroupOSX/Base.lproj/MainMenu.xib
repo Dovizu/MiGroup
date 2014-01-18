@@ -835,6 +835,7 @@
         <arrayController id="jgX-pN-FcD" userLabel="Messages Array Controller">
             <connections>
                 <binding destination="kEl-9a-Kxc" name="contentSet" keyPath="selection.messages" id="gwT-2b-QL0"/>
+                <binding destination="o2x-8h-Byq" name="sortDescriptors" keyPath="messagesSortDescriptors" id="H0w-mr-nXC"/>
             </connections>
         </arrayController>
         <tableCellView id="eYw-pg-Vml" userLabel="Sampling View" customClass="DNMessageTableCellView">
