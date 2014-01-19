@@ -419,15 +419,15 @@
                                             <searchField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WfC-Un-SSJ">
                                                 <rect key="frame" x="20" y="8" width="224" height="22"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="predicate" usesSingleLineMode="YES" bezelStyle="round" id="7HZ-Tu-ezv">
+                                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search" usesSingleLineMode="YES" bezelStyle="round" id="7HZ-Tu-ezv">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </searchFieldCell>
                                                 <connections>
-                                                    <binding destination="kEl-9a-Kxc" name="predicate" keyPath="filterPredicate" id="iY4-Id-Wxc">
+                                                    <binding destination="kEl-9a-Kxc" name="predicate" keyPath="filterPredicate" id="wRG-bm-aox">
                                                         <dictionary key="options">
-                                                            <string key="NSDisplayName">predicate</string>
+                                                            <string key="NSDisplayName">Search</string>
                                                             <string key="NSPredicateFormat">(name contains $value) OR (ANY messages.text contains $value)</string>
                                                         </dictionary>
                                                     </binding>
@@ -476,7 +476,8 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="264" height="474"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="backgroundColor" red="0.82745105029999999" green="0.85098046059999999" blue="0.89019614459999996" alpha="1" colorSpace="deviceRGB"/>
+                                                            <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn editable="NO" width="259" minWidth="40" maxWidth="1000" id="IFl-OO-YtH" userLabel="Column">
@@ -511,7 +512,7 @@
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uV9-fs-Sdf" userLabel="Last Message">
                                                                                     <rect key="frame" x="86" y="10" width="169" height="35"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Last Message Preview" id="hu3-2j-Htu">
+                                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Last Message Preview" id="hu3-2j-Htu">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
