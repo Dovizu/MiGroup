@@ -32,11 +32,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollToBottomOfTable:) name:NSManagedObjectContextObjectsDidChangeNotification object:nil];
 }
 
-- (void)reloadData
-{
-    [super reloadData];
-}
-
 - (void)scrollToBottomOfTable:(NSNotification*) note
 {
     if ([[note.userInfo allKeys] containsObject:@"inserted"]) {

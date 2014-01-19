@@ -42,11 +42,17 @@
 
 #pragma mark - Message Table View Delegate
 
+/**
+ *  Reload data in order to calculate row heights when re-sized
+ */
 - (void)tableViewColumnDidResize:(NSNotification *)notification
 {
     [messageTableView reloadData];
 }
 
+/**
+ *  Calculates the optimal row height for each message
+ */
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
 {
     [_samplingViewMessage setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
