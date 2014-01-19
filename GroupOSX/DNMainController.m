@@ -33,11 +33,16 @@
     [inputField setStringValue:@""];
 }
 
-#pragma mark - NSArrayController
+#pragma mark - Sorting Descriptors
 
 - (NSArray*)messagesSortDescriptors
 {
     return [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:YES]];
+}
+
+- (NSArray*)groupSortDescriptors
+{
+    return [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"last_message.created_at" ascending:NO]];
 }
 
 #pragma mark - Message Table View Delegate
@@ -80,5 +85,12 @@
 #pragma mark - GUI Actions
 - (IBAction)logout:(id)sender
 {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+    dispatch_async(queue, ^{
+        NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+        [Group truncateAllInContext:currentContext]; //cascade delete will clear out the whole database
+        [currentContext saveToPersistentStoreAndWait];
+    });
+    [_dataManager logout]; //dataManager will logout server and clear userDefaults
 }
 @end

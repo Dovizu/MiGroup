@@ -352,6 +352,9 @@
                         <items>
                             <menuItem title="Log Out" id="BB5-jD-NJ6">
                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="logout:" target="o2x-8h-Byq" id="hDG-1N-B8a"/>
+                                </connections>
                             </menuItem>
                         </items>
                     </menu>
@@ -843,6 +846,7 @@
         <arrayController mode="entity" entityName="Group" automaticallyPreparesContent="YES" id="kEl-9a-Kxc" userLabel="Group Array Controller">
             <connections>
                 <binding destination="o2x-8h-Byq" name="managedObjectContext" keyPath="managedObjectContext" id="pQ8-Lw-xks"/>
+                <binding destination="o2x-8h-Byq" name="sortDescriptors" keyPath="groupSortDescriptors" id="aRI-3H-sFR"/>
             </connections>
         </arrayController>
         <userDefaultsController representsSharedInstance="YES" id="Ebh-0V-gVU"/>

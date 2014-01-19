@@ -38,6 +38,11 @@
 
 #pragma mark - Actions
 
+- (void)logout
+{
+    [_server teardown];
+}
+
 - (void)sendNewMessage:(NSString*)text toGroup:(NSString*)groupID withAttachments:(NSArray*)attachments
 {
     /**
@@ -72,7 +77,7 @@
 
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
-//    [_server fetchAllGroups];
+    [_server fetchAllGroups];
 }
 
 - (void)didReceiveMessage:(NSNotification*)note

@@ -57,28 +57,7 @@
 
 - (void)purgeStores
 {
-//    DebugLogCD(@"Purging all stores");
-//    NSPersistentStoreCoordinator *psc = [self persistentStoreCoordinator];
-//    NSArray *stores = [psc persistentStores];
-//    NSError *error = nil;
-//    [self.managedObjectContext save:&error]; //don't really care if error or not
-//    
-//    //To-Do: although very rare, recover from database failure? Suggest user manual removal as last resort?
-//    for (NSPersistentStore *store in stores) {
-//        [psc removePersistentStore:store error:&error];
-//        if (error) {
-//            [[NSApplication sharedApplication] presentError:[[NSError alloc] initWithDomain:DNErrorDomain
-//                                                                                       code:eLogOutPurgingFailure
-//                                                                                   userInfo:@{NSLocalizedDescriptionKey:eLogOutPurgingFailureDesc}]];
-//            //To-Do: although very rare, recover from database failure?
-//        }
-//        [[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:&error];
-//        if (error) {
-//            [[NSApplication sharedApplication] presentError:[[NSError alloc] initWithDomain:DNErrorDomain
-//                                                                                       code:eLogOutPurgingFailure
-//                                                                                   userInfo:@{NSLocalizedDescriptionKey:eLogOutPurgingFailureDesc}]];
-//        }
-//    }
+    
 }
 
 //This function should only be used for handling authentication URL redirect's, for now

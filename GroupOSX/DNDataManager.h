@@ -23,5 +23,6 @@
 @property DNServerInterface *server;
 
 - (void)sendNewMessage:(NSString*)text toGroup:(Group*)group withAttachments:(NSArray*)attachments;
+- (void)logout;
 
 @end
