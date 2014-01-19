@@ -17,6 +17,7 @@ NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
     AFHTTPRequestOperationManager *_HTTPRequestManager;
     AFNetworkReachabilityManager *_reachabilityManager;
     NSString *_userToken;
+    NSMutableSet *_recentGUIDs;
 }
 
 #pragma mark - Initialiazation and State Control
@@ -29,6 +30,8 @@ NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
         [acceptableTypes addObject:@"text/html"];
         _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
         _reachabilityManager = [_HTTPRequestManager reachabilityManager];
+        
+        _recentGUIDs = [[NSMutableSet alloc] init];
     }
     return self;
 }
@@ -397,18 +400,21 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
                                         }];
         arrayOfAttach = convertedAttachments;
     }
-    NSDictionary *params = @{@"source_guid": @"source_guid_here",
-                             @"text": text,
-                             @"token": user_token};
-    [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages", groupID)
+    NSUUID *guid = [NSUUID UUID];
+    NSDictionary *params = @{@"message": @{@"source_guid": [guid UUIDString], @"text": text, @"attachments": @[]}};
+
+    [_HTTPRequestManager setRequestSerializer:[AFJSONRequestSerializer serializer]];
+    [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages?token=%@", groupID, user_token)
                    parameters:params
                       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                          completeBlock((NSDictionary*)responseObject[@"message"]);
+                          [_recentGUIDs addObject:[guid UUIDString]];
+                          completeBlock((NSDictionary*)responseObject[@"response"][@"message"]);
                       }
                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                           report_request_error;
                           completeBlock(nil);
                       }];
+    [_HTTPRequestManager setRequestSerializer:[AFHTTPRequestSerializer serializer]];
 }
 
 #pragma mark - Helper Methods
@@ -421,6 +427,11 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSString *imageURL = nil;
     //upload image
     completeBlock(imageURL);
+}
+
+- (BOOL)hasGUID:(NSString *)uuid
+{
+    return [_recentGUIDs containsObject:uuid];
 }
 
 @end

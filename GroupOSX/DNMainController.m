@@ -16,6 +16,7 @@
 
 @implementation DNMainController
 {
+    IBOutlet NSArrayController *_groupArrayController;
     IBOutlet NSArrayController *_messagesArrayController;
     IBOutlet NSTableCellView *_samplingView;
     IBOutlet NSTextField *_samplingViewSender;
@@ -37,6 +38,14 @@
     [super windowDidLoad];
     
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+}
+
+- (IBAction)sendMessage:(id)sender
+{
+    NSTextField *inputField = (NSTextField*)sender;
+    NSString *messageText = inputField.stringValue;
+    [_dataManager sendNewMessage:messageText toGroup:[[_groupArrayController selection] valueForKey:@"group_id"] withAttachments:nil];
+    
 }
 
 #pragma mark - NSArrayController

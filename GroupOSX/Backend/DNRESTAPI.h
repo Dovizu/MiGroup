@@ -72,4 +72,7 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock;
                   attachments:(NSArray*)arrayOfAttach
              andCompleteBlock:(void(^)(NSDictionary* sentMessage))completeBlock;
 
+//GUID Check
+- (BOOL)hasGUID:(NSString*)uuid;
+
 @end

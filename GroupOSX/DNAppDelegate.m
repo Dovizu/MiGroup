@@ -36,6 +36,7 @@
     //set up mainWindowController
     _mainWindowController.appDelegate = self;
     _mainWindowController.managedObjectContext = _managedObjectContext;
+    _mainWindowController.dataManager = _dataManager;
     
     //set up server
     _server.loginSheetController = _loginSheetController;

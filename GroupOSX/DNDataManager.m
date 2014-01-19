@@ -36,6 +36,16 @@
     return self;
 }
 
+#pragma mark - Actions
+
+- (void)sendNewMessage:(NSString*)text toGroup:(NSString*)groupID withAttachments:(NSArray*)attachments
+{
+    /**
+     *  In future releases, this section is supposed to process attachments and replace text emoji's.
+     */
+    NSAssert(text && groupID, @"Message text or group cannot be nil");
+    [_server sendNewMessage:text toGroup:groupID withAttachments:nil];
+}
 
 #pragma mark - Message Routing
 

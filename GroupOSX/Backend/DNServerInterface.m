@@ -63,7 +63,6 @@ enum DNJSONDictionaryType {
     NSNotificationCenter *_notificationCenter;
     
     //Book keeping
-    NSMutableSet *_recentGUIDs;
     NSString* _userToken;
     NSDictionary *_userInfo;
     
@@ -91,7 +90,6 @@ enum DNJSONDictionaryType {
         //Book keeping
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
         _userInfo = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserInfo]];
-        _recentGUIDs = [[NSMutableSet alloc] init];
 
         #ifdef DEBUG_BACKEND
         _userToken = nil; //force re-authenticate
@@ -142,10 +140,14 @@ enum DNJSONDictionaryType {
                           text:message
                    attachments:nil
               andCompleteBlock:^(NSDictionary *sentMessage) {
-                  [_notificationCenter postNotificationName:noteNewMessage
-                                                     object:nil
-                                                   userInfo:[self helpConvertRawDictionary:sentMessage
-                                                                                    ofType:DNMessageJSONDictionary]];
+                  if (sentMessage) {
+                      [_notificationCenter postNotificationName:noteNewMessage
+                                                         object:nil
+                                                       userInfo:[self helpConvertRawDictionary:sentMessage
+                                                                                        ofType:DNMessageJSONDictionary]];
+                  }else{
+                      DebugLog(@"Failed to send message: %@", message);
+                  }
               }];
     
 }
@@ -522,7 +524,7 @@ enum DNJSONDictionaryType {
     }
     
     //MESSAGES BY USER
-    else if (identifierGUID && [_recentGUIDs containsObject:identifierGUID]) {
+    else if (identifierGUID && [API hasGUID:identifierGUID]) {
         DebugLog(@"Received duplicate message: '%@'", identifierAlert);
     }
     //MESSAGES BY ANOTHER MEMBER
