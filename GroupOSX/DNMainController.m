@@ -45,7 +45,7 @@
     NSTextField *inputField = (NSTextField*)sender;
     NSString *messageText = inputField.stringValue;
     [_dataManager sendNewMessage:messageText toGroup:[[_groupArrayController selection] valueForKey:@"group_id"] withAttachments:nil];
-    
+    [inputField setStringValue:@""];
 }
 
 #pragma mark - NSArrayController
