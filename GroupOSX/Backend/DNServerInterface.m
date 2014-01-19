@@ -679,7 +679,10 @@ enum DNJSONDictionaryType {
 
 - (void)messageReceived:(NSDictionary*)messageDict channel:(NSString* __unused)channel
 {
-    [self messageCentralRouter:messageDict];
+    //When another client subscribes to user's account, it will receive a "type = subscribe" message
+    if (![messageDict[@"type"] isEqualToString:@"subscribe"]) {
+        [self messageCentralRouter:messageDict];
+    }
 }
 
 - (void)connectedToServer {

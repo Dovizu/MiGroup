@@ -30,6 +30,7 @@ NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
         [acceptableTypes addObject:@"text/html"];
         _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
         _reachabilityManager = [_HTTPRequestManager reachabilityManager];
+        [_reachabilityManager startMonitoring];
         
         _recentGUIDs = [[NSMutableSet alloc] init];
     }
