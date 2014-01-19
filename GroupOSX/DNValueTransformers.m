@@ -37,26 +37,3 @@
 }
 
 @end
-
-@implementation DNSingleMessageTransformer
-
-+ (Class)transformedValueClass
-{
-    return [NSString class];
-}
-
-+ (BOOL)allowsReverseTransformation
-{
-    return NO;
-}
-
-- (id)transformedValue:(id)value
-{
-    Message *message = (Message*)value;
-    NSString *text = message.text;
-    NSString *sender = message.creator.name;
-    NSString *messageDisplay = [NSString stringWithFormat:@"%@\n%@", sender, text];
-    return messageDisplay;
-}
-
-@end

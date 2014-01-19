@@ -684,14 +684,14 @@
                                             <constraint firstAttribute="trailing" secondItem="Nhf-KZ-Txi" secondAttribute="trailing" constant="20" symbolic="YES" id="idj-pO-gl6"/>
                                         </constraints>
                                     </customView>
-                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="51" horizontalPageScroll="10" verticalLineScroll="51" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWQ-cZ-NWA" userLabel="ChatLog">
+                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWQ-cZ-NWA" userLabel="ChatLog">
                                         <rect key="frame" x="0.0" y="38" width="585" height="412"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <clipView key="contentView" id="AJF-Kx-rzj">
                                             <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="49" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g" customClass="DNMessagesTableView">
                                                     <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -711,7 +711,7 @@
                                                             </textFieldCell>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
-                                                                <tableCellView id="cl6-be-UET" customClass="DNMessageTableCellView">
+                                                                <tableCellView id="cl6-be-UET">
                                                                     <rect key="frame" x="1" y="1" width="582" height="49"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
@@ -835,6 +835,7 @@
                 <outlet property="_samplingViewImage" destination="zfZ-b8-rTz" id="COm-cf-Gi2"/>
                 <outlet property="_samplingViewMessage" destination="7Vu-bk-1Sr" id="YyI-TR-ND3"/>
                 <outlet property="_samplingViewSender" destination="7gB-07-x0m" id="QWW-0f-kZM"/>
+                <outlet property="messageTableView" destination="Fh8-yH-k5g" id="bBP-me-h7A"/>
                 <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>
@@ -846,8 +847,8 @@
         <userDefaultsController representsSharedInstance="YES" id="Ebh-0V-gVU"/>
         <arrayController id="jgX-pN-FcD" userLabel="Messages Array Controller">
             <connections>
-                <binding destination="kEl-9a-Kxc" name="contentSet" keyPath="selection.messages" id="gwT-2b-QL0"/>
                 <binding destination="o2x-8h-Byq" name="sortDescriptors" keyPath="messagesSortDescriptors" id="H0w-mr-nXC"/>
+                <binding destination="kEl-9a-Kxc" name="contentSet" keyPath="selection.messages" id="gwT-2b-QL0"/>
             </connections>
         </arrayController>
         <tableCellView id="eYw-pg-Vml" userLabel="Sampling View" customClass="DNMessageTableCellView">

@@ -13,9 +13,3 @@
 + (BOOL)allowsReverseTransformation;
 - (id)transformedValue:(id)value;
 @end
-
-@interface DNSingleMessageTransformer : NSValueTransformer
-+ (Class)transformedValueClass;
-+ (BOOL)allowsReverseTransformation;
-- (id)transformedValue:(id)value;
-@end

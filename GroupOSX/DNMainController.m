@@ -22,22 +22,7 @@
     IBOutlet NSTextField *_samplingViewSender;
     IBOutlet NSTextField *_samplingViewMessage;
     IBOutlet NSImageView *_samplingViewImage;
-}
-
-- (id)initWithWindow:(NSWindow *)window
-{
-    self = [super initWithWindow:window];
-    if (self) {
-        // Initialization code here.
-    }
-    return self;
-}
-
-- (void)windowDidLoad
-{
-    [super windowDidLoad];
-    
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    IBOutlet NSTableView *messageTableView;
 }
 
 - (IBAction)sendMessage:(id)sender
@@ -55,7 +40,12 @@
     return [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:YES]];
 }
 
-#pragma mark - NSTableViewDelegate
+#pragma mark - Message Table View Delegate
+
+- (void)tableViewColumnDidResize:(NSNotification *)notification
+{
+    [messageTableView reloadData];
+}
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
 {
