@@ -121,50 +121,12 @@
 {
     
 }
+
 - (void)didFetchAllGroups:(NSNotification*)note
 {
     NSArray *fetchedGroups = note.userInfo[k_fetched_groups];
     for (NSDictionary *fetchedGroup in fetchedGroups) {
-        Group *dbGroup;
-        (dbGroup = [Group findFirstByAttribute:@"group_id" withValue:fetchedGroup[k_group_id]]) ? (nil) : (dbGroup = [Group createInContext:_managedObjectContext]);
-        dbGroup.desc = fetchedGroup[k_desc];
-        dbGroup.created_at = fetchedGroup[k_created_at];
-        dbGroup.group_id = fetchedGroup[k_group_id];
-        dbGroup.name = fetchedGroup[k_name_of_group];
-        dbGroup.share_url = fetchedGroup[k_share_url];
-        dbGroup.type = fetchedGroup[k_type_of_group];
-        dbGroup.updated_at = fetchedGroup[k_updated_at];
-        [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup.objectID createdBy:fetchedGroup[k_creator_group]];
-        //Obtain image asynchronously
-        if (![fetchedGroup[k_image] isKindOfClass:[NSNull class]]) {
-            [_requestManager GET:[fetchedGroup[k_image] absoluteString]
-                      parameters:nil
-                         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                             NSImage *image = (NSImage*)responseObject;
-                             dbGroup.image = image;
-                             [_managedObjectContext saveToPersistentStoreAndWait];
-                         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             DebugLogCD(@"Failed to obtain image for group: %@, error:\n%@", dbGroup.name, error);
-                         }];
-        }
-        
-        //Process last message, special case because of GroupMe's weird API
-        NSSet *tempSet = [dbGroup.members filteredSetUsingPredicate:
-                          [NSPredicate predicateWithFormat:@"name == %@", fetchedGroup[k_last_message][k_name_of_member]]];
-        NSAssert([tempSet count] == 1, @"More than one creator found for one group");
-        Member *lastMessageCreator = [tempSet anyObject];
-        Message *lastMessage = [Message createInContext:_managedObjectContext];
-        lastMessage.creator = lastMessageCreator;
-        lastMessage.text = fetchedGroup[k_last_message][k_text];
-        lastMessage.created_at = fetchedGroup[k_last_message][k_created_at];
-        lastMessage.message_id = fetchedGroup[k_last_message][k_message_id];
-        lastMessage.target_group = dbGroup;
-        [dbGroup addMessagesObject:lastMessage];
-        dbGroup.last_message = lastMessage;
-        [_managedObjectContext saveToPersistentStoreAndWait];
-        
-        [self helpProcessAttachmentArray:fetchedGroup[k_last_message][k_attachments] inMessage:lastMessage.objectID];
-        [_server fetch20MessagesBeforeMessageID:lastMessage.message_id inGroup:dbGroup.group_id];
+        [self helpProcessGroup:fetchedGroup];
     }
 }
 - (void)didFetchFormerGroups:(NSNotification*)note
@@ -181,6 +143,55 @@
 - (void)didFetchMessagesSince:(NSNotification*)note
 {
     
+}
+
+- (void)helpProcessGroup:(NSDictionary *)fetchedGroup
+{
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Group *dbGroup = [Group findFirstByAttribute:@"group_id" withValue:fetchedGroup[k_group_id] inContext:currentContext];
+    if (!dbGroup) {
+        dbGroup = [Group createInContext:currentContext];
+    }
+    dbGroup.desc = fetchedGroup[k_desc];
+    dbGroup.created_at = fetchedGroup[k_created_at];
+    dbGroup.group_id = fetchedGroup[k_group_id];
+    dbGroup.name = fetchedGroup[k_name_of_group];
+    dbGroup.share_url = fetchedGroup[k_share_url];
+    dbGroup.type = fetchedGroup[k_type_of_group];
+    dbGroup.updated_at = fetchedGroup[k_updated_at];
+    
+    [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup.objectID createdBy:fetchedGroup[k_creator_group]];
+    //Obtain image asynchronously
+    if (![fetchedGroup[k_image] isKindOfClass:[NSNull class]]) {
+        [_requestManager GET:[[fetchedGroup[k_image] absoluteString] stringByAppendingString:@".preview"]
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         NSImage *image = (NSImage*)responseObject;
+                         dbGroup.image = image;
+                         [currentContext saveToPersistentStoreAndWait];
+                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         DebugLogCD(@"Failed to obtain image for group: %@, error:\n%@", dbGroup.name, error);
+                     }];
+    }
+    
+    //Process last message, special case because of GroupMe's weird API
+    NSSet *tempSet = [dbGroup.members filteredSetUsingPredicate:
+                      [NSPredicate predicateWithFormat:@"name == %@", fetchedGroup[k_last_message][k_name_of_member]]];
+    NSAssert([tempSet count] == 1, @"More than one creator found for one group");
+    Member *lastMessageCreator = [tempSet anyObject];
+    Message *lastMessage = [Message createInContext:currentContext];
+    lastMessage.creator = lastMessageCreator;
+    lastMessage.text = fetchedGroup[k_last_message][k_text];
+    lastMessage.created_at = fetchedGroup[k_last_message][k_created_at];
+    lastMessage.message_id = fetchedGroup[k_last_message][k_message_id];
+    lastMessage.target_group = dbGroup;
+    [dbGroup addMessagesObject:lastMessage];
+    dbGroup.last_message = lastMessage;
+    [currentContext saveToPersistentStoreAndWait];
+    
+    
+    [self helpProcessAttachmentArray:fetchedGroup[k_last_message][k_attachments] inMessage:lastMessage.objectID];
+    [_server fetch20MessagesBeforeMessageID:lastMessage.message_id inGroup:dbGroup.group_id];
 }
 
 - (void)helpProcessMessages:(NSArray*)fetchedMessages
@@ -249,12 +260,12 @@
         //Update attributes for both new and current members
         //Obtain image asynchronously
         if (![fetchedMember[k_image] isKindOfClass:[NSNull class]]) {
-            [_requestManager GET:[fetchedMember[k_image] absoluteString]
+            [_requestManager GET:[[fetchedMember[k_image] absoluteString] stringByAppendingString:@".avatar"]
                       parameters:nil
                          success:^(AFHTTPRequestOperation *operation, id responseObject) {
                              NSImage *image = (NSImage*)responseObject;
                              dbMember.image = image;
-                             [currentContext saveToPersistentStoreAndWait];
+                             [currentContext saveOnlySelfAndWait];
                          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                              DebugLogCD(@"Failed to obtain image for member: %@, error:\n%@", dbMember.name, error);
                          }];
@@ -270,6 +281,7 @@
     [group removeMembers:[NSSet setWithArray:[membersToProcess allValues]]];
     
     [currentContext saveToPersistentStoreAndWait];
+    NSLog(@"blaj");
 }
 
 - (void)helpProcessAttachmentArray:(NSArray*)attachments inMessage:(NSManagedObjectID*)messageID

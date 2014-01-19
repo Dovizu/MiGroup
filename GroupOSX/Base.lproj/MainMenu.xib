@@ -479,7 +479,7 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="264" height="474"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
-                                                            <color key="backgroundColor" red="0.82745105029999999" green="0.85098046059999999" blue="0.89019614459999996" alpha="1" colorSpace="deviceRGB"/>
+                                                            <color key="backgroundColor" name="controlLightHighlightColor" catalog="System" colorSpace="catalog"/>
                                                             <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
@@ -501,13 +501,13 @@
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="thK-Ch-kmN" userLabel="Group Image">
-                                                                                    <rect key="frame" x="20" y="10" width="60" height="60"/>
+                                                                                    <rect key="frame" x="17" y="7" width="66" height="66"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                     <constraints>
                                                                                         <constraint firstAttribute="height" constant="60" id="cXx-1s-B7o"/>
                                                                                         <constraint firstAttribute="width" constant="60" id="eBB-2U-T48"/>
                                                                                     </constraints>
-                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" image="NSEveryone" id="QMm-0a-6kx"/>
+                                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" imageFrameStyle="grayBezel" image="NSEveryone" id="QMm-0a-6kx"/>
                                                                                     <connections>
                                                                                         <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.image" id="vmZ-MX-UXb"/>
                                                                                     </connections>
@@ -566,7 +566,7 @@
                                                             </connections>
                                                         </tableView>
                                                     </subviews>
-                                                    <color key="backgroundColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlLightHighlightColor" catalog="System" colorSpace="catalog"/>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Mvi-l7-kFg">
                                                     <rect key="frame" x="0.0" y="-16" width="40" height="16"/>
@@ -616,7 +616,7 @@
                                                     <constraint firstAttribute="width" constant="70" id="Dbm-3L-NDZ"/>
                                                     <constraint firstAttribute="height" constant="70" id="KGQ-YZ-Baq"/>
                                                 </constraints>
-                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageFrameStyle="grayBezel" image="NSEveryone" id="Nzm-1s-9UU"/>
+                                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="NSEveryone" id="Nzm-1s-9UU"/>
                                                 <connections>
                                                     <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.image" id="ygv-24-iZZ"/>
                                                 </connections>
@@ -629,7 +629,7 @@
                                                     <constraint firstAttribute="height" constant="16" id="yKc-tr-DWs"/>
                                                 </constraints>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group Name" id="GdU-iL-vhA">
-                                                    <font key="font" metaFont="system"/>
+                                                    <font key="font" metaFont="systemBold" size="15"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
@@ -720,13 +720,13 @@
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <imageView identifier="avatar" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OMJ-74-J1y" userLabel="Avatar">
-                                                                            <rect key="frame" x="17" y="3" width="46" height="46"/>
+                                                                            <rect key="frame" x="20" y="6" width="40" height="40"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="40" id="Jwa-sT-7lV"/>
                                                                                 <constraint firstAttribute="width" constant="40" id="WOh-Tx-uZV"/>
                                                                             </constraints>
-                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="NSUser" id="IIE-j8-EfG"/>
+                                                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSUser" id="IIE-j8-EfG"/>
                                                                             <connections>
                                                                                 <binding destination="cl6-be-UET" name="value" keyPath="objectValue.creator.image" id="gki-iu-7Sq"/>
                                                                             </connections>
@@ -747,8 +747,8 @@
                                                                             <rect key="frame" x="66" y="29" width="498" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="8e0-8K-jas">
-                                                                                <font key="font" metaFont="system"/>
-                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <font key="font" size="12" name="Helvetica"/>
+                                                                                <color key="textColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                             <connections>
