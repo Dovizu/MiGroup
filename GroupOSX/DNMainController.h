@@ -7,18 +7,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
-@class DNAppDelegate, DNDataManager, Message, Group;
+@class DNAppDelegate, DNDataManager, Message, Group, DNLoginSheetController;
 
 @interface DNMainController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate, NSTableViewDelegate, NSUserNotificationCenterDelegate>
 
 @property DNAppDelegate *appDelegate;
 @property DNDataManager *dataManager;
 @property NSManagedObjectContext *managedObjectContext;
+@property DNLoginSheetController *loginSheetController;
 
 #pragma mark - Models Helper Methods
 - (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup;
-
-#pragma mark - Views Helper Methods
-- (BOOL)currentGroupIsTargetOfMessage:(NSManagedObject*)msg;
+- (void)promptForLoginWithPreparedURL:(NSURL *)url;
+- (void)closeLoginSheet;
 
 @end

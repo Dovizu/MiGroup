@@ -2,21 +2,21 @@
 //  DNLoginSheetController.h
 //  GroupOSX
 //
-//  Created by Donny Reynolds on 12/26/13.
-//  Copyright (c) 2013 Dovizu Network. All rights reserved.
+//  Created by Donny Reynolds on 1/19/14.
+//  Copyright (c) 2014 Dovizu Network. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-@class DNMainController, DNServerInterface;
+@class DNMainController;
 
 @interface DNLoginSheetController : NSWindowController
 
-@property DNMainController *mainWindowController;
-@property DNServerInterface *server;
+@property IBOutlet WebView *loginWebView;
+@property IBOutlet NSWindow *loginWindow;
+@property DNMainController *mainController;
 
-- (id)init;
-- (void)promptForLoginWithPreparedURL:(NSURL *)url;
-- (void)closeLoginSheet;
+- (void)openSheetWithURL:(NSURL *)url;
+- (IBAction)closeLoginSheet:(id)sender;
 
 @end

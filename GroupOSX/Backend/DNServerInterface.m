@@ -8,7 +8,6 @@
 
 #import "DNServerInterface.h"
 #import "DNRESTAPI.h"
-#import "DNLoginSheetController.h"
 #import "DNDataManager.h"
 #import "DNMainController.h"
 
@@ -113,7 +112,7 @@ enum DNJSONDictionaryType {
                     DebugLog(@"Lost Connection to GroupMe");
                     *_listening_pointer = NO;
                     NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
-                    [block_self.loginSheetController.mainWindowController presentError:error];
+                    [block_self.mainWindowController presentError:error];
                     break;
                 }
                 case AFNetworkReachabilityStatusUnknown:
@@ -584,7 +583,7 @@ enum DNJSONDictionaryType {
         NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
         DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
-        [self.loginSheetController promptForLoginWithPreparedURL:preparedAuthorizationURL];
+        [self.mainWindowController promptForLoginWithPreparedURL:preparedAuthorizationURL];
     }
 }
 
@@ -611,7 +610,7 @@ enum DNJSONDictionaryType {
     
     if (token) {
         _authenticated = YES;
-        [self.loginSheetController closeLoginSheet];
+        [self.mainWindowController closeLoginSheet];
         DebugLog(@"Server successfully authenticated with token: %@", token);
         _userToken = token;
         [API setUserToken:token];
@@ -636,7 +635,7 @@ enum DNJSONDictionaryType {
     }else{
         DebugLog(@"Server failed to retrieve token, authentication restart...");
         _authenticated = NO; //just to be sure
-        [self.loginSheetController closeLoginSheet];
+        [self.mainWindowController closeLoginSheet];
         [self authenticate]; //do it again
     }
 }

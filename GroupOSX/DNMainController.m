@@ -9,6 +9,7 @@
 #import "DNMainController.h"
 #import "DNDataManager.h"
 #import "Message.h"
+#import "DNLoginSheetController.h"
 
 @interface DNMainController ()
 
@@ -26,18 +27,6 @@
     IBOutlet NSTableView *_groupTableVIew;
 }
 
-#pragma mark - Initialization
-- (void)awakeFromNib
-{
-}
-
-- (IBAction)sendMessage:(id)sender
-{
-    NSTextField *inputField = (NSTextField*)sender;
-    NSString *messageText = inputField.stringValue;
-    [_dataManager sendNewMessage:messageText toGroup:[[_groupArrayController selection] valueForKey:@"group_id"] withAttachments:nil];
-    [inputField setStringValue:@""];
-}
 
 #pragma mark - Sorting Descriptors
 
@@ -115,12 +104,12 @@
     Message *message = [[_messagesArrayController arrangedObjects] objectAtIndex:row];
     _samplingView.objectValue = message;
     
-    CGFloat width = [[[tableView tableColumns] objectAtIndex:0] width];
-    [_samplingView setFrameSize:NSMakeSize(width, CGFLOAT_MAX)];
-    width = _samplingViewMessage.frame.size.width;
+    CGFloat colWidth = [(NSTableColumn*)[[tableView tableColumns] objectAtIndex:0] width];
+    [_samplingView setFrameSize:NSMakeSize(colWidth, CGFLOAT_MAX)];
+    colWidth = _samplingViewMessage.frame.size.width;
 
     NSTextFieldCell *cell = _samplingViewMessage.cell;
-    NSSize optimalSize = [cell cellSizeForBounds:NSMakeRect(0, 0, width, CGFLOAT_MAX)];
+    NSSize optimalSize = [cell cellSizeForBounds:NSMakeRect(0, 0, colWidth, CGFLOAT_MAX)];
     CGFloat senderHeight = _samplingViewSender.frame.size.height;
     CGFloat optimalHeight = optimalSize.height + senderHeight;
     optimalHeight += 18; //compensation
@@ -129,7 +118,6 @@
     }
     return optimalHeight;
 }
-
 
 #pragma mark - GUI Actions
 - (IBAction)logout:(id)sender
@@ -142,4 +130,24 @@
     });
     [_dataManager logout]; //dataManager will logout server and clear userDefaults
 }
+
+- (IBAction)sendMessage:(id)sender
+{
+    NSTextField *inputField = (NSTextField*)sender;
+    NSString *messageText = inputField.stringValue;
+    [_dataManager sendNewMessage:messageText toGroup:[[_groupArrayController selection] valueForKey:@"group_id"] withAttachments:nil];
+    [inputField setStringValue:@""];
+}
+
+#pragma mark - Login Sheet
+
+- (void)promptForLoginWithPreparedURL:(NSURL *)url
+{
+    [_loginSheetController openSheetWithURL:url];
+}
+- (void)closeLoginSheet
+{
+    [_loginSheetController closeLoginSheet:nil];
+}
+
 @end

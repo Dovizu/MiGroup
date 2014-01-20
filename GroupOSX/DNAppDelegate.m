@@ -24,10 +24,6 @@
     _mainWindowController = (DNMainController*) [self.window delegate];
     _loginSheetController = [[DNLoginSheetController alloc] init]; //custom init with xib
     _dataManager = [[DNDataManager alloc] init];
-    
-    //set up login sheet controller
-    _loginSheetController.server = _server;
-    _loginSheetController.mainWindowController = _mainWindowController;
 
     //set up data manager
     _dataManager.managedObjectContext = _managedObjectContext;
@@ -39,8 +35,12 @@
     _mainWindowController.managedObjectContext = _managedObjectContext;
     _mainWindowController.dataManager = _dataManager;
     
+    //set up login sheet controller
+    _loginSheetController = [[DNLoginSheetController alloc] initWithWindowNibName:@"LoginSheet"];
+    _loginSheetController.mainController = _mainWindowController;
+    _mainWindowController.loginSheetController = _loginSheetController;
+    
     //set up server
-    _server.loginSheetController = _loginSheetController;
     _server.mainWindowController = _mainWindowController;
 
     //set up URI Scheme
@@ -56,11 +56,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)purgeStores
-{
-    
 }
 
 //This function should only be used for handling authentication URL redirect's, for now

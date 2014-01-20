@@ -22,6 +22,5 @@
 @property DNMainController<NSWindowDelegate> *mainWindowController;
 @property DNDataManager *dataManager;
 
-- (void)purgeStores;
 
 @end

@@ -7,7 +7,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DNLoginSheetController">
             <connections>
-                <outlet property="loginWebView" destination="kpv-Of-6Xc" id="p0d-pt-Nnh"/>
+                <outlet property="loginWebView" destination="kpv-Of-6Xc" id="4Cs-Xk-iwe"/>
+                <outlet property="loginWindow" destination="1" id="zQn-Cr-X7u"/>
                 <outlet property="window" destination="1" id="3"/>
             </connections>
         </customObject>
@@ -30,7 +31,7 @@
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="quitButtonPressed:" target="-2" id="d4F-J7-PiX"/>
+                            <action selector="closeLoginSheet:" target="-2" id="cuN-5n-16x"/>
                         </connections>
                     </button>
                     <webView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kpv-Of-6Xc">
