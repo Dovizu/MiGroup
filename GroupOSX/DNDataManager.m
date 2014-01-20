@@ -12,9 +12,7 @@
 #import "DNMainController.h"
 
 @interface DNDataManager ()
-
 @end
-
 
 @implementation DNDataManager
 {

@@ -842,6 +842,7 @@
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -865,6 +866,7 @@
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
