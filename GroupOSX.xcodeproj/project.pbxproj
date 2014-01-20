@@ -39,7 +39,6 @@
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
 		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
-		F19875DE188B7F4500C7E229 /* DNMessagesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = F19875DD188B7F4500C7E229 /* DNMessagesTableView.m */; };
 		F1A4F59B187E18D9004838DE /* DNRESTAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = F1A4F59A187E18D9004838DE /* DNRESTAPI.m */; };
 		F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
 		F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */ = {isa = PBXBuildFile; fileRef = F1BD286C18715BA600D797A9 /* NSURLConnection+Tagged.m */; };
@@ -147,8 +146,6 @@
 		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "GroupOSX/Backend/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
 		F18314161870E95900930D5E /* NSURL+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+NXOAuth2.m"; path = "GroupOSX/Backend/NSURL+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18BF640186BA9C1007B2DCA /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		F19875DC188B7F4500C7E229 /* DNMessagesTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMessagesTableView.h; path = GroupOSX/DNMessagesTableView.h; sourceTree = "<group>"; };
-		F19875DD188B7F4500C7E229 /* DNMessagesTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMessagesTableView.m; path = GroupOSX/DNMessagesTableView.m; sourceTree = "<group>"; };
 		F1A4F599187E18D9004838DE /* DNRESTAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNRESTAPI.h; path = GroupOSX/Backend/DNRESTAPI.h; sourceTree = "<group>"; };
 		F1A4F59A187E18D9004838DE /* DNRESTAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNRESTAPI.m; path = GroupOSX/Backend/DNRESTAPI.m; sourceTree = "<group>"; };
 		F1B21D4018793FF700E3E6E2 /* GroupOSX 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GroupOSX 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -341,8 +338,6 @@
 				F164F96C18837B3300FF4C62 /* DNMainController.m */,
 				F164F96E18839B4500FF4C62 /* DNValueTransformers.h */,
 				F164F96F18839B4500FF4C62 /* DNValueTransformers.m */,
-				F19875DC188B7F4500C7E229 /* DNMessagesTableView.h */,
-				F19875DD188B7F4500C7E229 /* DNMessagesTableView.m */,
 			);
 			name = MainWindow;
 			path = ..;
@@ -599,7 +594,6 @@
 				F164F96D18837B3300FF4C62 /* DNMainController.m in Sources */,
 				F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */,
 				F1A4F59B187E18D9004838DE /* DNRESTAPI.m in Sources */,
-				F19875DE188B7F4500C7E229 /* DNMessagesTableView.m in Sources */,
 				F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */,
 				F1049C2E1877915E00F79610 /* GroupOSX.xcdatamodeld in Sources */,
 				F1BD286D18715BA600D797A9 /* NSURLConnection+Tagged.m in Sources */,

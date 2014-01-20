@@ -9,6 +9,7 @@
 #import "DNDataManager.h"
 #import "DNServerInterface.h"
 #import "DNAppDelegate.h"
+#import "DNMainController.h"
 
 @interface DNDataManager ()
 
@@ -30,7 +31,6 @@
         _requestManager = [AFHTTPRequestOperationManager manager];
         _reachability = [_requestManager reachabilityManager];
         _requestManager.responseSerializer = [[AFImageResponseSerializer alloc] init];
-        
         [self establishObserversForNotifications];
     }
     return self;
@@ -215,6 +215,7 @@
             }
             dbMessage.text = fetchedMessage[k_text];
             dbMessage.target_group = group;
+            dbMessage.system = fetchedMessage[k_is_system];
             [group addMessagesObject:dbMessage];
             if (!group.last_message || [group.last_message.created_at compare:dbMessage.created_at] == NSOrderedAscending) {
                 group.last_message = dbMessage;
@@ -240,6 +241,7 @@
             }else{
                 dbMessage.sender_avatar = [Image createInContext:currentContext];
             }
+            [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
     }

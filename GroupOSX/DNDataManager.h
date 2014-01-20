@@ -17,11 +17,13 @@
 
 @class DNServerInterface;
 @class DNAppDelegate;
+@class DNMainController;
 
 @interface DNDataManager : NSObject
 
 @property (nonatomic) NSManagedObjectContext *managedObjectContext;
 @property DNServerInterface *server;
+@property DNMainController *mainController;
 
 - (void)sendNewMessage:(NSString*)text toGroup:(Group*)group withAttachments:(NSArray*)attachments;
 - (void)logout;

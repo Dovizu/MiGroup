@@ -318,7 +318,7 @@ enum DNJSONDictionaryType {
         return;
     }
     
-    DebugLogCD(@"Group Polling page: %d", (int)_currentPageNum);
+    DebugLog(@"Group Polling page: %d", (int)_currentPageNum);
     NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
 #ifdef DEBUG_BACKEND
     num = 1; //Small to see if repeated polling works or not

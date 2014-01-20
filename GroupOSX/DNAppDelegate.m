@@ -32,6 +32,7 @@
     //set up data manager
     _dataManager.managedObjectContext = _managedObjectContext;
     _dataManager.server = _server;
+    _dataManager.mainController = _mainWindowController;
     
     //set up mainWindowController
     _mainWindowController.appDelegate = self;
@@ -47,6 +48,8 @@
                                                        andSelector:@selector(handleAppleEvent:withReplyEvent:)
                                                      forEventClass:kInternetEventClass
                                                         andEventID:kAEGetURL];
+    
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:_mainWindowController];
     [self.server setup];
 }
 

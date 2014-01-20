@@ -93,6 +93,7 @@ NSString * const k_created_at = @"created_at";
 NSString * const k_sender_name = @"name";
 NSString * const k_sender_avatar = @"avatar_url";
 NSString * const k_sender_user_id = @"user_id";
+NSString * const k_is_system = @"system";
 
 //Attachments
 NSString * const k_url = @"url";

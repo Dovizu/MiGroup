@@ -22,7 +22,13 @@
     IBOutlet NSTextField *_samplingViewSender;
     IBOutlet NSTextField *_samplingViewMessage;
     IBOutlet NSImageView *_samplingViewImage;
-    IBOutlet NSTableView *messageTableView;
+    IBOutlet NSTableView *_messageTableView;
+    IBOutlet NSTableView *_groupTableVIew;
+}
+
+#pragma mark - Initialization
+- (void)awakeFromNib
+{
 }
 
 - (IBAction)sendMessage:(id)sender
@@ -45,14 +51,56 @@
     return [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"last_message.created_at" ascending:NO]];
 }
 
-#pragma mark - Message Table View Delegate
+#pragma mark - Notifications and Delegate
+- (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup
+{
+    if (![(NSNumber*)(message.system) boolValue]) {
+        NSString *text = message.text;
+        NSString *sender = message.sender_name;
+        NSImage *avatar = message.sender_avatar.avatar;
+        NSString *groupName = targetGroup.name;
+        NSUserNotification *notification = [[NSUserNotification alloc] init];
+        notification.hasReplyButton = YES;
+        notification.responsePlaceholder = @"Quick Reply here";
+        notification.title = groupName;
+        notification.subtitle = [NSString stringWithFormat:@"%@ says", sender];
+        notification.informativeText = text;
+        notification.contentImage = avatar;
+        notification.userInfo = @{@"target_group": message.target_group.group_id};
+        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        
+        NSString *selectedGroupID = [[_groupArrayController selection] valueForKey:@"group_id"];
+        if ([selectedGroupID isEqualToString:message.target_group.group_id]) {
+            [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
+        }
+    }
+}
+
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
+{
+    if (notification.activationType == NSUserNotificationActivationTypeReplied) {
+        [_dataManager sendNewMessage:[notification.response string]
+                             toGroup:notification.userInfo[@"target_group"]
+                     withAttachments:nil];
+    }else if (notification.activationType == NSUserNotificationActivationTypeContentsClicked) {
+        
+        NSIndexSet *indexes = [[_groupArrayController arrangedObjects] indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            Group *group = obj;
+            return [group.group_id isEqualToString:notification.userInfo[@"target_group"]];
+        }];
+        [_groupTableVIew selectRowIndexes:indexes byExtendingSelection:NO];
+        [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
+    }
+}
+
+#pragma mark - Message Table View Delegate and Helpers
 
 /**
  *  Reload data in order to calculate row heights when re-sized
  */
 - (void)tableViewColumnDidResize:(NSNotification *)notification
 {
-    [messageTableView reloadData];
+    [_messageTableView reloadData];
 }
 
 /**
@@ -81,6 +129,7 @@
     }
     return optimalHeight;
 }
+
 
 #pragma mark - GUI Actions
 - (IBAction)logout:(id)sender

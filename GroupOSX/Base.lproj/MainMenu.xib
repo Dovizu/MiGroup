@@ -521,7 +521,7 @@
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                     </textFieldCell>
                                                                                     <connections>
-                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.last_message" id="oLy-72-khE">
+                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.last_message" id="ZQ3-Vh-zV7">
                                                                                             <dictionary key="options">
                                                                                                 <string key="NSValueTransformerName">DNLastMessagePreviewTransformer</string>
                                                                                             </dictionary>
@@ -695,7 +695,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g" customClass="DNMessagesTableView">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g">
                                                     <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -834,12 +834,13 @@
         <customObject id="o2x-8h-Byq" userLabel="Main Controller" customClass="DNMainController">
             <connections>
                 <outlet property="_groupArrayController" destination="kEl-9a-Kxc" id="mMS-uj-rfR"/>
+                <outlet property="_groupTableVIew" destination="L6s-vU-VBk" id="DbJ-Ym-8sX"/>
+                <outlet property="_messageTableView" destination="Fh8-yH-k5g" id="hyi-JG-tR2"/>
                 <outlet property="_messagesArrayController" destination="jgX-pN-FcD" id="kDz-1X-Qc9"/>
                 <outlet property="_samplingView" destination="eYw-pg-Vml" id="DZQ-tm-ay2"/>
                 <outlet property="_samplingViewImage" destination="zfZ-b8-rTz" id="COm-cf-Gi2"/>
                 <outlet property="_samplingViewMessage" destination="7Vu-bk-1Sr" id="YyI-TR-ND3"/>
                 <outlet property="_samplingViewSender" destination="7gB-07-x0m" id="QWW-0f-kZM"/>
-                <outlet property="messageTableView" destination="Fh8-yH-k5g" id="bBP-me-h7A"/>
                 <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>

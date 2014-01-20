@@ -89,6 +89,7 @@ extern NSString * const k_attachment_type;
 extern NSString * const k_sender_name;
 extern NSString * const k_sender_avatar;
 extern NSString * const k_sender_user_id;
+extern NSString * const k_is_system;
 
 extern NSString * const finalGroupMemberAdded;
 extern NSString * const finalGroupMemberRemoved;
