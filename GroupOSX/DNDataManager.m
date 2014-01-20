@@ -20,6 +20,8 @@
 {
     AFHTTPRequestOperationManager *_requestManager;
     AFNetworkReachabilityManager *_reachability;
+    BOOL _firstLogonSuppressNotification;
+    NSInteger _countUntilReleaseNotification;
 }
 
 #pragma mark - Initialization
@@ -92,6 +94,7 @@
 - (void)firstTimeLogonSetup:(NSNotification*)note
 {
     [_server fetchAllGroups];
+    _firstLogonSuppressNotification = YES;
 }
 
 - (void)didReceiveMessage:(NSNotification*)note
@@ -145,6 +148,7 @@
 - (void)didFetchAllGroups:(NSNotification*)note
 {
     NSArray *fetchedGroups = note.userInfo[k_fetched_groups];
+    if (_firstLogonSuppressNotification) _countUntilReleaseNotification = [fetchedGroups count];
     for (NSDictionary *fetchedGroup in fetchedGroups) {
         [self helpProcessGroup:fetchedGroup];
     }
@@ -204,6 +208,9 @@
     }
     
     [self helpProcessMessages:@[fetchedGroup[k_last_message]] toGroup:dbGroup.objectID];
+    /* Special case for last message processing, since this invokes "helpProcessMessages:toGroup: but does not count as
+     the end of processing this group*/
+    _countUntilReleaseNotification += 1;
     [_server fetch20MessagesBeforeMessageID:fetchedGroup[k_last_message][k_message_id] inGroup:dbGroup.group_id];
     [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup.objectID createdBy:fetchedGroup[k_creator_group]];
 }
@@ -256,11 +263,16 @@
                 dbMessage.sender_avatar = [Image createInContext:currentContext];
             }
 
-            [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
+            if (!_firstLogonSuppressNotification) [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
     }
     [currentContext saveToPersistentStoreAndWait];
+    if (_firstLogonSuppressNotification) {
+        _countUntilReleaseNotification -= 1;
+        DebugLogCD(@"FirstLogonSuppressCount: %d", (int)_countUntilReleaseNotification);
+        if (_countUntilReleaseNotification == 0) _firstLogonSuppressNotification = NO;
+    }
 }
 
 - (void)helpProcessMemberArray:(NSArray*)members intoGroup:(NSManagedObjectID*)groupID createdBy:(NSString*)creator_user_id
