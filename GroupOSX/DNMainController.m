@@ -25,8 +25,10 @@
     IBOutlet NSImageView *_samplingViewImage;
     IBOutlet NSTableView *_messageTableView;
     IBOutlet NSTableView *_groupTableVIew;
+    IBOutlet NSTextField *_statusLabel;
+    
+    BOOL _setup;
 }
-
 
 #pragma mark - Sorting Descriptors
 
@@ -148,6 +150,20 @@
 - (void)closeLoginSheet
 {
     [_loginSheetController closeLoginSheet:nil];
+}
+
+- (void)awakeFromNib
+{
+    if (!_setup) {
+        [[NSNotificationCenter defaultCenter] addObserverForName:noteOnline object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+            [_statusLabel setStringValue:@"Online"];
+        }];
+        [[NSNotificationCenter defaultCenter] addObserverForName:noteOffline object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+            [_statusLabel setStringValue:@"Offline"];
+        }];
+        
+        _setup = YES;
+    }
 }
 
 @end

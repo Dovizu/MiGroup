@@ -449,19 +449,20 @@
                                         <rect key="frame" x="0.0" y="0.0" width="264" height="38"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <subviews>
-                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="n0j-Tf-S6z" userLabel="ListViewBottomNewButton">
-                                                <rect key="frame" x="20" y="9" width="39" height="19"/>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HZc-ef-5L2">
+                                                <rect key="frame" x="88" y="11" width="88" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                <buttonCell key="cell" type="roundRect" title="New" bezelStyle="roundedRect" alignment="center" state="on" borderStyle="border" inset="2" id="4YA-Up-d0C">
-                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="cellTitle"/>
-                                                </buttonCell>
-                                            </button>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Online Status" id="ESo-xS-Zi5">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="centerY" secondItem="n0j-Tf-S6z" secondAttribute="centerY" id="AC5-DT-VeJ"/>
                                             <constraint firstAttribute="height" constant="38" id="Lwn-Qs-Lvv"/>
-                                            <constraint firstItem="n0j-Tf-S6z" firstAttribute="leading" secondItem="tHI-td-zFU" secondAttribute="leading" constant="20" id="Nfh-nv-fAj"/>
+                                            <constraint firstItem="HZc-ef-5L2" firstAttribute="centerY" secondItem="tHI-td-zFU" secondAttribute="centerY" id="bU2-V5-N9t"/>
+                                            <constraint firstItem="HZc-ef-5L2" firstAttribute="centerX" secondItem="tHI-td-zFU" secondAttribute="centerX" id="dPi-vu-atj"/>
                                         </constraints>
                                     </customView>
                                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="l1D-YK-YIO" userLabel="ListViewMiddle">
@@ -622,11 +623,11 @@
                                                 </connections>
                                             </imageView>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Riw-4Y-Uib" userLabel="Group Name">
-                                                <rect key="frame" x="98" y="69" width="304" height="16"/>
+                                                <rect key="frame" x="98" y="65" width="304" height="20"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="300" id="iwM-eo-SpN"/>
-                                                    <constraint firstAttribute="height" constant="16" id="yKc-tr-DWs"/>
+                                                    <constraint firstAttribute="height" constant="20" id="yKc-tr-DWs"/>
                                                 </constraints>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Group Name" id="GdU-iL-vhA">
                                                     <font key="font" metaFont="systemBold" size="15"/>
@@ -655,7 +656,7 @@
                                             <constraint firstItem="Riw-4Y-Uib" firstAttribute="leading" secondItem="LAd-6v-Vbp" secondAttribute="leading" constant="-2" id="GQ7-Zr-cx9"/>
                                             <constraint firstItem="Riw-4Y-Uib" firstAttribute="leading" secondItem="gCK-yd-TMi" secondAttribute="trailing" constant="10" id="HzE-V8-mH7"/>
                                             <constraint firstItem="Riw-4Y-Uib" firstAttribute="width" secondItem="LAd-6v-Vbp" secondAttribute="width" id="S38-jF-Uqx"/>
-                                            <constraint firstItem="LAd-6v-Vbp" firstAttribute="top" secondItem="Riw-4Y-Uib" secondAttribute="bottom" constant="8" id="Txz-hG-n7V"/>
+                                            <constraint firstItem="LAd-6v-Vbp" firstAttribute="top" secondItem="Riw-4Y-Uib" secondAttribute="bottom" constant="4" id="Txz-hG-n7V"/>
                                             <constraint firstItem="gCK-yd-TMi" firstAttribute="bottom" secondItem="LAd-6v-Vbp" secondAttribute="bottom" id="Y2i-U9-7aE"/>
                                             <constraint firstItem="gCK-yd-TMi" firstAttribute="top" secondItem="3Je-Lj-8cu" secondAttribute="top" constant="15" id="aZr-Cy-7EW"/>
                                             <constraint firstItem="Riw-4Y-Uib" firstAttribute="top" secondItem="gCK-yd-TMi" secondAttribute="top" id="ekM-cm-k2S"/>
@@ -688,14 +689,14 @@
                                             <constraint firstAttribute="trailing" secondItem="Nhf-KZ-Txi" secondAttribute="trailing" constant="20" symbolic="YES" id="idj-pO-gl6"/>
                                         </constraints>
                                     </customView>
-                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWQ-cZ-NWA" userLabel="ChatLog">
+                                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="49" horizontalPageScroll="10" verticalLineScroll="49" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zWQ-cZ-NWA" userLabel="ChatLog">
                                         <rect key="frame" x="0.0" y="38" width="585" height="412"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <clipView key="contentView" id="AJF-Kx-rzj">
                                             <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="none" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="47" rowSizeStyle="automatic" viewBased="YES" id="Fh8-yH-k5g">
                                                     <rect key="frame" x="0.0" y="0.0" width="585" height="412"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -716,11 +717,11 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="cl6-be-UET">
-                                                                    <rect key="frame" x="1" y="1" width="582" height="49"/>
+                                                                    <rect key="frame" x="1" y="1" width="582" height="47"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <imageView identifier="avatar" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OMJ-74-J1y" userLabel="Avatar">
-                                                                            <rect key="frame" x="20" y="6" width="40" height="40"/>
+                                                                            <rect key="frame" x="20" y="4" width="40" height="40"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="40" id="Jwa-sT-7lV"/>
@@ -744,7 +745,7 @@
                                                                             </connections>
                                                                         </textField>
                                                                         <textField identifier="sender" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="AdM-4w-xhR" userLabel="Sender">
-                                                                            <rect key="frame" x="66" y="29" width="498" height="17"/>
+                                                                            <rect key="frame" x="66" y="29" width="498" height="15"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="8e0-8K-jas">
                                                                                 <font key="font" size="12" name="Helvetica"/>
@@ -841,6 +842,7 @@
                 <outlet property="_samplingViewImage" destination="zfZ-b8-rTz" id="COm-cf-Gi2"/>
                 <outlet property="_samplingViewMessage" destination="7Vu-bk-1Sr" id="YyI-TR-ND3"/>
                 <outlet property="_samplingViewSender" destination="7gB-07-x0m" id="QWW-0f-kZM"/>
+                <outlet property="_statusLabel" destination="HZc-ef-5L2" id="7Vn-vx-CoC"/>
                 <outlet property="window" destination="371" id="GG0-4n-TzT"/>
             </connections>
         </customObject>

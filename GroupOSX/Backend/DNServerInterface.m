@@ -85,6 +85,7 @@ enum DNJSONDictionaryType {
     if (self){
         
         _notificationCenter = [NSNotificationCenter defaultCenter];
+        __block NSNotificationCenter *blockNoteCenter = _notificationCenter;
         
         //Book keeping
         _userToken = [[NSUserDefaults standardUserDefaults] objectForKey:DNUserDefaultsUserToken];
@@ -106,6 +107,7 @@ enum DNJSONDictionaryType {
                     DebugLog(@"GroupMe now reachable");
                     [block_self authenticate];
                     [block_self establishSockets];
+                    [blockNoteCenter postNotificationName:noteOnline object:nil];
                     break;
                 case AFNetworkReachabilityStatusNotReachable:
                 {//variable assignment not allowed inside switch without explicit scope
@@ -113,6 +115,7 @@ enum DNJSONDictionaryType {
                     *_listening_pointer = NO;
                     NSError *error = [[NSError alloc] initWithDomain:DNErrorDomain code:eNoNetworkConnectivityGeneral userInfo:@{NSLocalizedDescriptionKey: eNoNetworkConnectivityGeneralDesc}];
                     [block_self.mainWindowController presentError:error];
+                    [blockNoteCenter postNotificationName:noteOffline object:nil];
                     break;
                 }
                 case AFNetworkReachabilityStatusUnknown:

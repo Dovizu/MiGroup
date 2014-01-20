@@ -52,10 +52,11 @@ NSString * const noteGroupInfoFetch = @"com.dovizu.grouposx.noteGroupInfoFetch";
 NSString * const noteGroupCreate = @"com.dovizu.grouposx.noteGroupCreate";
 NSString * const noteGroupsAllFetch = @"com.dovizu.grouposx.forceRequestGroupData";
 NSString * const noteGroupsFormerFetch = @"com.dovizu.grouposx.forceRequestFormerGroupData";
-
 NSString * const noteNewMessage = @"com.dovizu.grouposx.noteMessage";
 NSString * const noteMessagesBeforeFetch = @"com.dovizu.grouposx.messageBeforeFetch";
 NSString * const noteMessagesSinceFetch = @"com.dovizu.grouposx.messageSinceFetch";
+NSString * const noteOnline = @"com.dovizu.grouposx.online";
+NSString * const noteOffline = @"com.dovizu.grouposx.offline";
 
 /**
  *  Keys to access fetched dictionaries from server

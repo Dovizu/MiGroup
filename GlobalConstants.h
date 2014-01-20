@@ -48,6 +48,8 @@ extern NSString * const noteGroupAvatarChange;
 extern NSString * const noteMessagesBeforeFetch;
 extern NSString * const noteMessagesSinceFetch;
 extern NSString * const noteGroupsFormerFetch;
+extern NSString * const noteOnline;
+extern NSString * const noteOffline;
 
 
 //Database attribute names
