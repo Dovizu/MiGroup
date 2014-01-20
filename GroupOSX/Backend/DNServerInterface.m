@@ -582,7 +582,7 @@ enum DNJSONDictionaryType {
 {
     DebugLog(@"Reachability: %hhd", [API isReachable]);
     if (!_authenticating && !_authenticated && [API isReachable]) {
-        _authenticating = YES;
+//        _authenticating = YES;
         NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
         NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
         DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
@@ -594,7 +594,6 @@ enum DNJSONDictionaryType {
 {
     //To-Do: true logout includes logout in webview
     DebugLog(@"Deauthenticating...");
-    [_mainWindowController logOutWithURL:[NSURL URLWithString:DNOAuth2DeauthorizationURL]];
     _userToken = nil;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserToken];
     _userInfo = nil;
@@ -603,7 +602,11 @@ enum DNJSONDictionaryType {
     
     [_socketClient disconnectFromServer];
     _listening = NO;
-        
+
+    NSHTTPCookieStorage *jar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [jar cookies]) {
+        [jar deleteCookie:cookie];
+    }
     [self authenticate];
 }
 

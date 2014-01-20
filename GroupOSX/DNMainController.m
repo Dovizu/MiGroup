@@ -10,6 +10,7 @@
 #import "DNDataManager.h"
 #import "Message.h"
 #import "DNLoginSheetController.h"
+#import "DNServerInterface.h"
 
 @interface DNMainController ()
 
@@ -122,6 +123,12 @@
 }
 
 #pragma mark - GUI Actions
+
+- (IBAction)signin:(id)sender
+{
+    [_server setup];
+}
+
 - (IBAction)logout:(id)sender
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);

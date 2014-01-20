@@ -22,21 +22,20 @@
     
     _server = [[DNServerInterface alloc] init];
     _mainWindowController = (DNMainController*) [self.window delegate];
-    _loginSheetController = [[DNLoginSheetController alloc] init]; //custom init with xib
+    _loginSheetController = [[DNLoginSheetController alloc] initWithWindowNibName:@"LoginSheet"];
     _dataManager = [[DNDataManager alloc] init];
-
-    //set up data manager
+    
+    //Setup managed object context
     _dataManager.managedObjectContext = _managedObjectContext;
+    _mainWindowController.managedObjectContext = _managedObjectContext;
+    //set up data manager
     _dataManager.server = _server;
     _dataManager.mainController = _mainWindowController;
-    
     //set up mainWindowController
-    _mainWindowController.appDelegate = self;
-    _mainWindowController.managedObjectContext = _managedObjectContext;
     _mainWindowController.dataManager = _dataManager;
-    
+    _mainWindowController.server = _server;
     //set up login sheet controller
-    _loginSheetController = [[DNLoginSheetController alloc] initWithWindowNibName:@"LoginSheet"];
+    
     _loginSheetController.mainController = _mainWindowController;
     _mainWindowController.loginSheetController = _loginSheetController;
     
