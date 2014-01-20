@@ -11,6 +11,7 @@
 #import "Attachment.h"
 #import "Message.h"
 #import "Member.h"
+#import "Image.h"
 
 #import <AFNetworking.h>
 

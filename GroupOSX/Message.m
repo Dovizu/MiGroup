@@ -9,6 +9,7 @@
 #import "Message.h"
 #import "Attachment.h"
 #import "Group.h"
+#import "Image.h"
 
 
 @implementation Message
@@ -21,5 +22,6 @@
 @dynamic sender_name;
 @dynamic attachments;
 @dynamic target_group;
+@dynamic sender_avatar;
 
 @end

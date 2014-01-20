@@ -401,7 +401,8 @@ enum DNJSONDictionaryType {
             }
             NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
                                           k_created_at: oldDict[k_messages][@"last_message_created_at"],
-                                          k_name_of_member: oldDict[k_messages][@"preview"][@"nickname"],
+                                          k_sender_name: oldDict[k_messages][@"preview"][@"nickname"],
+                                          k_sender_avatar: oldDict[k_messages][@"preview"][@"image_url"],
                                           k_text: oldDict[k_messages][@"preview"][@"text"],
                                           k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
             lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
@@ -414,6 +415,7 @@ enum DNJSONDictionaryType {
         }
         case DNMessageJSONDictionary:{
             newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
+            newDict[k_sender_avatar] = [self helpURLFromString:oldDict[k_sender_avatar]];
             if (oldDict[k_attachments]) {
                 NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
                 for (NSDictionary* attachment in oldDict[k_attachments]) {

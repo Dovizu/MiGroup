@@ -27,7 +27,7 @@
     Message *lastMessage = value;
     if (value == nil) return nil;
     
-    NSString *formattedPreview = [NSString stringWithFormat:@"%@: %@", lastMessage.creator.name, lastMessage.text];
+    NSString *formattedPreview = [NSString stringWithFormat:@"%@: %@", lastMessage.sender_name, lastMessage.text];
     if (!formattedPreview) {
         [NSException raise: NSInternalInconsistencyException
                     format: @"Error generating last message (%@) preview.",

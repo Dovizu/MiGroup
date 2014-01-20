@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Attachment, Group;
+@class Attachment, Group, Image;
 
 @interface Message : NSManagedObject
 
@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSString * sender_name;
 @property (nonatomic, retain) NSSet *attachments;
 @property (nonatomic, retain) Group *target_group;
+@property (nonatomic, retain) Image *sender_avatar;
 @end
 
 @interface Message (CoreDataGeneratedAccessors)

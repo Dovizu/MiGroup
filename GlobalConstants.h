@@ -86,6 +86,9 @@ extern NSString * const k_attach_type_location;
 extern NSString * const k_attach_type_split;
 extern NSString * const k_attach_type_emoji;
 extern NSString * const k_attachment_type;
+extern NSString * const k_sender_name;
+extern NSString * const k_sender_avatar;
+extern NSString * const k_sender_user_id;
 
 extern NSString * const finalGroupMemberAdded;
 extern NSString * const finalGroupMemberRemoved;

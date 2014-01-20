@@ -509,7 +509,7 @@
                                                                                     </constraints>
                                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" imageFrameStyle="grayBezel" image="NSEveryone" id="QMm-0a-6kx"/>
                                                                                     <connections>
-                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.image" id="vmZ-MX-UXb"/>
+                                                                                        <binding destination="gVj-yF-Ier" name="value" keyPath="objectValue.image.preview" id="jvo-hj-oQb"/>
                                                                                     </connections>
                                                                                 </imageView>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="uV9-fs-Sdf" userLabel="Last Message">
@@ -618,7 +618,7 @@
                                                 </constraints>
                                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="NSEveryone" id="Nzm-1s-9UU"/>
                                                 <connections>
-                                                    <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.image" id="ygv-24-iZZ"/>
+                                                    <binding destination="kEl-9a-Kxc" name="value" keyPath="selection.image.preview" id="Nve-QY-X8M"/>
                                                 </connections>
                                             </imageView>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Riw-4Y-Uib" userLabel="Group Name">
@@ -728,7 +728,7 @@
                                                                             </constraints>
                                                                             <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSUser" id="IIE-j8-EfG"/>
                                                                             <connections>
-                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.creator.image" id="gki-iu-7Sq"/>
+                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.sender_avatar.avatar" id="Tae-Zz-xZ3"/>
                                                                             </connections>
                                                                         </imageView>
                                                                         <textField identifier="message" verticalHuggingPriority="999" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="999" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MTI-GQ-HRo" userLabel="Message">
@@ -752,7 +752,7 @@
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                             <connections>
-                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.creator.name" id="8YX-SN-t5r"/>
+                                                                                <binding destination="cl6-be-UET" name="value" keyPath="objectValue.sender_name" id="pMS-7v-oro"/>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
@@ -869,7 +869,7 @@
                     </constraints>
                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="DZs-jr-Zup"/>
                     <connections>
-                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.creator.image" id="qSH-7u-Jga"/>
+                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.sender_avatar.avatar" id="yX7-ij-EE9"/>
                     </connections>
                 </imageView>
                 <textField identifier="message" verticalHuggingPriority="999" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="999" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Vu-bk-1Sr" userLabel="Message">
@@ -893,7 +893,7 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                     <connections>
-                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.creator.name" id="OBx-qg-3v2"/>
+                        <binding destination="eYw-pg-Vml" name="value" keyPath="objectValue.sender_name" id="9iO-22-KH2"/>
                     </connections>
                 </textField>
             </subviews>

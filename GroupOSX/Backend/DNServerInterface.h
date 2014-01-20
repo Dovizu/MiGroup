@@ -36,7 +36,7 @@
  *  @param groupID     target group
  *  @param attachments an array of attachment, currently not supported
  *  @discussion on completion, posts "noteMessage" notificaiton, the userInfo contains:
- *      k_text, k_target_group, k_creator_message, k_created_at, k_message_id
+ *      k_text, k_target_group, k_creator_message, k_created_at, k_message_id, k_sender_name, k_sender_avatar, k_sender_user_id
  */
 - (void)sendNewMessage:(NSString*)message
                toGroup:(NSString*)groupID
@@ -60,6 +60,7 @@
  *  @param groupID target group
  *  @discussion on completion, posts "noteMessageSinceFetch" notification, the userInfo contains:
  *      k_messages
+ *      Each message has the same keys as noteMessage's userInfo
  */
 - (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
                                         inGroup:(NSString*)groupID;

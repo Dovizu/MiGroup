@@ -90,6 +90,10 @@ NSString * const k_target_group = @"group_id";
 NSString * const k_text = @"text";
 NSString * const k_creator_of_message = @"user_id";
 NSString * const k_created_at = @"created_at";
+NSString * const k_sender_name = @"name";
+NSString * const k_sender_avatar = @"avatar_url";
+NSString * const k_sender_user_id = @"user_id";
+
 //Attachments
 NSString * const k_url = @"url";
 NSString * const k_attachments = @"attachments";

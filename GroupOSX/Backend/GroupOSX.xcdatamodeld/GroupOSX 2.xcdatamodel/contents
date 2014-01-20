@@ -15,35 +15,40 @@
         <attribute name="created_at" attributeType="Date" syncable="YES"/>
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="group_id" attributeType="String" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="share_url" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updated_at" attributeType="Date" syncable="YES"/>
-        <relationship name="creator" maxCount="1" deletionRule="Nullify" destinationEntity="Member" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" syncable="YES"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" syncable="YES"/>
         <relationship name="last_message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" syncable="YES"/>
         <relationship name="members" toMany="YES" deletionRule="Cascade" destinationEntity="Member" inverseName="group" inverseEntity="Member" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="target_group" inverseEntity="Message" syncable="YES"/>
     </entity>
+    <entity name="Image" representedClassName="Image" syncable="YES">
+        <attribute name="avatar" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="id_url" optional="YES" attributeType="String" defaultValueString="none" syncable="YES"/>
+        <attribute name="large" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="preview" optional="YES" attributeType="Transformable" syncable="YES"/>
+    </entity>
     <entity name="Member" representedClassName="Member" syncable="YES">
-        <attribute name="image" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="is_creator" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="membership_id" attributeType="String" syncable="YES"/>
         <attribute name="muted" optional="YES" attributeType="Boolean" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="user_id" attributeType="String" syncable="YES"/>
-        <relationship name="favorited_messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="favoritor" inverseEntity="Message" syncable="YES"/>
         <relationship name="group" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="members" inverseEntity="Group" syncable="YES"/>
-        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="creator" inverseEntity="Message" syncable="YES"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" syncable="YES"/>
     </entity>
     <entity name="Message" representedClassName="Message" syncable="YES">
         <attribute name="created_at" attributeType="Date" syncable="YES"/>
         <attribute name="message_id" attributeType="String" syncable="YES"/>
+        <attribute name="sender_name" attributeType="String" syncable="YES"/>
+        <attribute name="sender_user_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="system" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment" syncable="YES"/>
-        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Member" inverseName="messages" inverseEntity="Member" syncable="YES"/>
-        <relationship name="favoritor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Member" inverseName="favorited_messages" inverseEntity="Member" syncable="YES"/>
+        <relationship name="sender_avatar" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" syncable="YES"/>
         <relationship name="target_group" maxCount="1" deletionRule="Nullify" destinationEntity="Group" inverseName="messages" inverseEntity="Group" syncable="YES"/>
     </entity>
     <elements>
@@ -51,5 +56,6 @@
         <element name="Group" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Member" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Message" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Image" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

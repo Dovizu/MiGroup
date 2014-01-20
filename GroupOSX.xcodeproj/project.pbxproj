@@ -12,6 +12,11 @@
 		F1049C281877906800F79610 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F144E174186A5CD100C42636 /* CoreData.framework */; };
 		F1049C2E1877915E00F79610 /* GroupOSX.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F1049C2C1877915E00F79610 /* GroupOSX.xcdatamodeld */; };
 		F1102CBA1873A0D100716B50 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1102CB91873A0D100716B50 /* SystemConfiguration.framework */; };
+		F11D8D17188C955E0033AD74 /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F11D8D16188C955E0033AD74 /* Attachment.m */; };
+		F11D8D26188C955E0033AD74 /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = F11D8D25188C955E0033AD74 /* Group.m */; };
+		F11D8D29188C96290033AD74 /* Image.m in Sources */ = {isa = PBXBuildFile; fileRef = F11D8D28188C96290033AD74 /* Image.m */; };
+		F11D8D2C188C9B3E0033AD74 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = F11D8D2B188C9B3E0033AD74 /* Message.m */; };
+		F11D8D32188CAC870033AD74 /* Member.m in Sources */ = {isa = PBXBuildFile; fileRef = F11D8D31188CAC870033AD74 /* Member.m */; };
 		F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */; };
 		F12A0316186B8A6C008C8BA5 /* DNBackEndTest.m in Sources */ = {isa = PBXBuildFile; fileRef = F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */; };
 		F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F12A0322186BA1F0008C8BA5 /* Security.framework */; };
@@ -27,12 +32,8 @@
 		F144E199186A5CD100C42636 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F144E197186A5CD100C42636 /* InfoPlist.strings */; };
 		F144E19B186A5CD100C42636 /* GroupOSXTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F144E19A186A5CD100C42636 /* GroupOSXTests.m */; };
 		F158A65718726F91009DC7C1 /* DNAsynchronousUnitTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = F158A65618726F91009DC7C1 /* DNAsynchronousUnitTesting.m */; };
-		F15BEBF71880F5F3007F7C2D /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = F15BEBF61880F5F3007F7C2D /* Group.m */; };
-		F15BEBFA1880F5F3007F7C2D /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = F15BEBF91880F5F3007F7C2D /* Message.m */; };
-		F15BEBFD1880F5F3007F7C2D /* Member.m in Sources */ = {isa = PBXBuildFile; fileRef = F15BEBFC1880F5F3007F7C2D /* Member.m */; };
 		F15BFF29186C1B34003BE76D /* DNLoginSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F15BFF27186C1B34003BE76D /* DNLoginSheetController.m */; };
 		F15BFF2A186C1B34003BE76D /* LoginSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = F15BFF28186C1B34003BE76D /* LoginSheet.xib */; };
-		F164F9671882725500FF4C62 /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F9661882725500FF4C62 /* Attachment.m */; };
 		F164F96D18837B3300FF4C62 /* DNMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96C18837B3300FF4C62 /* DNMainController.m */; };
 		F164F97018839B4500FF4C62 /* DNValueTransformers.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96F18839B4500FF4C62 /* DNValueTransformers.m */; };
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
@@ -98,6 +99,16 @@
 		F1049C2D1877915E00F79610 /* GroupOSX.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GroupOSX.xcdatamodel; sourceTree = "<group>"; };
 		F1102CB91873A0D100716B50 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FayeObjC.xcodeproj; path = GroupOSX/FayeObjC/FayeObjC.xcodeproj; sourceTree = "<group>"; };
+		F11D8D15188C955E0033AD74 /* Attachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attachment.h; path = GroupOSX/Backend/Attachment.h; sourceTree = "<group>"; };
+		F11D8D16188C955E0033AD74 /* Attachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attachment.m; path = GroupOSX/Backend/Attachment.m; sourceTree = "<group>"; };
+		F11D8D24188C955E0033AD74 /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Group.h; path = GroupOSX/Backend/Group.h; sourceTree = "<group>"; };
+		F11D8D25188C955E0033AD74 /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Group.m; path = GroupOSX/Backend/Group.m; sourceTree = "<group>"; };
+		F11D8D27188C96290033AD74 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Image.h; path = GroupOSX/Backend/Image.h; sourceTree = "<group>"; };
+		F11D8D28188C96290033AD74 /* Image.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Image.m; path = GroupOSX/Backend/Image.m; sourceTree = "<group>"; };
+		F11D8D2A188C9B3E0033AD74 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = GroupOSX/Message.h; sourceTree = "<group>"; };
+		F11D8D2B188C9B3E0033AD74 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = GroupOSX/Backend/Message.m; sourceTree = "<group>"; };
+		F11D8D30188CAC870033AD74 /* Member.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Member.h; path = GroupOSX/Backend/Member.h; sourceTree = "<group>"; };
+		F11D8D31188CAC870033AD74 /* Member.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Member.m; path = GroupOSX/Backend/Member.m; sourceTree = "<group>"; };
 		F12A0310186B8A0C008C8BA5 /* DNServerInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNServerInterface.h; path = GroupOSX/Backend/DNServerInterface.h; sourceTree = "<group>"; };
 		F12A0311186B8A0C008C8BA5 /* DNServerInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNServerInterface.m; path = GroupOSX/Backend/DNServerInterface.m; sourceTree = "<group>"; };
 		F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNBackEndTest.m; sourceTree = "<group>"; };
@@ -124,17 +135,9 @@
 		F144E19A186A5CD100C42636 /* GroupOSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupOSXTests.m; sourceTree = "<group>"; };
 		F158A65518726F91009DC7C1 /* DNAsynchronousUnitTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNAsynchronousUnitTesting.h; path = GroupOSX/Backend/DNAsynchronousUnitTesting.h; sourceTree = "<group>"; };
 		F158A65618726F91009DC7C1 /* DNAsynchronousUnitTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNAsynchronousUnitTesting.m; path = GroupOSX/Backend/DNAsynchronousUnitTesting.m; sourceTree = "<group>"; };
-		F15BEBF51880F5F3007F7C2D /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Group.h; path = GroupOSX/Backend/Group.h; sourceTree = "<group>"; };
-		F15BEBF61880F5F3007F7C2D /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Group.m; path = GroupOSX/Backend/Group.m; sourceTree = "<group>"; };
-		F15BEBF81880F5F3007F7C2D /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Message.h; path = GroupOSX/Backend/Message.h; sourceTree = "<group>"; };
-		F15BEBF91880F5F3007F7C2D /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Message.m; path = GroupOSX/Backend/Message.m; sourceTree = "<group>"; };
-		F15BEBFB1880F5F3007F7C2D /* Member.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Member.h; path = GroupOSX/Backend/Member.h; sourceTree = "<group>"; };
-		F15BEBFC1880F5F3007F7C2D /* Member.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Member.m; path = GroupOSX/Backend/Member.m; sourceTree = "<group>"; };
 		F15BFF26186C1B34003BE76D /* DNLoginSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNLoginSheetController.h; path = GroupOSX/DNLoginSheetController.h; sourceTree = "<group>"; };
 		F15BFF27186C1B34003BE76D /* DNLoginSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNLoginSheetController.m; path = GroupOSX/DNLoginSheetController.m; sourceTree = "<group>"; };
 		F15BFF28186C1B34003BE76D /* LoginSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LoginSheet.xib; path = GroupOSX/LoginSheet.xib; sourceTree = "<group>"; };
-		F164F9651882725500FF4C62 /* Attachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Attachment.h; path = GroupOSX/Backend/Attachment.h; sourceTree = "<group>"; };
-		F164F9661882725500FF4C62 /* Attachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attachment.m; path = GroupOSX/Backend/Attachment.m; sourceTree = "<group>"; };
 		F164F96B18837B3300FF4C62 /* DNMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNMainController.h; path = GroupOSX/DNMainController.h; sourceTree = "<group>"; };
 		F164F96C18837B3300FF4C62 /* DNMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainController.m; path = GroupOSX/DNMainController.m; sourceTree = "<group>"; };
 		F164F96E18839B4500FF4C62 /* DNValueTransformers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNValueTransformers.h; path = GroupOSX/DNValueTransformers.h; sourceTree = "<group>"; };
@@ -315,14 +318,16 @@
 		F1840B931877B19F00C399DA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				F164F9651882725500FF4C62 /* Attachment.h */,
-				F164F9661882725500FF4C62 /* Attachment.m */,
-				F15BEBFB1880F5F3007F7C2D /* Member.h */,
-				F15BEBFC1880F5F3007F7C2D /* Member.m */,
-				F15BEBF81880F5F3007F7C2D /* Message.h */,
-				F15BEBF91880F5F3007F7C2D /* Message.m */,
-				F15BEBF51880F5F3007F7C2D /* Group.h */,
-				F15BEBF61880F5F3007F7C2D /* Group.m */,
+				F11D8D30188CAC870033AD74 /* Member.h */,
+				F11D8D31188CAC870033AD74 /* Member.m */,
+				F11D8D2A188C9B3E0033AD74 /* Message.h */,
+				F11D8D2B188C9B3E0033AD74 /* Message.m */,
+				F11D8D27188C96290033AD74 /* Image.h */,
+				F11D8D28188C96290033AD74 /* Image.m */,
+				F11D8D24188C955E0033AD74 /* Group.h */,
+				F11D8D25188C955E0033AD74 /* Group.m */,
+				F11D8D15188C955E0033AD74 /* Attachment.h */,
+				F11D8D16188C955E0033AD74 /* Attachment.m */,
 			);
 			name = Models;
 			path = ..;
@@ -578,16 +583,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F164F9671882725500FF4C62 /* Attachment.m in Sources */,
 				F1F5C5F8186D594800C407A3 /* GlobalConstants.m in Sources */,
 				F144E184186A5CD100C42636 /* DNAppDelegate.m in Sources */,
 				F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */,
-				F15BEBFA1880F5F3007F7C2D /* Message.m in Sources */,
+				F11D8D17188C955E0033AD74 /* Attachment.m in Sources */,
 				F164F97018839B4500FF4C62 /* DNValueTransformers.m in Sources */,
-				F15BEBFD1880F5F3007F7C2D /* Member.m in Sources */,
 				F144E17D186A5CD100C42636 /* main.m in Sources */,
-				F15BEBF71880F5F3007F7C2D /* Group.m in Sources */,
 				F1F5C5EE186CF52500C407A3 /* DNDataManager.m in Sources */,
+				F11D8D26188C955E0033AD74 /* Group.m in Sources */,
+				F11D8D29188C96290033AD74 /* Image.m in Sources */,
+				F11D8D2C188C9B3E0033AD74 /* Message.m in Sources */,
+				F11D8D32188CAC870033AD74 /* Member.m in Sources */,
 				F158A65718726F91009DC7C1 /* DNAsynchronousUnitTesting.m in Sources */,
 				F12A0312186B8A0C008C8BA5 /* DNServerInterface.m in Sources */,
 				F164F96D18837B3300FF4C62 /* DNMainController.m in Sources */,
