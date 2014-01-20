@@ -14,6 +14,7 @@ NSString * const DNOAuth2AuthorizationURL = @"https://api.groupme.com/oauth/auth
 NSString * const DNOAuth2TokenURL = @"gosx://token/";
 NSString * const DNOAuth2RedirectURL = @"gosx://token/";
 NSString * const DNOAuth2TokenArgumentKey = @"access_token";
+NSString * const DNOAuth2DeauthorizationURL = @"https://app.groupme.com/signout";
 
 //RESTful constants
 NSString * const HTTPMethod = @"HTTPMethod";

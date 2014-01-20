@@ -147,6 +147,10 @@
 {
     [_loginSheetController openSheetWithURL:url];
 }
+- (void)logOutWithURL:(NSURL*)url
+{
+    [_loginSheetController openURLOnly:url];
+}
 - (void)closeLoginSheet
 {
     [_loginSheetController closeLoginSheet:nil];

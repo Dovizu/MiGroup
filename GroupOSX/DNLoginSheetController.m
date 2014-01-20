@@ -37,6 +37,11 @@
     [[_loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
+- (void)openURLOnly:(NSURL*)url
+{
+    [[_loginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:url]];
+}
+
 - (IBAction)closeLoginSheet:(id)sender
 {
     if ([_mainController.window attachedSheet]) {

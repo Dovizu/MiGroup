@@ -20,5 +20,5 @@
 - (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup;
 - (void)promptForLoginWithPreparedURL:(NSURL *)url;
 - (void)closeLoginSheet;
-
+- (void)logOutWithURL:(NSURL*)url;
 @end

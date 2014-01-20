@@ -18,5 +18,5 @@
 
 - (void)openSheetWithURL:(NSURL *)url;
 - (IBAction)closeLoginSheet:(id)sender;
-
+- (void)openURLOnly:(NSURL*)url;
 @end

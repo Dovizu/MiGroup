@@ -594,6 +594,7 @@ enum DNJSONDictionaryType {
 {
     //To-Do: true logout includes logout in webview
     DebugLog(@"Deauthenticating...");
+    [_mainWindowController logOutWithURL:[NSURL URLWithString:DNOAuth2DeauthorizationURL]];
     _userToken = nil;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserToken];
     _userInfo = nil;
