@@ -36,6 +36,9 @@
 		F15BFF2A186C1B34003BE76D /* LoginSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = F15BFF28186C1B34003BE76D /* LoginSheet.xib */; };
 		F164F96D18837B3300FF4C62 /* DNMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96C18837B3300FF4C62 /* DNMainController.m */; };
 		F164F97018839B4500FF4C62 /* DNValueTransformers.m in Sources */ = {isa = PBXBuildFile; fileRef = F164F96F18839B4500FF4C62 /* DNValueTransformers.m */; };
+		F16E3825188D45720047DB17 /* FayeObjC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */; };
+		F16E3836188D48C00047DB17 /* SocketRocket.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F16E3831188D48880047DB17 /* SocketRocket.framework */; };
+		F16E3837188D48D40047DB17 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F16E3831188D48880047DB17 /* SocketRocket.framework */; };
 		F18314171870E95900930D5E /* NSString+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314141870E95900930D5E /* NSString+NXOAuth2.m */; };
 		F18314181870E95900930D5E /* NSURL+NXOAuth2.m in Sources */ = {isa = PBXBuildFile; fileRef = F18314161870E95900930D5E /* NSURL+NXOAuth2.m */; };
 		F18BF641186BA9C1007B2DCA /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = F18BF640186BA9C1007B2DCA /* Podfile */; };
@@ -54,6 +57,41 @@
 			proxyType = 1;
 			remoteGlobalIDString = F144E16C186A5CD100C42636;
 			remoteInfo = GroupOSX;
+		};
+		F16E382E188D48880047DB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F6B2082D1450F597009315AF;
+			remoteInfo = SocketRocket;
+		};
+		F16E3830188D48880047DB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F668C880153E91210044DBAC;
+			remoteInfo = SocketRocketOSX;
+		};
+		F16E3832188D48880047DB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F6BDA802145900D200FE3253;
+			remoteInfo = SRWebSocketTests;
+		};
+		F16E3834188D48880047DB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F62417E314D52F3C003CE997;
+			remoteInfo = TestChat;
+		};
+		F16E3838188D48E40047DB17 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = F668C87F153E91210044DBAC;
+			remoteInfo = SocketRocketOSX;
 		};
 		F1AE2F5A1872B1EE009C8851 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -91,6 +129,20 @@
 			remoteInfo = FayeObjCFramework;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F1E98659188D40E3008CF389 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F16E3825188D45720047DB17 /* FayeObjC.framework in CopyFiles */,
+				F16E3836188D48C00047DB17 /* SocketRocket.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		31D1475E2B0A4B088BD5AF44 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -141,6 +193,7 @@
 		F164F96C18837B3300FF4C62 /* DNMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNMainController.m; path = GroupOSX/DNMainController.m; sourceTree = "<group>"; };
 		F164F96E18839B4500FF4C62 /* DNValueTransformers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNValueTransformers.h; path = GroupOSX/DNValueTransformers.h; sourceTree = "<group>"; };
 		F164F96F18839B4500FF4C62 /* DNValueTransformers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DNValueTransformers.m; path = GroupOSX/DNValueTransformers.m; sourceTree = "<group>"; };
+		F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SocketRocket.xcodeproj; path = GroupOSX/FayeObjC/lib/SocketRocket/SocketRocket.xcodeproj; sourceTree = "<group>"; };
 		F18314131870E95900930D5E /* NSString+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+NXOAuth2.h"; path = "GroupOSX/Backend/NSString+NXOAuth2.h"; sourceTree = "<group>"; };
 		F18314141870E95900930D5E /* NSString+NXOAuth2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+NXOAuth2.m"; path = "GroupOSX/Backend/NSString+NXOAuth2.m"; sourceTree = "<group>"; };
 		F18314151870E95900930D5E /* NSURL+NXOAuth2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+NXOAuth2.h"; path = "GroupOSX/Backend/NSURL+NXOAuth2.h"; sourceTree = "<group>"; };
@@ -166,6 +219,7 @@
 				F1049C281877906800F79610 /* CoreData.framework in Frameworks */,
 				F1102CBA1873A0D100716B50 /* SystemConfiguration.framework in Frameworks */,
 				F1AE2F621872B201009C8851 /* FayeObjC.framework in Frameworks */,
+				F16E3837188D48D40047DB17 /* SocketRocket.framework in Frameworks */,
 				F1F5C5F0186D2A6600C407A3 /* WebKit.framework in Frameworks */,
 				F144E171186A5CD100C42636 /* Cocoa.framework in Frameworks */,
 				F12A0323186BA1F0008C8BA5 /* Security.framework in Frameworks */,
@@ -216,6 +270,7 @@
 				F144E16F186A5CD100C42636 /* Frameworks */,
 				F144E16E186A5CD100C42636 /* Products */,
 				9CF5DDBABBFB44E8B37FE138 /* Pods.xcconfig */,
+				F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */,
 				F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */,
 			);
 			sourceTree = "<group>";
@@ -298,6 +353,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		F16E3828188D48880047DB17 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F16E382F188D48880047DB17 /* libSocketRocket.a */,
+				F16E3831188D48880047DB17 /* SocketRocket.framework */,
+				F16E3833188D48880047DB17 /* SRWebSocketTests.octest */,
+				F16E3835188D48880047DB17 /* TestChat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F18314191870EADC00930D5E /* Augmented */ = {
 			isa = PBXGroup;
 			children = (
@@ -368,10 +434,12 @@
 				F144E16A186A5CD100C42636 /* Frameworks */,
 				F144E16B186A5CD100C42636 /* Resources */,
 				C49BDD44308B4DE29723D67B /* Copy Pods Resources */,
+				F1E98659188D40E3008CF389 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F16E3839188D48E40047DB17 /* PBXTargetDependency */,
 				F1AE2F641872B20A009C8851 /* PBXTargetDependency */,
 			);
 			name = GroupOSX;
@@ -437,6 +505,10 @@
 					ProductGroup = F1AE2F541872B1EE009C8851 /* Products */;
 					ProjectRef = F11C405A1872AE2E004820A7 /* FayeObjC.xcodeproj */;
 				},
+				{
+					ProductGroup = F16E3828188D48880047DB17 /* Products */;
+					ProjectRef = F16E3827188D48880047DB17 /* SocketRocket.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -447,6 +519,34 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		F16E382F188D48880047DB17 /* libSocketRocket.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSocketRocket.a;
+			remoteRef = F16E382E188D48880047DB17 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F16E3831188D48880047DB17 /* SocketRocket.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SocketRocket.framework;
+			remoteRef = F16E3830188D48880047DB17 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F16E3833188D48880047DB17 /* SRWebSocketTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SRWebSocketTests.octest;
+			remoteRef = F16E3832188D48880047DB17 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F16E3835188D48880047DB17 /* TestChat.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TestChat.app;
+			remoteRef = F16E3834188D48880047DB17 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F1AE2F5B1872B1EE009C8851 /* FayeObjC.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -608,6 +708,11 @@
 			target = F144E16C186A5CD100C42636 /* GroupOSX */;
 			targetProxy = F144E192186A5CD100C42636 /* PBXContainerItemProxy */;
 		};
+		F16E3839188D48E40047DB17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SocketRocketOSX;
+			targetProxy = F16E3838188D48E40047DB17 /* PBXContainerItemProxy */;
+		};
 		F1AE2F641872B20A009C8851 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = FayeObjCFramework;
@@ -737,6 +842,7 @@
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -759,6 +865,7 @@
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
 				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				OTHER_CODE_SIGN_FLAGS = "--deep";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

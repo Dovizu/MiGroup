@@ -17,7 +17,7 @@
 		8D748B4417584A05008BF25D /* NSString+FayeInflectionSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 8D748B4117584A05008BF25D /* NSString+FayeInflectionSupport.h */; };
 		8D748B4517584A05008BF25D /* NSString+FayeInflectionSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D748B4217584A05008BF25D /* NSString+FayeInflectionSupport.m */; };
 		8D748B4617584A05008BF25D /* NSString+FayeInflectionSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D748B4217584A05008BF25D /* NSString+FayeInflectionSupport.m */; };
-		8DF03A5116ED90C8000A0035 /* FayeClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF03A2916ED90C8000A0035 /* FayeClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8DF03A5116ED90C8000A0035 /* FayeClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF03A2916ED90C8000A0035 /* FayeClient.h */; };
 		8DF03A5216ED90C8000A0035 /* FayeClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF03A2916ED90C8000A0035 /* FayeClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8DF03A5516ED90C8000A0035 /* FayeMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF03A2B16ED90C8000A0035 /* FayeMessage.h */; };
 		8DF03A5616ED90C8000A0035 /* FayeMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 8DF03A2B16ED90C8000A0035 /* FayeMessage.h */; };
@@ -62,7 +62,7 @@
 		8DF0559216ED99F2000A0035 /* NSString+Serialize.m in Sources */ = {isa = PBXBuildFile; fileRef = 8DF03A9216ED9862000A0035 /* NSString+Serialize.m */; };
 		8DF0559816ED9B0A000A0035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0761F516ED29C5002D5F3D /* Foundation.framework */; };
 		8DF0559916ED9B2B000A0035 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D0761F516ED29C5002D5F3D /* Foundation.framework */; };
-		F1AE2F671872B265009C8851 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DF0555216ED9877000A0035 /* SocketRocket.framework */; };
+		F16E383B188D4A420047DB17 /* SocketRocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F16E383A188D4A420047DB17 /* SocketRocket.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,48 +79,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D07622216ED2ABC002D5F3D;
 			remoteInfo = FayeObjCLibrary;
-		};
-		8DF0554F16ED9877000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F6B2082D1450F597009315AF;
-			remoteInfo = SocketRocket;
-		};
-		8DF0555116ED9877000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F668C880153E91210044DBAC;
-			remoteInfo = SocketRocketOSX;
-		};
-		8DF0555316ED9877000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F6BDA802145900D200FE3253;
-			remoteInfo = SRWebSocketTests;
-		};
-		8DF0555516ED9877000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = F62417E314D52F3C003CE997;
-			remoteInfo = TestChat;
-		};
-		8DF0558516ED997F000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = F668C87F153E91210044DBAC;
-			remoteInfo = SocketRocketOSX;
-		};
-		8DF0559316ED99F8000A0035 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = F6B2082C1450F597009315AF;
-			remoteInfo = SocketRocket;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -3393,7 +3351,6 @@
 		8DF047A116ED9875000A0035 /* SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRWebSocket.h; sourceTree = "<group>"; };
 		8DF047A216ED9875000A0035 /* SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRWebSocket.m; sourceTree = "<group>"; };
 		8DF047A316ED9875000A0035 /* SocketRocket.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SocketRocket.podspec; sourceTree = "<group>"; };
-		8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SocketRocket.xcodeproj; sourceTree = "<group>"; };
 		8DF047A816ED9875000A0035 /* SocketRocketOSX-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SocketRocketOSX-Info.plist"; sourceTree = "<group>"; };
 		8DF047AB16ED9875000A0035 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DF047AC16ED9875000A0035 /* foo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = foo.mm; sourceTree = "<group>"; };
@@ -3447,6 +3404,7 @@
 		8DF0556C16ED9929000A0035 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8DF0556D16ED9929000A0035 /* FayeObjCLibraryTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "FayeObjCLibraryTests-Info.plist"; sourceTree = "<group>"; };
 		8DF0556E16ED9929000A0035 /* FayeObjCLibraryTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FayeObjCLibraryTests-Prefix.pch"; sourceTree = "<group>"; };
+		F16E383A188D4A420047DB17 /* SocketRocket.framework */ = {isa = PBXFileReference; lastKnownFileType = file; name = SocketRocket.framework; path = lib/SocketRocket/build/Release/SocketRocket.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3454,7 +3412,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F1AE2F671872B265009C8851 /* SocketRocket.framework in Frameworks */,
+				F16E383B188D4A420047DB17 /* SocketRocket.framework in Frameworks */,
 				8DF0559816ED9B0A000A0035 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3518,6 +3476,7 @@
 		8D0761EF16ED29C5002D5F3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F16E383A188D4A420047DB17 /* SocketRocket.framework */,
 				8D0761F016ED29C5002D5F3D /* Cocoa.framework */,
 				8D07620616ED29C5002D5F3D /* SenTestingKit.framework */,
 				8D07622416ED2ABC002D5F3D /* Foundation.framework */,
@@ -3628,7 +3587,6 @@
 				8DF0479A16ED9875000A0035 /* README.rst */,
 				8DF0479B16ED9875000A0035 /* SocketRocket */,
 				8DF047A316ED9875000A0035 /* SocketRocket.podspec */,
-				8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */,
 				8DF047A716ED9875000A0035 /* SocketRocketOSX */,
 				8DF047A916ED9875000A0035 /* SRWebSocketTests */,
 				8DF047B416ED9875000A0035 /* TestChat */,
@@ -7819,17 +7777,6 @@
 			path = SocketRocket;
 			sourceTree = "<group>";
 		};
-		8DF047A516ED9875000A0035 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8DF0555016ED9877000A0035 /* libSocketRocket.a */,
-				8DF0555216ED9877000A0035 /* SocketRocket.framework */,
-				8DF0555416ED9877000A0035 /* SRWebSocketTests.octest */,
-				8DF0555616ED9877000A0035 /* TestChat.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		8DF047A716ED9875000A0035 /* SocketRocketOSX */ = {
 			isa = PBXGroup;
 			children = (
@@ -8056,7 +8003,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				8DF0558616ED997F000A0035 /* PBXTargetDependency */,
 			);
 			name = FayeObjCFramework;
 			productName = FayeObjC;
@@ -8093,7 +8039,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				8DF0559416ED99F8000A0035 /* PBXTargetDependency */,
 			);
 			name = FayeObjCLibrary;
 			productName = FayeObjCLibrary;
@@ -8138,12 +8083,6 @@
 			mainGroup = 8D0761E316ED29C5002D5F3D;
 			productRefGroup = 8D0761EE16ED29C5002D5F3D /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 8DF047A516ED9875000A0035 /* Products */;
-					ProjectRef = 8DF047A416ED9875000A0035 /* SocketRocket.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				8D0761EC16ED29C5002D5F3D /* FayeObjCFramework */,
@@ -8153,37 +8092,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		8DF0555016ED9877000A0035 /* libSocketRocket.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSocketRocket.a;
-			remoteRef = 8DF0554F16ED9877000A0035 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8DF0555216ED9877000A0035 /* SocketRocket.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SocketRocket.framework;
-			remoteRef = 8DF0555116ED9877000A0035 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8DF0555416ED9877000A0035 /* SRWebSocketTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = SRWebSocketTests.octest;
-			remoteRef = 8DF0555316ED9877000A0035 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		8DF0555616ED9877000A0035 /* TestChat.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = TestChat.app;
-			remoteRef = 8DF0555516ED9877000A0035 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		8D0761EB16ED29C5002D5F3D /* Resources */ = {
@@ -8305,16 +8213,6 @@
 			target = 8D07622216ED2ABC002D5F3D /* FayeObjCLibrary */;
 			targetProxy = 8D07623716ED2ABC002D5F3D /* PBXContainerItemProxy */;
 		};
-		8DF0558616ED997F000A0035 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SocketRocketOSX;
-			targetProxy = 8DF0558516ED997F000A0035 /* PBXContainerItemProxy */;
-		};
-		8DF0559416ED99F8000A0035 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SocketRocket;
-			targetProxy = 8DF0559316ED99F8000A0035 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -8405,6 +8303,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -8429,6 +8328,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -8447,6 +8347,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = "FayeObjCFramework/FayeObjCFramework-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = FayeObjC;
 				USER_HEADER_SEARCH_PATHS = "";
@@ -8469,6 +8370,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				INFOPLIST_FILE = "FayeObjCFramework/FayeObjCFramework-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = FayeObjC;
 				USER_HEADER_SEARCH_PATHS = "";
