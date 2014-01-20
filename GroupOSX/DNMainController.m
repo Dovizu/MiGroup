@@ -10,7 +10,6 @@
 #import "DNDataManager.h"
 #import "Message.h"
 #import "DNLoginSheetController.h"
-#import "DNServerInterface.h"
 
 @interface DNMainController ()
 
@@ -45,28 +44,25 @@
 }
 
 #pragma mark - Notifications and Delegate
+
 - (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup
 {
-    if (![(NSNumber*)(message.system) boolValue]) {
-        NSString *text = message.text;
-        NSString *sender = message.sender_name;
-        NSImage *avatar = message.sender_avatar.avatar;
-        NSString *groupName = targetGroup.name;
-        NSUserNotification *notification = [[NSUserNotification alloc] init];
-        notification.hasReplyButton = YES;
-        notification.responsePlaceholder = @"Quick Reply here";
-        notification.title = groupName;
-        notification.subtitle = [NSString stringWithFormat:@"%@ says", sender];
-        notification.informativeText = text;
-        notification.contentImage = avatar;
-        notification.userInfo = @{@"target_group": message.target_group.group_id};
-        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
-        
-        NSString *selectedGroupID = [[_groupArrayController selection] valueForKey:@"group_id"];
-        if ([selectedGroupID isEqualToString:message.target_group.group_id]) {
-            [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
-        }
+    if (![(NSNumber*)(message.system) boolValue] && ![_dataManager isUser:message.sender_user_id]) {
+            NSString *text = message.text;
+            NSString *sender = message.sender_name;
+            NSImage *avatar = message.sender_avatar.avatar;
+            NSString *groupName = targetGroup.name;
+            NSUserNotification *notification = [[NSUserNotification alloc] init];
+            notification.hasReplyButton = YES;
+            notification.responsePlaceholder = @"Quick Reply here";
+            notification.title = groupName;
+            notification.subtitle = [NSString stringWithFormat:@"%@ says", sender];
+            notification.informativeText = text;
+            notification.contentImage = avatar;
+            notification.userInfo = @{@"target_group": message.target_group.group_id};
+            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
     }
+    [self scrollTableViewForMessage:message];
 }
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
@@ -82,6 +78,15 @@
             return [group.group_id isEqualToString:notification.userInfo[@"target_group"]];
         }];
         [_groupTableVIew selectRowIndexes:indexes byExtendingSelection:NO];
+        [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
+    }
+}
+
+- (void)scrollTableViewForMessage:(Message *)message
+{
+    NSString *selectedGroupID = [[_groupArrayController selection] valueForKey:@"group_id"];
+    //Sometimes selectedGroupID is "NO SELECTION MARKER"
+    if ([selectedGroupID isKindOfClass:[NSString class]] && [selectedGroupID isEqualToString:message.target_group.group_id]) {
         [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
     }
 }
@@ -135,7 +140,7 @@
 
 - (IBAction)signin:(id)sender
 {
-    [_server setup];
+    [_dataManager signIn];
 }
 
 - (IBAction)logout:(id)sender
@@ -146,7 +151,7 @@
         [Group truncateAllInContext:currentContext]; //cascade delete will clear out the whole database
         [currentContext saveToPersistentStoreAndWait];
     });
-    [_dataManager logout]; //dataManager will logout server and clear userDefaults
+    [_dataManager logOut]; //dataManager will logout server and clear userDefaults
 }
 
 - (IBAction)sendMessage:(id)sender

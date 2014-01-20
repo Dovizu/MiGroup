@@ -33,7 +33,6 @@
     _dataManager.mainController = _mainWindowController;
     //set up mainWindowController
     _mainWindowController.dataManager = _dataManager;
-    _mainWindowController.server = _server;
     //set up login sheet controller
     
     _loginSheetController.mainController = _mainWindowController;

@@ -26,6 +26,8 @@
 @property DNMainController *mainController;
 
 - (void)sendNewMessage:(NSString*)text toGroup:(Group*)group withAttachments:(NSArray*)attachments;
-- (void)logout;
+- (void)signIn;
+- (void)logOut;
+- (BOOL)isUser:(NSString*)userID;
 
 @end

@@ -603,10 +603,6 @@ enum DNJSONDictionaryType {
     [_socketClient disconnectFromServer];
     _listening = NO;
 
-    NSHTTPCookieStorage *jar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *cookie in [jar cookies]) {
-        [jar deleteCookie:cookie];
-    }
     [self authenticate];
 }
 

@@ -54,8 +54,8 @@
     <elements>
         <element name="Attachment" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Group" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Image" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Member" positionX="0" positionY="0" width="0" height="0"/>
         <element name="Message" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Image" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

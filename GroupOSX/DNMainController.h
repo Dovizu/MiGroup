@@ -14,7 +14,6 @@
 @property DNDataManager *dataManager;
 @property NSManagedObjectContext *managedObjectContext;
 @property DNLoginSheetController *loginSheetController;
-@property DNServerInterface *server;
 
 #pragma mark - Models Helper Methods
 - (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup;

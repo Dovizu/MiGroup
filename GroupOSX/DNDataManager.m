@@ -36,11 +36,25 @@
     return self;
 }
 
+#pragma mark - Convenience Methods
+- (BOOL)isUser:(NSString *)userID
+{
+    return userID ? [_server isUser:userID] : NO;
+}
+
 #pragma mark - Actions
 
-- (void)logout
+- (void)logOut
 {
+    NSHTTPCookieStorage *jar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [jar cookies]) {
+        [jar deleteCookie:cookie];
+    }
     [_server teardown];
+}
+- (void)signIn
+{
+    [_server setup];
 }
 
 - (void)sendNewMessage:(NSString*)text toGroup:(NSString*)groupID withAttachments:(NSArray*)attachments
@@ -52,7 +66,7 @@
     [_server sendNewMessage:text toGroup:groupID withAttachments:nil];
 }
 
-#pragma mark - Message Routing
+#pragma mark - Data Management
 
 - (void)establishObserversForNotifications
 {
@@ -241,9 +255,8 @@
             }else{
                 dbMessage.sender_avatar = [Image createInContext:currentContext];
             }
-            if (dbMessage.sender_user_id && ![_server isUser:dbMessage.sender_user_id]) {
-                [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
-            }
+
+            [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
     }
