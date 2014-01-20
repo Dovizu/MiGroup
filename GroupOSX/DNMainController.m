@@ -27,7 +27,6 @@
     IBOutlet NSTableView *_groupTableVIew;
     IBOutlet NSTextField *_statusLabel;
     IBOutlet NSTextField *_inputField;
-    
     BOOL _setup;
 }
 
