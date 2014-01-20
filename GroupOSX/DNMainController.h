@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 @class DNAppDelegate, DNDataManager, Message, Group, DNLoginSheetController, DNServerInterface;
 
-@interface DNMainController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate, NSTableViewDelegate, NSUserNotificationCenterDelegate>
+@interface DNMainController : NSWindowController <NSWindowDelegate, NSSplitViewDelegate, NSTableViewDelegate, NSUserNotificationCenterDelegate, NSControlTextEditingDelegate>
 
 @property DNDataManager *dataManager;
 @property NSManagedObjectContext *managedObjectContext;

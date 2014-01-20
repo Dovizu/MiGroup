@@ -27,6 +27,7 @@
     IBOutlet NSTableView *_messageTableView;
     IBOutlet NSTableView *_groupTableVIew;
     IBOutlet NSTextField *_statusLabel;
+    IBOutlet NSTextField *_inputField;
     
     BOOL _setup;
 }
@@ -122,6 +123,14 @@
     return optimalHeight;
 }
 
+#pragma mark - Control Text Editing Delegate
+- (void)controlTextDidBeginEditing:(NSNotification *)aNotification
+{
+    if ([[self.window firstResponder] isKindOfClass:[NSTextView class]]) {
+        [(NSTextView*)[self.window firstResponder] setContinuousSpellCheckingEnabled:YES];
+    }
+}
+
 #pragma mark - GUI Actions
 
 - (IBAction)signin:(id)sender
@@ -172,7 +181,8 @@
         [[NSNotificationCenter defaultCenter] addObserverForName:noteOffline object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
             [_statusLabel setStringValue:@"Offline"];
         }];
-        
+
+
         _setup = YES;
     }
 }

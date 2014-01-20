@@ -685,6 +685,7 @@
                                                 </textFieldCell>
                                                 <connections>
                                                     <action selector="sendMessage:" target="o2x-8h-Byq" id="PZc-ki-UhT"/>
+                                                    <outlet property="delegate" destination="o2x-8h-Byq" id="Lg5-R3-JUW"/>
                                                 </connections>
                                             </textField>
                                         </subviews>
@@ -842,6 +843,7 @@
             <connections>
                 <outlet property="_groupArrayController" destination="kEl-9a-Kxc" id="mMS-uj-rfR"/>
                 <outlet property="_groupTableVIew" destination="L6s-vU-VBk" id="DbJ-Ym-8sX"/>
+                <outlet property="_inputField" destination="Nhf-KZ-Txi" id="1Je-Sl-caZ"/>
                 <outlet property="_messageTableView" destination="Fh8-yH-k5g" id="hyi-JG-tR2"/>
                 <outlet property="_messagesArrayController" destination="jgX-pN-FcD" id="kDz-1X-Qc9"/>
                 <outlet property="_samplingView" destination="eYw-pg-Vml" id="DZQ-tm-ay2"/>
