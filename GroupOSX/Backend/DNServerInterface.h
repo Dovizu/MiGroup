@@ -168,7 +168,7 @@
 //noteGroupNameChange
 //k_name_group, k_group_id
 
-
+- (BOOL)isUser:(NSString*)name;
 
 @end
 

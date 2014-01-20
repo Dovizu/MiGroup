@@ -241,7 +241,9 @@
             }else{
                 dbMessage.sender_avatar = [Image createInContext:currentContext];
             }
-            [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
+            if (dbMessage.sender_user_id && ![_server isUser:dbMessage.sender_user_id]) {
+                [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
+            }
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
     }

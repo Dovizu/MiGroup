@@ -651,9 +651,9 @@ enum DNJSONDictionaryType {
     return _listening;
 }
 
-- (BOOL)isUser:(NSString*)name
+- (BOOL)isUser:(NSString*)userID
 {
-    return _authenticated && [_userInfo[@"name"] isEqualToString:name];
+    return _authenticated && [_userInfo[@"user_id"] isEqualToString:userID];
 }
 
 #pragma mark - Web Socket
