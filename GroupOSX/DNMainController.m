@@ -46,7 +46,12 @@
 
 - (void)notifyUserOfGroupMessage:(Message*)message fromGroup:(Group*)targetGroup
 {
-    if (![(NSNumber*)(message.system) boolValue] && ![_dataManager isUser:message.sender_user_id]) {
+    NSString *selectedGroupID = [[_groupArrayController selection] valueForKey:@"group_id"];
+    BOOL isCurrentlyViewingGroup = [selectedGroupID isKindOfClass:[NSString class]] && [selectedGroupID isEqualToString:message.target_group.group_id];
+    BOOL isCurrentlyLookingAtWindow = [[[NSApplication sharedApplication] keyWindow] isEqualTo:self.window];
+    BOOL shouldSendNotification = !isCurrentlyLookingAtWindow || (isCurrentlyLookingAtWindow && !isCurrentlyViewingGroup);
+    
+    if (shouldSendNotification && ![(NSNumber*)(message.system) boolValue] && ![_dataManager isUser:message.sender_user_id]) {
             NSString *text = message.text;
             NSString *sender = message.sender_name;
             NSImage *avatar = message.sender_avatar.avatar;
