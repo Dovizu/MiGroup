@@ -81,8 +81,10 @@
             Group *group = obj;
             return [group.group_id isEqualToString:notification.userInfo[@"target_group"]];
         }];
+        [self.window makeKeyAndOrderFront:self];
         [_groupTableVIew selectRowIndexes:indexes byExtendingSelection:NO];
         [_messageTableView scrollRowToVisible:[_messageTableView numberOfRows]-1];
+        [center removeDeliveredNotification:notification];
     }
 }
 
