@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F144E16C186A5CD100C42636"
-               BuildableName = "GroupOSX.app"
-               BlueprintName = "GroupOSX"
-               ReferencedContainer = "container:GroupOSX.xcodeproj">
+               BuildableName = "MiGroup.app"
+               BlueprintName = "MiGroup"
+               ReferencedContainer = "container:MiGroup.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F144E18D186A5CD100C42636"
-               BuildableName = "GroupOSXTests.xctest"
-               BlueprintName = "GroupOSXTests"
-               ReferencedContainer = "container:GroupOSX.xcodeproj">
+               BuildableName = "MiGroupTests.xctest"
+               BlueprintName = "MiGroupTests"
+               ReferencedContainer = "container:MiGroup.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F144E16C186A5CD100C42636"
-            BuildableName = "GroupOSX.app"
-            BlueprintName = "GroupOSX"
-            ReferencedContainer = "container:GroupOSX.xcodeproj">
+            BuildableName = "MiGroup.app"
+            BlueprintName = "MiGroup"
+            ReferencedContainer = "container:MiGroup.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F144E16C186A5CD100C42636"
-            BuildableName = "GroupOSX.app"
-            BlueprintName = "GroupOSX"
-            ReferencedContainer = "container:GroupOSX.xcodeproj">
+            BuildableName = "MiGroup.app"
+            BlueprintName = "MiGroup"
+            ReferencedContainer = "container:MiGroup.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -80,9 +80,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F144E16C186A5CD100C42636"
-            BuildableName = "GroupOSX.app"
-            BlueprintName = "GroupOSX"
-            ReferencedContainer = "container:GroupOSX.xcodeproj">
+            BuildableName = "MiGroup.app"
+            BlueprintName = "MiGroup"
+            ReferencedContainer = "container:MiGroup.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

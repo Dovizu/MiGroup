@@ -167,23 +167,23 @@
 		F12A0315186B8A6C008C8BA5 /* DNBackEndTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DNBackEndTest.m; sourceTree = "<group>"; };
 		F12A0317186BA066008C8BA5 /* GroupOSX.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = GroupOSX.entitlements; path = GroupOSX/GroupOSX.entitlements; sourceTree = "<group>"; };
 		F12A0322186BA1F0008C8BA5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		F144E16D186A5CD100C42636 /* GroupOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroupOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F144E16D186A5CD100C42636 /* MiGroup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiGroup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F144E170186A5CD100C42636 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		F144E173186A5CD100C42636 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		F144E174186A5CD100C42636 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		F144E175186A5CD100C42636 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		F144E178186A5CD100C42636 /* GroupOSX-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GroupOSX-Info.plist"; sourceTree = "<group>"; };
+		F144E178186A5CD100C42636 /* MiGroup-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MiGroup-Info.plist"; sourceTree = "<group>"; };
 		F144E17A186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F144E17C186A5CD100C42636 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		F144E17E186A5CD100C42636 /* GroupOSX-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GroupOSX-Prefix.pch"; sourceTree = "<group>"; };
+		F144E17E186A5CD100C42636 /* MiGroup-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MiGroup-Prefix.pch"; sourceTree = "<group>"; };
 		F144E180186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		F144E182186A5CD100C42636 /* DNAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DNAppDelegate.h; sourceTree = "<group>"; };
 		F144E183186A5CD100C42636 /* DNAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DNAppDelegate.m; sourceTree = "<group>"; };
 		F144E186186A5CD100C42636 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		F144E188186A5CD100C42636 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroupOSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F144E18E186A5CD100C42636 /* MiGroupTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiGroupTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F144E18F186A5CD100C42636 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		F144E196186A5CD100C42636 /* GroupOSXTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GroupOSXTests-Info.plist"; sourceTree = "<group>"; };
+		F144E196186A5CD100C42636 /* MiGroupTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MiGroupTests-Info.plist"; sourceTree = "<group>"; };
 		F144E198186A5CD100C42636 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F144E19A186A5CD100C42636 /* GroupOSXTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupOSXTests.m; sourceTree = "<group>"; };
 		F158A65518726F91009DC7C1 /* DNAsynchronousUnitTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DNAsynchronousUnitTesting.h; path = GroupOSX/Backend/DNAsynchronousUnitTesting.h; sourceTree = "<group>"; };
@@ -278,8 +278,8 @@
 		F144E16E186A5CD100C42636 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F144E16D186A5CD100C42636 /* GroupOSX.app */,
-				F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */,
+				F144E16D186A5CD100C42636 /* MiGroup.app */,
+				F144E18E186A5CD100C42636 /* MiGroupTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -325,10 +325,10 @@
 		F144E177186A5CD100C42636 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F144E178186A5CD100C42636 /* GroupOSX-Info.plist */,
+				F144E178186A5CD100C42636 /* MiGroup-Info.plist */,
 				F144E179186A5CD100C42636 /* InfoPlist.strings */,
 				F144E17C186A5CD100C42636 /* main.m */,
-				F144E17E186A5CD100C42636 /* GroupOSX-Prefix.pch */,
+				F144E17E186A5CD100C42636 /* MiGroup-Prefix.pch */,
 				F144E17F186A5CD100C42636 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -347,7 +347,7 @@
 		F144E195186A5CD100C42636 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F144E196186A5CD100C42636 /* GroupOSXTests-Info.plist */,
+				F144E196186A5CD100C42636 /* MiGroupTests-Info.plist */,
 				F144E197186A5CD100C42636 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -425,9 +425,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F144E16C186A5CD100C42636 /* GroupOSX */ = {
+		F144E16C186A5CD100C42636 /* MiGroup */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSX" */;
+			buildConfigurationList = F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "MiGroup" */;
 			buildPhases = (
 				EEAC82B84BAE4AC4874F96CE /* Check Pods Manifest.lock */,
 				F144E169186A5CD100C42636 /* Sources */,
@@ -442,14 +442,14 @@
 				F16E3839188D48E40047DB17 /* PBXTargetDependency */,
 				F1AE2F641872B20A009C8851 /* PBXTargetDependency */,
 			);
-			name = GroupOSX;
+			name = MiGroup;
 			productName = GroupOSX;
-			productReference = F144E16D186A5CD100C42636 /* GroupOSX.app */;
+			productReference = F144E16D186A5CD100C42636 /* MiGroup.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F144E18D186A5CD100C42636 /* GroupOSXTests */ = {
+		F144E18D186A5CD100C42636 /* MiGroupTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSXTests" */;
+			buildConfigurationList = F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "MiGroupTests" */;
 			buildPhases = (
 				4D49DED227B44F8E9993302D /* Check Pods Manifest.lock */,
 				F144E18A186A5CD100C42636 /* Sources */,
@@ -462,9 +462,9 @@
 			dependencies = (
 				F144E193186A5CD100C42636 /* PBXTargetDependency */,
 			);
-			name = GroupOSXTests;
+			name = MiGroupTests;
 			productName = GroupOSXTests;
-			productReference = F144E18E186A5CD100C42636 /* GroupOSXTests.xctest */;
+			productReference = F144E18E186A5CD100C42636 /* MiGroupTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -490,7 +490,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F144E168186A5CD100C42636 /* Build configuration list for PBXProject "GroupOSX" */;
+			buildConfigurationList = F144E168186A5CD100C42636 /* Build configuration list for PBXProject "MiGroup" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -513,8 +513,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				F144E16C186A5CD100C42636 /* GroupOSX */,
-				F144E18D186A5CD100C42636 /* GroupOSXTests */,
+				F144E16C186A5CD100C42636 /* MiGroup */,
+				F144E18D186A5CD100C42636 /* MiGroupTests */,
 			);
 		};
 /* End PBXProject section */
@@ -706,7 +706,7 @@
 /* Begin PBXTargetDependency section */
 		F144E193186A5CD100C42636 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F144E16C186A5CD100C42636 /* GroupOSX */;
+			target = F144E16C186A5CD100C42636 /* MiGroup */;
 			targetProxy = F144E192186A5CD100C42636 /* PBXContainerItemProxy */;
 		};
 		F16E3839188D48E40047DB17 /* PBXTargetDependency */ = {
@@ -837,16 +837,16 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				GCC_PREFIX_HEADER = "GroupOSX/MiGroup-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"\"${PODS_ROOT}/Headers\"",
 					"\"${PODS_ROOT}/Headers/AFNetworking\"",
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
-				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				INFOPLIST_FILE = "GroupOSX/MiGroup-Info.plist";
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MiGroup;
 				PROVISIONING_PROFILE = "69A85C80-CD48-4140-87BA-E010ACE8651A";
 				WRAPPER_EXTENSION = app;
 			};
@@ -863,16 +863,16 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "GroupOSX/GroupOSX-Prefix.pch";
+				GCC_PREFIX_HEADER = "GroupOSX/MiGroup-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"\"${PODS_ROOT}/Headers\"",
 					"\"${PODS_ROOT}/Headers/AFNetworking\"",
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
-				INFOPLIST_FILE = "GroupOSX/GroupOSX-Info.plist";
+				INFOPLIST_FILE = "GroupOSX/MiGroup-Info.plist";
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MiGroup;
 				PROVISIONING_PROFILE = "69A85C80-CD48-4140-87BA-E010ACE8651A";
 				WRAPPER_EXTENSION = app;
 			};
@@ -882,6 +882,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CF5DDBABBFB44E8B37FE138 /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GroupOSX.app/Contents/MacOS/GroupOSX";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -899,9 +900,9 @@
 					"\"${PODS_ROOT}/Headers/AFNetworking\"",
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
-				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
+				INFOPLIST_FILE = "GroupOSXTests/MiGroupTests-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MiGroupTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -911,6 +912,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9CF5DDBABBFB44E8B37FE138 /* Pods.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GroupOSX.app/Contents/MacOS/GroupOSX";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -924,8 +926,8 @@
 					"\"${PODS_ROOT}/Headers/AFNetworking\"",
 					"$(PROJECT_DIR)/GroupOSX/FayeObjC/**",
 				);
-				INFOPLIST_FILE = "GroupOSXTests/GroupOSXTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "GroupOSXTests/MiGroupTests-Info.plist";
+				PRODUCT_NAME = MiGroupTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -934,7 +936,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F144E168186A5CD100C42636 /* Build configuration list for PBXProject "GroupOSX" */ = {
+		F144E168186A5CD100C42636 /* Build configuration list for PBXProject "MiGroup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F144E19C186A5CD100C42636 /* Debug */,
@@ -943,7 +945,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSX" */ = {
+		F144E19E186A5CD100C42636 /* Build configuration list for PBXNativeTarget "MiGroup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F144E19F186A5CD100C42636 /* Debug */,
@@ -952,7 +954,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "GroupOSXTests" */ = {
+		F144E1A1186A5CD100C42636 /* Build configuration list for PBXNativeTarget "MiGroupTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F144E1A2186A5CD100C42636 /* Debug */,
