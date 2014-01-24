@@ -232,7 +232,9 @@
             if (fetchedMessage[k_user_id]) {
                 dbMessage.sender_user_id = fetchedMessage[k_user_id];
             }
-            dbMessage.text = fetchedMessage[k_text];
+            if ([fetchedMessage[k_text] isKindOfClass:[NSString class]]) {
+                dbMessage.text = fetchedMessage[k_text];
+            }
             dbMessage.target_group = group;
             dbMessage.system = fetchedMessage[k_is_system];
             [group addMessagesObject:dbMessage];
