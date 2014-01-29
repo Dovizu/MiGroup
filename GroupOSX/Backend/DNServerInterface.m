@@ -401,14 +401,19 @@ enum DNJSONDictionaryType {
                 }
                 newDict[k_members] = convertedMembers;
             }
-            NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
-                                          k_created_at: oldDict[k_messages][@"last_message_created_at"],
-                                          k_sender_name: oldDict[k_messages][@"preview"][@"nickname"],
-                                          k_sender_avatar: oldDict[k_messages][@"preview"][@"image_url"],
-                                          k_text: oldDict[k_messages][@"preview"][@"text"],
-                                          k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
-            lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
-            newDict[k_last_message] = lastMessage;
+            //sometimes there is no last message for newly created group
+            if (![oldDict[k_messages][@"preview"][@"nickname"] isKindOfClass:[NSNull class]]) {
+                NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
+                                              k_created_at: oldDict[k_messages][@"last_message_created_at"],
+                                              k_sender_name: oldDict[k_messages][@"preview"][@"nickname"],
+                                              k_sender_avatar: oldDict[k_messages][@"preview"][@"image_url"],
+                                              k_text: oldDict[k_messages][@"preview"][@"text"],
+                                              k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
+                lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
+                newDict[k_last_message] = lastMessage;
+            }else{
+                newDict[k_last_message] = [NSNull null];
+            }
             break;
         }
         case DNMemberJSONDictionary:{
@@ -416,6 +421,7 @@ enum DNJSONDictionaryType {
             break;
         }
         case DNMessageJSONDictionary:{
+            
             newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
             newDict[k_sender_avatar] = [self helpURLFromString:oldDict[k_sender_avatar]];
             if (oldDict[k_attachments]) {

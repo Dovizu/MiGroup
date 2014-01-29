@@ -204,17 +204,20 @@
                          DebugLogCD(@"Failed to obtain image for group: %@, error:\n%@", dbGroup.name, error);
                      }];
     }
-    
-    [self helpProcessMessages:@[fetchedGroup[k_last_message]] toGroup:dbGroup.objectID];
-    /* Special case for last message processing, since this invokes "helpProcessMessages:toGroup: but does not count as
-     the end of processing this group*/
-    _countUntilReleaseNotification += 1;
-    [_server fetch20MessagesBeforeMessageID:fetchedGroup[k_last_message][k_message_id] inGroup:dbGroup.group_id];
+    //sometimes, last message doesn't exit in a newly created group
+    if (![fetchedGroup[k_last_message] isKindOfClass:[NSNull class]]) {
+        [self helpProcessMessages:@[fetchedGroup[k_last_message]] toGroup:dbGroup.objectID];
+        /* Special case for last message processing, since this invokes "helpProcessMessages:toGroup: but does not count as
+         the end of processing this group*/
+        _countUntilReleaseNotification += 1;
+        [_server fetch20MessagesBeforeMessageID:fetchedGroup[k_last_message][k_message_id] inGroup:dbGroup.group_id];
+    }
     [self helpProcessMemberArray:fetchedGroup[k_members] intoGroup:dbGroup.objectID createdBy:fetchedGroup[k_creator_group]];
 }
 
 - (void)helpProcessMessages:(NSArray*)fetchedMessages toGroup:(NSManagedObjectID*)groupID;
 {
+    NSAssert(fetchedMessages, @"fetchedMessages must not be nil");
     NSAssert([fetchedMessages count] != 0, @"0-length messages array is passed in");
     NSAssert(groupID, @"groupID cannot be nil");
     
@@ -228,6 +231,9 @@
             dbMessage = [Message createInContext:currentContext];
             dbMessage.created_at = fetchedMessage[k_created_at];
             dbMessage.message_id = fetchedMessage[k_message_id];
+            if ([fetchedMessage[k_sender_name] isKindOfClass:[NSNull class]]) {
+                //break;
+            }
             dbMessage.sender_name = fetchedMessage[k_sender_name];
             if (fetchedMessage[k_user_id]) {
                 dbMessage.sender_user_id = fetchedMessage[k_user_id];
