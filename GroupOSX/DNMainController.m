@@ -192,9 +192,8 @@
         [[NSNotificationCenter defaultCenter] addObserverForName:noteOffline object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
             [_statusLabel setStringValue:@"Offline"];
         }];
-
-
         _setup = YES;
+        [self.window setExcludedFromWindowsMenu:YES];
     }
 }
 
