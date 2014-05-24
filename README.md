@@ -21,7 +21,6 @@ A personal Thank You goes to the developers behind these amazing frameworks/tool
 
 ### Authors and Contributors
 @donaldchen - Developer of MiGroup
-
 @dovizu - Developer of MiGroup
 
 ### Support or Contact
