@@ -5,48 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>481AB3EF-C82A-4814-A9CF-E12FD519353F</string>
+	<string>02D84A4A-9AEB-4758-81BC-A2D0CEFC050A</string>
 	<key>IDESourceControlProjectName</key>
 	<string>GroupOSX</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>8356F55E-2875-40AB-B40F-053F381A134E</key>
-		<string>ssh://github.com/dovizu/GroupOSX.git</string>
-		<key>E77C0334-4884-48A2-967B-F4F0AF3536F5</key>
-		<string>https://github.com/pcrawfor/FayeObjC.git</string>
+		<key>856BBE6C-094A-4F5F-8AB8-9E337EAEDEEC</key>
+		<string>https://github.com/Dovizu/MiGroup.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>GroupOSX.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>8356F55E-2875-40AB-B40F-053F381A134E</key>
+		<key>856BBE6C-094A-4F5F-8AB8-9E337EAEDEEC</key>
 		<string>..</string>
-		<key>E77C0334-4884-48A2-967B-F4F0AF3536F5</key>
-		<string>../../FayeObjCRepo</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/dovizu/GroupOSX.git</string>
+	<string>https://github.com/Dovizu/MiGroup.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>8356F55E-2875-40AB-B40F-053F381A134E</string>
+	<string>856BBE6C-094A-4F5F-8AB8-9E337EAEDEEC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>E77C0334-4884-48A2-967B-F4F0AF3536F5</string>
+			<string>856BBE6C-094A-4F5F-8AB8-9E337EAEDEEC</string>
 			<key>IDESourceControlWCCName</key>
-			<string>FayeObjCRepo</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>8356F55E-2875-40AB-B40F-053F381A134E</string>
-			<key>IDESourceControlWCCName</key>
-			<string>GroupOSX</string>
+			<string>MiGroup</string>
 		</dict>
 	</array>
 </dict>

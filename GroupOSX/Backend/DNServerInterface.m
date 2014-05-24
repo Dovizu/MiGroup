@@ -367,9 +367,11 @@ enum DNJSONDictionaryType {
 {
     NSAssert(urlString, @"urlString cannot be nil");
     NSURL *url;
+    
     if (!([urlString isKindOfClass:[NSNull class]]) && (url = [NSURL URLWithString:urlString])) {
         return url;
     }
+    
     return [NSNull null];
 }
 
@@ -531,11 +533,16 @@ enum DNJSONDictionaryType {
                 DebugLog(@"Parsing %@ failed, Error: %@", identifierAlert, error);
             }
         }
+        
     }
     
     //MESSAGES BY USER
     else if (identifierGUID && [API hasGUID:identifierGUID]) {
         DebugLog(@"Received duplicate message: '%@'", identifierAlert);
+    }
+    //LIKE  BY ANOTHER USER
+    else if ([identifierAlert rangeOfString:@"liked your message"].location != NSNotFound) {
+        return;
     }
     //MESSAGES BY ANOTHER MEMBER
     else{
