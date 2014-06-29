@@ -60,6 +60,7 @@ enum DNJSONDictionaryType {
     DNRESTAPI *API;
     FayeClient *_socketClient;
     NSNotificationCenter *_notificationCenter;
+    DNDataManager *_dataManager;
     
     //Book keeping
     NSString* _userToken;
@@ -79,11 +80,12 @@ enum DNJSONDictionaryType {
 
 #pragma mark - Initialization Logic
 
-- (id)init
+- (id)initWithDataManager: (DNDataManager*) dataManager
 {
     self = [super init];
     if (self){
         
+        _dataManager = dataManager;
         _notificationCenter = [NSNotificationCenter defaultCenter];
         __block NSNotificationCenter *blockNoteCenter = _notificationCenter;
         
@@ -131,319 +133,175 @@ enum DNJSONDictionaryType {
     return self;
 }
 
-#pragma mark - User Actions
 
-//Messages
-- (void)sendNewMessage:(NSString*)message
-               toGroup:(NSString*)groupID
-       withAttachments:(NSArray*)attachments
+
+#pragma mark - Authentication/Token Retrieval
+
+//The almighty setup always makes sure everything is set up
+- (void)setup
 {
-    [API MessagesCreateInGroup:groupID
-                          text:message
-                   attachments:nil
-              andCompleteBlock:^(NSDictionary *sentMessage) {
-                  if (sentMessage) {
-                      [_notificationCenter postNotificationName:noteNewMessage
-                                                         object:nil
-                                                       userInfo:[self helpConvertRawDictionary:sentMessage
-                                                                                        ofType:DNMessageJSONDictionary]];
-                  }else{
-                      DebugLog(@"Failed to send message: %@", message);
-                  }
-              }];
-    
-}
-
-- (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
-                               inGroup:(NSString*)groupID
-{
-    [API MessagesIndex20BeforeID:beforeID
-                         inGroup:groupID
-                andCompleteBlock:^(NSArray *messages) {
-                    NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
-                    for (NSDictionary* msg in messages) {
-                        [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
-                    }
-                    [_notificationCenter postNotificationName:noteMessagesBeforeFetch
-                                                       object:nil userInfo:@{k_messages: messagesConverted}];
-                }];
-}
-
-- (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
-                                        inGroup:(NSString*)groupID
-{
-    [API MessagesIndexMostRecent20SinceID:sinceID
-                                  inGroup:groupID
-                         andCompleteBlock:^(NSArray *messages) {
-                             NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
-                             for (NSDictionary* msg in messages) {
-                                 [messagesConverted addObject:[self helpConvertRawDictionary:msg ofType:DNMessageJSONDictionary]];
-                             }
-                             [_notificationCenter postNotificationName:noteMessagesSinceFetch
-                                                                object:nil userInfo:@{k_messages: messagesConverted}];
-                         }];
-}
-
-//Members
-- (void)addNewMembers:(NSArray*)members
-              toGroup:(NSString*)groupID
-{
-    [API MembersAdd:members toGroup:groupID
-   andCompleteBlock:^(NSArray *addedMembers) {
-       //Do nothing because Central Message Router will take care of this comeback notification
-   }];
-}
-
-//relies on result fetching for comeback update
-- (void)removeMember:(NSString*)membershipID
-           fromGroup:(NSString*)groupID
-{
-    [API MembersRemoveUser:membershipID
-                 fromGroup:groupID
-          andCompleteBlock:^(NSString *removedMembershipID) {
-              //Do nothing because Central Message Router will take care of this comeback notification
-          }];
-}
-//relies on Message Router for comeback update
-
-- (void)fetchAllGroups
-{
-    [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
-        [_notificationCenter postNotificationName:noteGroupsAllFetch
-                                           object:nil
-                                         userInfo:@{k_fetched_groups: groupList}];
-    }];
-}
-
-
-- (void)fetchFormerGroups
-{
-    [API GroupsFormerAndCompleteBlock:^(NSArray *formerGroupArray) {
-        NSMutableArray *formerGroupsConverted = [[NSMutableArray alloc] initWithCapacity:[formerGroupArray count]];
-        for (NSDictionary* formerGroup in formerGroupArray) {
-            [formerGroupsConverted addObject:[self helpConvertRawDictionary:formerGroup ofType:DNGroupJSONDictionary]];
-        }
-        [_notificationCenter postNotificationName:noteGroupsFormerFetch
-                                           object:nil
-                                         userInfo:@{k_fetched_groups: formerGroupsConverted}];
-    }];
-}
-
-- (void)fetchInformationForGroup:(NSString*)groupID
-{
-    [API GroupsShow:groupID
-   andCompleteBlock:^(NSDictionary *groupDict) {
-       [_notificationCenter postNotificationName:noteGroupInfoFetch
-                                          object:nil
-                                        userInfo:@{k_fetched_group: [self helpConvertRawDictionary:groupDict
-                                                                                            ofType:DNGroupJSONDictionary]}];
-   }];
-}
-
-- (void)createGroupNamed:(NSString*)name
-             description:(NSString*)description
-                   image:(id)image
-                andShare:(BOOL)allowShare
-{
-    [API GroupsCreateName:name
-              description:description
-                    image:image
-                    share:allowShare
-         andCompleteBlock:^(NSDictionary *createdGroupDict) {
-             [_notificationCenter postNotificationName:noteGroupCreate
-                                                object:nil
-                                              userInfo:@{k_group: [self helpConvertRawDictionary:createdGroupDict
-                                                                                          ofType:DNGroupJSONDictionary]}];
-         }];
-}
-
-- (void)updateGroup:(NSString*)groupID
-           withName:(NSString*)name
-        description:(NSString*)description
-              image:(id)image
-           andShare:(BOOL)allowShare
-{
-    [API GroupsUpdate:groupID
-             withName:name
-          description:description
-                image:image
-              orShare:allowShare
-     andCompleteBlock:^(NSDictionary *updatedGroupDict) {
-         [_notificationCenter postNotificationName:noteGroupUpdate
-                                            object:nil
-                                          userInfo:@{k_group: [self helpConvertRawDictionary:updatedGroupDict
-                                                                                      ofType:DNGroupJSONDictionary]}];
-     }];
-}
-
-- (void)deleteGroup:(NSString*)groupID
-{
-    [API GroupsDestroy:groupID
-      andCompleteBlock:^(NSString *deleted_group_id) {
-          [_notificationCenter postNotificationName:noteGroupRemove
-                                             object:nil
-                                           userInfo:@{k_group_id: deleted_group_id}];
-      }];
-}
-
-
-- (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
-{
-    NSAssert(block, @"completion block cannot be nil");
-    
-    if (!_prevResults && !_currentlyPollingForGroups) {
-        //first call
-        _currentlyPollingForGroups = YES;
-        _currentPageNum = 1;
-        _prevResults = [[NSMutableArray alloc] init];
-    }else if ([newestResult count] != 0){
-        //new results arrived
-        [_prevResults addObjectsFromArray:newestResult];
-        _currentPageNum += 1;
-    }else{
-        //no more groups, post notification with complete results
-        NSArray *rawGroupList = _prevResults;
-        dispatch_queue_t queue = dispatch_queue_create("com.dovizu.grouposx.groupProcessing", 0ul);
-        dispatch_async(queue, ^{
-            NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
-            [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                NSDictionary *group = (NSDictionary*)obj;
-                group = [self helpConvertRawDictionary:group ofType:DNGroupJSONDictionary];
-                [groupList addObject:group];
-            }];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                block(groupList);
-            });
-        });
-        _currentlyPollingForGroups = NO;
-        _prevResults = nil;
-        return;
+    if (!_authenticated) {
+        [self authenticate];
+    }else if(!_listening){
+        [self establishMessageSocket];
     }
+}
+
+- (void)authenticate
+{
+    DebugLog(@"Reachability: %hhd", [API isReachable]);
+    if (!_authenticating && !_authenticated && [API isReachable]) {
+//        _authenticating = YES;
+        NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
+        NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
+        DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
+        [self.mainWindowController promptForLoginWithPreparedURL:preparedAuthorizationURL];
+    }
+}
+
+- (void)teardown
+{
+    //To-Do: true logout includes logout in webview
+    DebugLog(@"Deauthenticating...");
+    _userToken = nil;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserToken];
+    _userInfo = nil;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserInfo];
+    _authenticated = NO;
     
-    DebugLog(@"Group Polling page: %d", (int)_currentPageNum);
-    NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
-#ifdef DEBUG_BACKEND
-    num = 1; //Small to see if repeated polling works or not
+    [_socketClient disconnectFromServer];
+    _listening = NO;
+
+    [self authenticate];
+}
+
+- (void)didReceiveURL:(NSURL*)url
+{
+    DebugLog(@"Server received URL: %@", [url absoluteString]);
+    NSString *token = [url nxoauth2_valueForQueryParameterKey:@"access_token"];
+    
+    if (token) {
+        _authenticated = YES;
+        [self.mainWindowController closeLoginSheet];
+        DebugLog(@"Server successfully authenticated with token: %@", token);
+        _userToken = token;
+        [API setUserToken:token];
+        [[NSUserDefaults standardUserDefaults] setObject:_userToken forKey:DNUserDefaultsUserToken];
+        _authenticating = NO;
+        #ifdef DEBUG_BACKEND
+        [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
+        [DNAsynchronousUnitTesting testAllSockets:self];
+        #endif
+        
+        //First time log-on
+        [_dataManager firstTimeLogonSetup];
+        
+        [API UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
+            _userInfo = userInfo;
+            NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
+            [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
+            DebugLog(@"UserInformation Changed: %@", _userInfo);
+            [self establishSockets];
+        }];
+        
+    }else{
+        DebugLog(@"Server failed to retrieve token, authentication restart...");
+        _authenticated = NO; //just to be sure
+        [self.mainWindowController closeLoginSheet];
+        [self authenticate]; //do it again
+    }
+}
+
+- (BOOL)isLoggedIn
+{
+    return _authenticated;
+}
+
+- (BOOL)isListening
+{
+    return _listening;
+}
+
+- (BOOL)isUser:(NSString*)userID
+{
+    return _authenticated && [_userInfo[@"user_id"] isEqualToString:userID];
+}
+
+#pragma mark - Web Socket
+
+- (void)establishSockets
+{
+    if (_authenticated && !_listening && [API isReachable]) {
+        [self establishMessageSocket];
+    }
+}
+
+//One message socket is needed for the entire application
+- (void)establishMessageSocket
+{
+    _socketClient = [[FayeClient alloc] initWithURLString:@"https://push.groupme.com/faye"
+                                         channel:[NSString stringWithFormat:@"/user/%@",_userInfo[@"id"]]];
+    _socketClient.delegate = self;
+    NSDictionary *externalInformation = @{@"access_token":_userToken,
+                                          @"timestamp":[[NSDate date] description]};
+    [_socketClient connectToServerWithExt:externalInformation];
+}
+
+//messages from another user
+- (void)messageReceived:(NSDictionary*)messageDict channel:(NSString* __unused)channel
+{
+    //When another client subscribes to user's account, it will receive a "type = subscribe" message
+    if (![messageDict[@"type"] isEqualToString:@"subscribe"]) {
+        [self messageCentralRouter:messageDict];
+    }
+}
+
+- (void)connectedToServer {
+    DebugLog(@"Push server connected");
+}
+
+- (void)disconnectedFromServer {
+    DebugLog(@"Push server disconnected");
+}
+
+- (void)connectionFailed
+{
+    DebugLog(@"Push server connection failed");
+}
+- (void)didSubscribeToChannel:(NSString *)channel
+{
+    DebugLog(@"Subscribed to channel: %@", channel);
+    _listening = YES;
+//    [self addNewMembers:@[@{k_name_member:@"kha", k_user_id:@"11201736"}] toGroup:@"6736514"];
+//    [self removeMember:@"35121596" fromGroup:@"6736514"];
+//    [self fetchAllGroups];
+//    [self fetch20MessagesBeforeMessageID:@"138923697178086374" inGroup:@"4011747"];
+//    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
+#ifdef DEBUG_CORE_DATA
+    [_notificationCenter postNotificationName:noteFirstTimeLogon object:nil];
 #endif
-    
-    [API GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
-        [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
-    }];
 }
-
-- (NSDate*)helpConvertToDateFromSeconds:(NSNumber*)seconds
+- (void)didUnsubscribeFromChannel:(NSString *)channel
 {
-    NSDate *date = nil;
-    NSRegularExpression *dateRegEx = nil;
-    NSString *secondsString = [NSString stringWithFormat:@"%@", seconds];
-    dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
-                                                     options:NSRegularExpressionCaseInsensitive error:nil];
-    NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:secondsString
-                                                              options:0
-                                                                range:NSMakeRange(0, [secondsString length])];
-    if (regexResult) {
-        //Milliseconds to seconds
-        NSTimeInterval seconds = [[secondsString substringWithRange:[regexResult rangeAtIndex:1]] doubleValue];
-        //Timezone offset
-        if ([regexResult rangeAtIndex:2].location != NSNotFound) {
-            //Offset sign
-            NSString *sign = [secondsString substringWithRange:[regexResult rangeAtIndex:2]];
-            //Offset hours
-            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:3]]] doubleValue] * 60.0 * 60.0;
-            //Offset minutes
-            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
-        }
-        date = [NSDate dateWithTimeIntervalSince1970:seconds];
-    }else{
-        //                DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
-        //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
-        date = [NSDate date];
-    }
-    return date;
+    DebugLog(@"Subscribed from channel: %@", channel);
 }
-
-//returns NSURL if urlString is a valid URL string, NSNull otherwise
-- (id)helpURLFromString:(NSString*)urlString
+- (void)subscriptionFailedWithError:(NSString *)error
 {
-    NSAssert(urlString, @"urlString cannot be nil");
-    NSURL *url;
-    
-    if (!([urlString isKindOfClass:[NSNull class]]) && (url = [NSURL URLWithString:urlString])) {
-        return url;
-    }
-    
-    return [NSNull null];
+    DebugLog(@"Subscription Failed: %@", error);
 }
-
-- (NSNumber*)helpBooleanFromWord:(NSString*)word
+- (void)fayeClientError:(NSError *)error
 {
-    NSAssert(word, @"word param cannot be nil");
-    return [NSNumber numberWithBool:[word isEqualToString:@"true"]];
+    DebugLog(@"FayeClient error: %@", error);
 }
 
-//Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
-- (NSDictionary*)helpConvertRawDictionary:(NSDictionary*)oldDict ofType:(enum DNJSONDictionaryType)type
+//This method is optional, and only intercepts messages being sent
+#ifdef DEBUG_BACKEND
+- (void)fayeClientWillSendMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback
 {
-    NSMutableDictionary *newDict = [oldDict mutableCopy];
-    #define ifThen(first, second) (first ? second : [NSNull null])
-    #define isNull(object) [object isKindOfClass: [NSNull class]]
-    #define newNull [NSNull null]
-
-    switch (type) {
-        case DNGroupJSONDictionary:{
-            newDict[k_desc] = isNull(oldDict[k_desc]) ? @"" : oldDict[k_desc];
-            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
-            newDict[k_share_url] = oldDict[k_share_url] ? oldDict[k_share_url] : [self helpURLFromString:oldDict[k_share_url]];
-            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
-            newDict[k_updated_at] = [self helpConvertToDateFromSeconds:oldDict[k_updated_at]];
-            if (oldDict[k_members]) {
-                NSMutableArray *convertedMembers = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_members] count]];
-                for (NSDictionary* member in oldDict[k_members]) {
-                    [convertedMembers addObject:[self helpConvertRawDictionary:member ofType:DNMemberJSONDictionary]];
-                }
-                newDict[k_members] = convertedMembers;
-            }
-            //sometimes there is no last message for newly created group
-            if (![oldDict[k_messages][@"preview"][@"nickname"] isKindOfClass:[NSNull class]]) {
-                NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
-                                              k_created_at: oldDict[k_messages][@"last_message_created_at"],
-                                              k_sender_name: oldDict[k_messages][@"preview"][@"nickname"],
-                                              k_sender_avatar: oldDict[k_messages][@"preview"][@"image_url"],
-                                              k_text: oldDict[k_messages][@"preview"][@"text"],
-                                              k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
-                lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
-                newDict[k_last_message] = lastMessage;
-            }else{
-                newDict[k_last_message] = [NSNull null];
-            }
-            break;
-        }
-        case DNMemberJSONDictionary:{
-            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
-            break;
-        }
-        case DNMessageJSONDictionary:{
-            
-            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
-            newDict[k_sender_avatar] = [self helpURLFromString:oldDict[k_sender_avatar]];
-            if (oldDict[k_attachments]) {
-                NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
-                for (NSDictionary* attachment in oldDict[k_attachments]) {
-                    [convertedAttachments addObject:[self helpConvertRawDictionary:attachment ofType:DNAttachmentJSONDictionary]];
-                }
-                newDict[k_attachments] = convertedAttachments;
-            }
-            break;
-        }
-        case DNAttachmentJSONDictionary:{
-            newDict[k_url] = ifThen(oldDict[k_url], [self helpURLFromString:oldDict[k_url]]);
-            break;
-        }
-        default:
-            break;
-    }
-    return newDict;
+    DebugLog(@"Sending Faye message: %@", messageDict);
+    callback(messageDict); //callback is critical, it actually sends the message
 }
+#endif
 
 #pragma mark - Notification Processing
 
@@ -465,6 +323,7 @@ enum DNJSONDictionaryType {
         //GROUP MEMBER REMOVED
         if ((name = [self helpFindStringWithPattern:@"(?:.+) removed (.+) from the group" inString:identifierAlert])) {
             NSDictionary *userInfo = @{k_name_of_member:name, k_group_id:identifierGroupID}; //name is unique in a group, will be able to identify
+            //still need to tell DataManager to remove the group member from Core Data
             [_notificationCenter postNotificationName:noteMemberRemove object:nil userInfo:userInfo];
         }
         //GROUP MEMBER ADDED
@@ -547,6 +406,8 @@ enum DNJSONDictionaryType {
     //MESSAGES BY ANOTHER MEMBER
     else{
         //No attachment support yet
+        NSString* lastMessageID = [_dataManager getLastMessageIDForGroupID:identifierGroupID];
+        [self fetch20MostRecentMessagesSinceMessageID:lastMessageID inGroup:identifierGroupID];
         [_notificationCenter postNotificationName:noteNewMessage
                                            object:nil
                                          userInfo:[self helpConvertRawDictionary:identifiersSubject
@@ -573,180 +434,313 @@ enum DNJSONDictionaryType {
 - (NSArray*)helpFindNamesInStringOfNames:(NSString*)string
 {
     string = [string stringByReplacingOccurrencesOfString:@"\\s*(?:(?:and|,)\\s*)+"
-                                             withString:@","
-                                                options:NSRegularExpressionSearch
-                                                  range:(NSRange){0, [string length]}];
+                                               withString:@","
+                                                  options:NSRegularExpressionSearch
+                                                    range:(NSRange){0, [string length]}];
     return [string componentsSeparatedByString:@","];
 }
 
-#pragma mark - Authentication/Token Retrieval
 
-//The almighty setup always makes sure everything is set up
-- (void)setup
-{
-    if (!_authenticated) {
-        [self authenticate];
-    }else if(!_listening){
-        [self establishMessageSocket];
-    }
+#pragma mark - User Actions
+
+- (void)sendNewMessage:(NSString*)message
+               toGroup:(NSString*)groupID
+       withAttachments:(NSArray*)attachments {
+    [API MessagesCreateInGroup:groupID
+                          text:message
+                   attachments:nil
+              andCompleteBlock:^(NSDictionary *sentMessage) {
+                  if (sentMessage) {
+                      //should fetch the last 20 messages;
+                      sentMessage = [self helpConvertRawDictionary:sentMessage ofType:DNMessageJSONDictionary];
+                      NSArray* messages =[NSArray arrayWithObject:sentMessage];
+                      [_dataManager didReceiveMessages:messages forGroup:groupID];
+                  } else {
+                      DebugLog(@"Failed to send message: %@", message);
+                  }
+              }];
 }
 
-- (void)authenticate
-{
-    DebugLog(@"Reachability: %hhd", [API isReachable]);
-    if (!_authenticating && !_authenticated && [API isReachable]) {
-//        _authenticating = YES;
-        NSDictionary *parameters = @{@"client_id": DNOAuth2ClientID};
-        NSURL *preparedAuthorizationURL = [[NSURL URLWithString:DNOAuth2AuthorizationURL] nxoauth2_URLByAddingParameters:parameters];
-        DebugLog(@"Server is authenticating at %@", [preparedAuthorizationURL absoluteString]);
-        [self.mainWindowController promptForLoginWithPreparedURL:preparedAuthorizationURL];
-    }
-}
+- (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
+                               inGroup:(NSString*)groupID {
+    [API MessagesIndex20BeforeID:beforeID
+                         inGroup:groupID
+                andCompleteBlock:^(NSArray *messages) {
+                    NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+                    for (NSDictionary* msg in messages) {
+                        [messagesConverted addObject:[self helpConvertRawDictionary:msg
+                                                                             ofType:DNMessageJSONDictionary]];
+                    }
+                    [_dataManager didReceiveMessages:messagesConverted forGroup:groupID];
+                }];
 
-- (void)teardown
-{
-    //To-Do: true logout includes logout in webview
-    DebugLog(@"Deauthenticating...");
-    _userToken = nil;
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserToken];
-    _userInfo = nil;
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:DNUserDefaultsUserInfo];
-    _authenticated = NO;
     
-    [_socketClient disconnectFromServer];
-    _listening = NO;
-
-    [self authenticate];
 }
 
-- (void)didReceiveURL:(NSURL*)url
-{
-    DebugLog(@"Server received URL: %@", [url absoluteString]);
-    NSString *token = [url nxoauth2_valueForQueryParameterKey:@"access_token"];
-    
-    if (token) {
-        _authenticated = YES;
-        [self.mainWindowController closeLoginSheet];
-        DebugLog(@"Server successfully authenticated with token: %@", token);
-        _userToken = token;
-        [API setUserToken:token];
-        [[NSUserDefaults standardUserDefaults] setObject:_userToken forKey:DNUserDefaultsUserToken];
-        _authenticating = NO;
-        #ifdef DEBUG_BACKEND
-        [DNAsynchronousUnitTesting testAllAsynchronousUnits:self];
-        [DNAsynchronousUnitTesting testAllSockets:self];
-        #endif
-        
-        //First time log-on
-        [[NSNotificationCenter defaultCenter] postNotificationName:noteFirstTimeLogon object:nil];
-        
-        [API UsersGetInformationAndCompleteBlock:^(NSDictionary *userInfo) {
-            _userInfo = userInfo;
-            NSData *userInfoData = [NSKeyedArchiver archivedDataWithRootObject:userInfo];
-            [[NSUserDefaults standardUserDefaults] setObject:userInfoData forKey:DNUserDefaultsUserInfo];
-            DebugLog(@"UserInformation Changed: %@", _userInfo);
-            [self establishSockets];
+- (void)fetch20MostRecentMessagesSinceMessageID:(NSString*)sinceID
+                                        inGroup:(NSString*)groupID {
+    [API MessagesIndexMostRecent20SinceID:sinceID
+                                  inGroup:groupID
+                         andCompleteBlock:^(NSArray *messages) {
+                             NSMutableArray *messagesConverted = [[NSMutableArray alloc] initWithCapacity:[messages count]];
+                             for (NSDictionary* msg in messages) {
+                                 [messagesConverted addObject:[self helpConvertRawDictionary:msg
+                                                                             ofType:DNMessageJSONDictionary]];
+                            }
+                             [_dataManager didReceiveMessages:messagesConverted forGroup:groupID];
+                         }];
+
+}
+
+- (void)addNewMembers:(NSArray*)members
+              toGroup:(NSString*)groupID {
+    [API MembersAdd:members
+            toGroup:groupID
+   andCompleteBlock:^(NSArray *addedMembers) {
+       [_dataManager didUpdateMembers:addedMembers forGroup:groupID];
+   }];
+}
+
+
+- (void)removeMember:(NSString*)membershipID
+           fromGroup:(NSString*)groupID {
+    [API MembersRemoveUser:membershipID
+                 fromGroup:groupID
+          andCompleteBlock:^(NSString* removeMembbershipID) {
+              [_dataManager didRemoveMember:membershipID fromGroup:groupID];
         }];
-        
+}
+
+
+- (void)fetchAllGroups {
+    [self helpRequestNextGroupsWithNewestResult:nil completionBlock:^(NSArray *groupList) {
+        [_dataManager didFetchAllGroups:groupList];
+    }];
+}
+
+
+- (void)fetchFormerGroups {
+    [API GroupsFormerAndCompleteBlock:^(NSArray *formerGroupArray) {
+        NSMutableArray *formerGroupsConverted = [[NSMutableArray alloc] initWithCapacity:[formerGroupArray count]];
+        for (NSDictionary* formerGroup in formerGroupArray) {
+            [formerGroupsConverted addObject:[self helpConvertRawDictionary:formerGroup
+                                                                     ofType:DNGroupJSONDictionary]];
+        }
+        [_dataManager didFetchFormerGroups:formerGroupsConverted];
+    }];
+}
+
+
+- (void)fetchInformationForGroup:(NSString*)groupID {
+    [API GroupsShow:groupID
+   andCompleteBlock:^(NSDictionary *groupDict) {
+       NSDictionary* convertedDict = [self helpConvertRawDictionary:groupDict
+                                                             ofType:DNGroupJSONDictionary];
+       [_dataManager didFetchInformationForGroup:convertedDict];
+   }];
+}
+
+- (void)createGroupNamed:(NSString*)name
+             description:(NSString*)description
+                   image:(id)image
+                andShare:(BOOL)allowShare {
+    [API GroupsCreateName:name
+              description:description
+                    image:image
+                    share:allowShare
+         andCompleteBlock:^(NSDictionary *createdGroupDict) {
+             NSDictionary* convertedDict = [self helpConvertRawDictionary:createdGroupDict
+                                                                  ofType:DNGroupJSONDictionary];
+             [_dataManager didCreateGroup: convertedDict];
+         }];
+}
+
+
+- (void)updateGroup:(NSString*)groupID
+           withName:(NSString*)name
+        description:(NSString*)description
+              image:(id)image
+           andShare:(BOOL)allowShare {
+    [API GroupsUpdate:groupID
+             withName:name
+          description:description
+                image:image
+              orShare:allowShare
+     andCompleteBlock:^(NSDictionary *updatedGroupDict) {
+         NSDictionary* convertedDict = [self helpConvertRawDictionary:updatedGroupDict
+                                                               ofType:DNGroupJSONDictionary];
+         [_dataManager didUpdateGroup:convertedDict];
+     }];
+}
+
+
+- (void)deleteGroup:(NSString*)groupID {
+    [API GroupsDestroy:groupID
+      andCompleteBlock:^(NSString *deleted_group_id) {
+          [_dataManager didDeleteGroup:deleted_group_id];
+      }];
+}
+
+- (void)helpRequestNextGroupsWithNewestResult:(NSArray*)newestResult completionBlock:(void(^)(NSArray* groupList))block
+{
+    NSAssert(block, @"completion block cannot be nil");
+    
+    if (!_prevResults && !_currentlyPollingForGroups) {
+        //first call
+        _currentlyPollingForGroups = YES;
+        _currentPageNum = 1;
+        _prevResults = [[NSMutableArray alloc] init];
+    }else if ([newestResult count] != 0){
+        //new results arrived
+        [_prevResults addObjectsFromArray:newestResult];
+        _currentPageNum += 1;
     }else{
-        DebugLog(@"Server failed to retrieve token, authentication restart...");
-        _authenticated = NO; //just to be sure
-        [self.mainWindowController closeLoginSheet];
-        [self authenticate]; //do it again
+        //no more groups, post notification with complete results
+        NSArray *rawGroupList = _prevResults;
+        dispatch_queue_t queue = dispatch_queue_create("com.dovizu.grouposx.groupProcessing", 0ul);
+        dispatch_async(queue, ^{
+            NSMutableArray *groupList = [[NSMutableArray alloc] initWithCapacity:[rawGroupList count]];
+            [rawGroupList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSDictionary *group = (NSDictionary*)obj;
+                group = [self helpConvertRawDictionary:group ofType:DNGroupJSONDictionary];
+                [groupList addObject:group];
+            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(groupList);
+            });
+        });
+        _currentlyPollingForGroups = NO;
+        _prevResults = nil;
+        return;
     }
-}
-
-- (BOOL)isLoggedIn
-{
-    return _authenticated;
-}
-
-- (BOOL)isListening
-{
-    return _listening;
-}
-
-- (BOOL)isUser:(NSString*)userID
-{
-    return _authenticated && [_userInfo[@"user_id"] isEqualToString:userID];
-}
-
-#pragma mark - Web Socket
-
-- (void)establishSockets
-{
-    if (_authenticated && !_listening && [API isReachable]) {
-        [self establishMessageSocket];
-    }
-}
-
-//One message socket is needed for the entire application
-- (void)establishMessageSocket
-{
-    _socketClient = [[FayeClient alloc] initWithURLString:@"https://push.groupme.com/faye"
-                                         channel:[NSString stringWithFormat:@"/user/%@",_userInfo[@"id"]]];
-    _socketClient.delegate = self;
-    NSDictionary *externalInformation = @{@"access_token":_userToken,
-                                          @"timestamp":[[NSDate date] description]};
-    [_socketClient connectToServerWithExt:externalInformation];
-}
-
-
-
-
-- (void)messageReceived:(NSDictionary*)messageDict channel:(NSString* __unused)channel
-{
-    //When another client subscribes to user's account, it will receive a "type = subscribe" message
-    if (![messageDict[@"type"] isEqualToString:@"subscribe"]) {
-        [self messageCentralRouter:messageDict];
-    }
-}
-
-- (void)connectedToServer {
-    DebugLog(@"Push server connected");
-}
-
-- (void)disconnectedFromServer {
-    DebugLog(@"Push server disconnected");
-}
-
-- (void)connectionFailed
-{
-    DebugLog(@"Push server connection failed");
-}
-- (void)didSubscribeToChannel:(NSString *)channel
-{
-    DebugLog(@"Subscribed to channel: %@", channel);
-    _listening = YES;
-//    [self addNewMembers:@[@{k_name_member:@"kha", k_user_id:@"11201736"}] toGroup:@"6736514"];
-//    [self removeMember:@"35121596" fromGroup:@"6736514"];
-//    [self fetchAllGroups];
-//    [self fetch20MessagesBeforeMessageID:@"138923697178086374" inGroup:@"4011747"];
-//    [self fetch20MostRecentMessagesSinceMessageID:@"138913977064154353" inGroup:@"4011747"];
-#ifdef DEBUG_CORE_DATA
-    [_notificationCenter postNotificationName:noteFirstTimeLogon object:nil];
-#endif
-}
-- (void)didUnsubscribeFromChannel:(NSString *)channel
-{
-    DebugLog(@"Subscribed from channel: %@", channel);
-}
-- (void)subscriptionFailedWithError:(NSString *)error
-{
-    DebugLog(@"Subscription Failed: %@", error);
-}
-- (void)fayeClientError:(NSError *)error
-{
-    DebugLog(@"FayeClient error: %@", error);
-}
-
-//This method is optional, and only intercepts messages being sent
+    
+    DebugLog(@"Group Polling page: %d", (int)_currentPageNum);
+    NSInteger num = 50; //Poll as many as possible at once to avoid repeated polling recursion
 #ifdef DEBUG_BACKEND
-- (void)fayeClientWillSendMessage:(NSDictionary *)messageDict withCallback:(FayeClientMessageHandler)callback
-{
-    DebugLog(@"Sending Faye message: %@", messageDict);
-    callback(messageDict); //callback is critical, it actually sends the message
-}
+    num = 1; //Small to see if repeated polling works or not
 #endif
+    
+    [API GroupsIndexPage:_currentPageNum with:num perPageAndCompleteBlock:^(NSArray *groupsIndexData) {
+        [self helpRequestNextGroupsWithNewestResult:groupsIndexData completionBlock:block];
+    }];
+}
+
+
+- (NSDate*)helpConvertToDateFromSeconds:(NSNumber*)seconds
+{
+    NSDate *date = nil;
+    NSRegularExpression *dateRegEx = nil;
+    NSString *secondsString = [NSString stringWithFormat:@"%@", seconds];
+    dateRegEx = [[NSRegularExpression alloc] initWithPattern:@"^(-?\\d+)(?:([+-])(\\d{2})(\\d{2}))?$"
+                                                     options:NSRegularExpressionCaseInsensitive error:nil];
+    NSTextCheckingResult *regexResult = [dateRegEx firstMatchInString:secondsString
+                                                              options:0
+                                                                range:NSMakeRange(0, [secondsString length])];
+    if (regexResult) {
+        //Milliseconds to seconds
+        NSTimeInterval seconds = [[secondsString substringWithRange:[regexResult rangeAtIndex:1]] doubleValue];
+        //Timezone offset
+        if ([regexResult rangeAtIndex:2].location != NSNotFound) {
+            //Offset sign
+            NSString *sign = [secondsString substringWithRange:[regexResult rangeAtIndex:2]];
+            //Offset hours
+            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:3]]] doubleValue] * 60.0 * 60.0;
+            //Offset minutes
+            seconds += [[NSString stringWithFormat:@"%@%@", sign, [secondsString substringWithRange:[regexResult rangeAtIndex:4]]] doubleValue] * 60.0;
+        }
+        date = [NSDate dateWithTimeIntervalSince1970:seconds];
+    }else{
+        //                DebugLog(@"Date parsing on incoming message failed: %@", oldDict);
+        //If GroupMe sends an ill-formatted date, you can only hope the next update will correct it
+        date = [NSDate date];
+    }
+    return date;
+}
+
+//returns NSURL if urlString is a valid URL string, NSNull otherwise
+- (id)helpURLFromString:(NSString*)urlString
+{
+    NSAssert(urlString, @"urlString cannot be nil");
+    NSURL *url;
+    
+    if (!([urlString isKindOfClass:[NSNull class]]) && (url = [NSURL URLWithString:urlString])) {
+        return url;
+    }
+    
+    return [NSNull null];
+}
+
+- (NSNumber*)helpBooleanFromWord:(NSString*)word
+{
+    NSAssert(word, @"word param cannot be nil");
+    return [NSNumber numberWithBool:[word isEqualToString:@"true"]];
+}
+
+//Convert a JSON-serialized crappy Dictionary into one with Cocoa objects
+- (NSDictionary*)helpConvertRawDictionary:(NSDictionary*)oldDict ofType:(enum DNJSONDictionaryType)type
+{
+    NSMutableDictionary *newDict = [oldDict mutableCopy];
+#define ifThen(first, second) (first ? second : [NSNull null])
+#define isNull(object) [object isKindOfClass: [NSNull class]]
+#define newNull [NSNull null]
+    
+    switch (type) {
+        case DNGroupJSONDictionary:{
+            newDict[k_desc] = isNull(oldDict[k_desc]) ? @"" : oldDict[k_desc];
+            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
+            newDict[k_share_url] = oldDict[k_share_url] ? oldDict[k_share_url] : [self helpURLFromString:oldDict[k_share_url]];
+            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
+            newDict[k_updated_at] = [self helpConvertToDateFromSeconds:oldDict[k_updated_at]];
+            if (oldDict[k_members]) {
+                NSMutableArray *convertedMembers = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_members] count]];
+                for (NSDictionary* member in oldDict[k_members]) {
+                    [convertedMembers addObject:[self helpConvertRawDictionary:member ofType:DNMemberJSONDictionary]];
+                }
+                newDict[k_members] = convertedMembers;
+            }
+            //sometimes there is no last message for newly created group
+            if (![oldDict[k_messages][@"preview"][@"nickname"] isKindOfClass:[NSNull class]]) {
+                NSDictionary *lastMessage = @{k_message_id: oldDict[k_messages][@"last_message_id"],
+                                              k_created_at: oldDict[k_messages][@"last_message_created_at"],
+                                              k_sender_name: oldDict[k_messages][@"preview"][@"nickname"],
+                                              k_sender_avatar: oldDict[k_messages][@"preview"][@"image_url"],
+                                              k_text: oldDict[k_messages][@"preview"][@"text"],
+                                              k_attachments: oldDict[k_messages][@"preview"][k_attachments]};
+                lastMessage = [self helpConvertRawDictionary:lastMessage ofType:DNMessageJSONDictionary];
+                newDict[k_last_message] = lastMessage;
+            }else{
+                newDict[k_last_message] = [NSNull null];
+            }
+            break;
+        }
+        case DNMemberJSONDictionary:{
+            newDict[k_image] = isNull(oldDict[k_image]) ? newNull : [self helpURLFromString:oldDict[k_image]];
+            break;
+        }
+        case DNMessageJSONDictionary:{
+            
+            newDict[k_created_at] = [self helpConvertToDateFromSeconds:oldDict[k_created_at]];
+            newDict[k_sender_avatar] = [self helpURLFromString:oldDict[k_sender_avatar]];
+            if (oldDict[k_attachments]) {
+                NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[oldDict[k_attachments] count]];
+                for (NSDictionary* attachment in oldDict[k_attachments]) {
+                    [convertedAttachments addObject:[self helpConvertRawDictionary:attachment ofType:DNAttachmentJSONDictionary]];
+                }
+                newDict[k_attachments] = convertedAttachments;
+            }
+            break;
+        }
+        case DNAttachmentJSONDictionary:{
+            newDict[k_url] = ifThen(oldDict[k_url], [self helpURLFromString:oldDict[k_url]]);
+            break;
+        }
+        default:
+            break;
+    }
+    return newDict;
+}
+
+
+
 
 @end

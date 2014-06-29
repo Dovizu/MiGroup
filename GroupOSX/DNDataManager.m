@@ -20,6 +20,7 @@
     AFNetworkReachabilityManager *_reachability;
     BOOL _firstLogonSuppressNotification;
     NSInteger _countUntilReleaseNotification;
+    DNServerInterface* _server;
 }
 
 #pragma mark - Initialization
@@ -31,7 +32,6 @@
         _requestManager = [AFHTTPRequestOperationManager manager];
         _reachability = [_requestManager reachabilityManager];
         _requestManager.responseSerializer = [[AFImageResponseSerializer alloc] init];
-        [self establishObserversForNotifications];
     }
     return self;
 }
@@ -68,106 +68,111 @@
 
 #pragma mark - Data Management
 
-- (void)establishObserversForNotifications
-{
-    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    //First time logon
-    [center addObserver:self selector:@selector(firstTimeLogonSetup:)   name:noteFirstTimeLogon object:nil];
-    [center addObserver:self selector:@selector(didReceiveMessage:)     name:noteNewMessage object:nil];
-    [center addObserver:self selector:@selector(didChangeMemberName:)   name:noteMemberNameChange object:nil];
-    [center addObserver:self selector:@selector(didChangeGroupAvatar:)  name:noteGroupAvatarChange object:nil];
-    [center addObserver:self selector:@selector(didChangeGroupName:)    name:noteGroupNameChange object:nil];
-    [center addObserver:self selector:@selector(didUpdateGroup:)        name:noteGroupUpdate object:nil];
-    [center addObserver:self selector:@selector(didRemoveGroup:)        name:noteGroupRemove object:nil];
-    [center addObserver:self selector:@selector(didFetchGroupInfo:)     name:noteGroupInfoFetch object:nil];
-    [center addObserver:self selector:@selector(didCreateGroup:)        name:noteGroupCreate object:nil];
-    [center addObserver:self selector:@selector(didRemoveMember:)       name:noteMemberRemove object:nil];
-    [center addObserver:self selector:@selector(didAddMember:)          name:noteMembersAdd object:nil];
-    [center addObserver:self selector:@selector(didFetchAllGroups:)     name:noteGroupsAllFetch object:nil];
-    [center addObserver:self selector:@selector(didFetchFormerGroups:)  name:noteGroupsFormerFetch object:nil];
-    [center addObserver:self selector:@selector(didFetchMessagesBefore:)name:noteMessagesBeforeFetch object:nil];
-    [center addObserver:self selector:@selector(didFetchMessagesSince:) name:noteMessagesSinceFetch object:nil];
-}
-
-- (void)firstTimeLogonSetup:(NSNotification*)note
+// called by ServerInterface in didReceiveURL
+- (void)firstTimeLogonSetup
 {
     [_server fetchAllGroups];
     _firstLogonSuppressNotification = YES;
 }
 
-- (void)didReceiveMessage:(NSNotification*)note
-{
-    NSArray *messages = @[note.userInfo];
-    Group *group = [[Group findByAttribute:@"group_id" withValue:note.userInfo[k_target_group] inContext:_managedObjectContext] firstObject];
-    [self helpProcessMessages:messages toGroup:group.objectID];
+- (void)addNewMembers:(NSArray*)members
+              toGroup:(NSString*)groupID {
+    [_server addNewMembers:members toGroup:groupID];
 }
-- (void)didChangeMemberName:(NSNotification*)note
-{
-    NSDictionary *info = note.userInfo;
-    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
-    Member *dbMember = [[[Member findByAttribute:@"name" withValue:info[k_name_of_member] inContext:currentContext]
-                        filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"group.group_id == %@", info[k_group_id]]] firstObject];
-    dbMember.name = info[k_new_name];
-    [currentContext saveToPersistentStoreAndWait];
+
+- (void)removeMember:(NSString*)membershipID
+           fromGroup:(NSString*)groupID {
+    //remember to first update CoreData
+    [_server removeMember:membershipID fromGroup:groupID];
 }
-- (void)didChangeGroupAvatar:(NSNotification*)note
-{
-    
-}
-- (void)didChangeGroupName:(NSNotification*)note
-{
-    
-}
-- (void)didUpdateGroup:(NSNotification*)note
-{
-    
-}
-- (void)didRemoveGroup:(NSNotification*)note
-{
-    
-}
-- (void)didFetchGroupInfo:(NSNotification*)note
-{
-    
-}
-- (void)didCreateGroup:(NSNotification*)note
-{
-    
-}
-- (void)didRemoveMember:(NSNotification*)note
-{
-    
-}
-- (void)didAddMember:(NSNotification*)note
-{
+
+- (void)changeGroupAvatar:(id)image forGroup: (NSString*)groupID {
+    // fetch name, description, and allowShare from CoreData
+    NSString* name;
+    NSString* description;
+    BOOL allowShare = 0;
+    [_server updateGroup:groupID withName:name description:description image:image andShare:allowShare];
     
 }
 
-- (void)didFetchAllGroups:(NSNotification*)note
-{
-    NSArray *fetchedGroups = note.userInfo[k_fetched_groups];
-    if (_firstLogonSuppressNotification) _countUntilReleaseNotification = [fetchedGroups count];
-    for (NSDictionary *fetchedGroup in fetchedGroups) {
+- (void)changeGroupName:(NSString*)name forGroup:(NSString *)groupID {
+    // fetch description, image, and allowShare from CoreData
+    NSString* description;
+    id image = nil;
+    BOOL allowShare = 0;
+    [_server updateGroup:groupID withName:name description:description image:image andShare:allowShare];
+}
+
+- (void)createGroupNamed:(NSString*)name
+             description:(NSString*)description
+                   image:(id)image
+                andShare:(BOOL)allowShare {
+    
+    [_server createGroupNamed:name
+                  description:description
+                        image:image
+                     andShare:allowShare];
+}
+
+- (void)deleteGroup:(NSString*)groupID {
+    [_server deleteGroup:groupID];
+}
+
+- (void)fetchAllGroups {
+    [_server fetchAllGroups];
+}
+
+- (void)fetchFormerGroups {
+    [_server fetchFormerGroups];
+}
+
+#pragma mark methods called by DNServerInterface
+
+- (void)didFetchAllGroups:(NSArray*)groups {
+    //update CoreData with groups
+    if (_firstLogonSuppressNotification) _countUntilReleaseNotification = [groups count];
+    for (NSDictionary *fetchedGroup in groups) {
         [self helpProcessGroup:fetchedGroup];
     }
 }
-- (void)didFetchFormerGroups:(NSNotification*)note
-{
+
+- (void)didFetchFormerGroups:(NSArray*)groups {
+    //needs to be implemented
+}
+
+
+- (void)didReceiveMessages:(NSArray*)messages forGroup:(NSString *)groupID{
+    //update CoreData with messages. only add the new messages.
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Group *dbGroup = [Group findFirstByAttribute:@"group_id" withValue:groupID inContext:currentContext];
+    [self helpProcessMessages:messages toGroup:dbGroup.objectID];
+}
+
+//should handle added and updated members
+- (void)didUpdateMembers: (NSArray*)members forGroup: (NSString*)groupID {
+    //update CoreData with members. should handle adding and updating members
+}
+
+
+- (void)didUpdateGroup:(NSDictionary*)group {
+    // update this group in CoreData
+}
+
+- (void) didFetchInformationForGroup:(NSDictionary*)group {
     
 }
-- (void)didFetchMessagesBefore:(NSNotification*)note
-{
-    NSArray *fetchedMessages = note.userInfo[k_messages];
+
+- (void)didRemoveMember:(NSString *)membershipID fromGroup:(NSString *)groupID {
     
-    if ([fetchedMessages count] != 0) {
-        Group *dbGroup = [[Group findByAttribute:@"group_id"
-                                      withValue:[fetchedMessages firstObject][k_target_group]
-                                       inContext:_managedObjectContext] firstObject];
-        [self helpProcessMessages:fetchedMessages toGroup:dbGroup.objectID];
-    }
 }
-- (void)didFetchMessagesSince:(NSNotification*)note
-{
+
+
+
+- (void)didCreateGroup:(NSDictionary*)createdGroup {
+    [self helpProcessGroup: createdGroup];
+}
+
+- (void)didDeleteGroup:(NSString*)groupID {
     
 }
 
@@ -268,7 +273,7 @@
             }else{
                 dbMessage.sender_avatar = [Image createInContext:currentContext];
             }
-
+            
             if (!_firstLogonSuppressNotification) [_mainController notifyUserOfGroupMessage:dbMessage fromGroup:group];
             [self helpProcessAttachmentArray:fetchedMessage[k_attachments] inMessage:dbMessage.objectID];
         }
@@ -281,20 +286,21 @@
     }
 }
 
+//should handle added and updated members
 - (void)helpProcessMemberArray:(NSArray*)members intoGroup:(NSManagedObjectID*)groupID createdBy:(NSString*)creator_user_id
 {
     return; //this release does not support members
     
     NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
     Group *group = (Group*)[currentContext objectWithID:groupID];
-
+    
     NSLog(@"group members count: %d", (int)[group.members count]);
     //Obtain all current members in membership_id-member pairs
     NSMutableDictionary *membersToProcess = [[NSMutableDictionary alloc] initWithCapacity:[group.members count]];
     for (Member *member in group.members) {
         membersToProcess[member.membership_id] = member;
     }
-
+    
     //Update members or create new ones, updated members are removed from membersToProcess
     for (NSDictionary* fetchedMember in members) {
         Member *dbMember = membersToProcess[fetchedMember[k_membership_id]];
@@ -355,6 +361,12 @@
         [message addAttachmentsObject:newAttachment];
     }
     [currentContext saveToPersistentStoreAndWait];
+}
+
+- (NSString*)getLastMessageIDForGroupID:(NSString*) groupID {
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
+    Group *dbGroup = [Group findFirstByAttribute:@"group_id" withValue:groupID inContext:currentContext];
+    return dbGroup.last_message.message_id;
 }
 
 @end

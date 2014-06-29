@@ -20,7 +20,7 @@
 
 @property DNMainController *mainWindowController;
 
-- (id)init;
+- (id)initWithDataManager:(DNDataManager*) dataManager;
 - (void)setup;
 - (void)teardown;
 - (void)didReceiveURL:(NSString*)urlString;

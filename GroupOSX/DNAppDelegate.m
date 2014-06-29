@@ -20,10 +20,10 @@
     [MagicalRecord setupAutoMigratingCoreDataStack];
     _managedObjectContext = [NSManagedObjectContext MR_defaultContext];
     
-    _server = [[DNServerInterface alloc] init];
     _mainWindowController = (DNMainController*) [self.window delegate];
     _loginSheetController = [[DNLoginSheetController alloc] initWithWindowNibName:@"LoginSheet"];
     _dataManager = [[DNDataManager alloc] init];
+    _server = [[DNServerInterface alloc] initWithDataManager:_dataManager];
     
     //Setup managed object context
     _dataManager.managedObjectContext = _managedObjectContext;
