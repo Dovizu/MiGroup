@@ -72,6 +72,10 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock;
                   attachments:(NSArray*)arrayOfAttach
              andCompleteBlock:(void(^)(NSDictionary* sentMessage))completeBlock;
 
+//uploads image to GroupMe image service
+- (void) uploadImage:(NSString*)imagePath withBlock:(void(^)(NSDictionary* response))completeBlock;
+
+
 //GUID Check
 - (BOOL)hasGUID:(NSString*)uuid;
 

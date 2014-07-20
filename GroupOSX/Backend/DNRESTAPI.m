@@ -11,10 +11,12 @@
 #define report_request_error DebugLog(@"%s: %@",__PRETTY_FUNCTION__, error)
 #define user_token (_userToken ? _userToken : [NSNull null])
 NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
+NSString * const imageServiceAddress = @"https://image.groupme.com";
 
 @implementation DNRESTAPI
 {
     AFHTTPRequestOperationManager *_HTTPRequestManager;
+    AFHTTPRequestOperationManager *_imageServiceManager;
     AFNetworkReachabilityManager *_reachabilityManager;
     NSString *_userToken;
     NSMutableSet *_recentGUIDs;
@@ -26,6 +28,7 @@ NSString * const DNRESTAPIBaseAddress = @"https://api.groupme.com/v3";
     self = [super init];
     if (self) {
         _HTTPRequestManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:DNRESTAPIBaseAddress]];
+        _imageServiceManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:imageServiceAddress]];
         NSMutableSet *acceptableTypes = [NSMutableSet setWithSet:_HTTPRequestManager.responseSerializer.acceptableContentTypes];
         [acceptableTypes addObject:@"text/html"];
         _HTTPRequestManager.responseSerializer.acceptableContentTypes = [NSSet setWithSet:acceptableTypes];
@@ -377,14 +380,12 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
     NSAssert(text, @"text param cannot be nil");
     NSAssert(completeBlock, @"completion block cannot be nil");
     
-    
-    arrayOfAttach = nil; //Not releasing this feature yet
     if (arrayOfAttach){
         NSMutableArray *convertedAttachments = [[NSMutableArray alloc] initWithCapacity:[arrayOfAttach count]];
         
-        //The block that processes an attachment
-        void (^processAttachment)(NSDictionary*) = ^void(NSDictionary* attachment){
-            if ([attachment[@"type"]  isEqual: @"image"]) {
+        for (NSDictionary* attachment in arrayOfAttach) {
+            if ([attachment[@"type"]  isEqualToString: @"image"]) {
+                [convertedAttachments addObject:attachment];
                 //do something about the image, check its validity
             }else if ([attachment[@"type"] isEqualToString:@"location"]){
                 //do something about location, check its validity
@@ -393,16 +394,15 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
             }else if ([attachment[@"type"] isEqualToString:@"emoji"]){
                 //do something about this emoji, check its validity
             }
-        };
-        
-        [arrayOfAttach enumerateObjectsWithOptions:NSEnumerationConcurrent
-                                        usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                                            processAttachment((NSDictionary*)obj);
-                                        }];
-        arrayOfAttach = convertedAttachments;
+        }
+
+        arrayOfAttach = [NSArray arrayWithArray:convertedAttachments];
+    } else {
+        arrayOfAttach = @[];
     }
+    
     NSUUID *guid = [NSUUID UUID];
-    NSDictionary *params = @{@"message": @{@"source_guid": [guid UUIDString], @"text": text, @"attachments": @[]}};
+    NSDictionary *params = @{@"message": @{@"source_guid": [guid UUIDString], @"text": text, @"attachments": arrayOfAttach}};
 
     [_HTTPRequestManager setRequestSerializer:[AFJSONRequestSerializer serializer]];
     [_HTTPRequestManager POST:concatStrings(@"groups/%@/messages?token=%@", groupID, user_token)
@@ -420,7 +420,52 @@ perPageAndCompleteBlock:(void(^)(NSArray* groupArray))completeBlock
 
 #pragma mark - Helper Methods
 
+
 //Image Service
+- (void) uploadImage:(NSString*)imagePath withBlock:(void(^)(NSDictionary* response))completeBlock{
+    NSString *fileName = [imagePath lastPathComponent];
+    //png, jpg, and gif
+    NSString *fileType = [imagePath pathExtension];
+    BOOL isImage = YES;
+    NSString* mType = @"";
+    if ([fileType isEqualToString:@"jpg"] || [fileType isEqualToString:@"JPG"]) {
+        mType = @"image/jpeg";
+    } else if ([fileType isEqualToString:@"png"] || [fileType isEqualToString:@"PNG"]) {
+        mType = @"image/png";
+    } else if ([fileType isEqualToString:@"gif"] || [fileType isEqualToString:@"GIF"]) {
+        mType = @"image/gif";
+    } else {
+        isImage = NO;
+    }
+    NSAssert(isImage, @"image file must be PNG, JPG, or GIF");
+    
+    NSError *error = nil;
+    NSData *imageData = [NSData dataWithContentsOfFile:imagePath options:0 error: &error];
+    
+    NSAssert(imageData, @"could not initialize imageData with the file");
+    NSDictionary *parameters = @{};
+    
+    _imageServiceManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    AFHTTPRequestOperation *op = [_imageServiceManager POST:concatStrings(@"pictures?token=%@",user_token)
+                                                 parameters:parameters
+                                  constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                                      [formData appendPartWithFileData:imageData name:@"file" fileName:fileName mimeType:mType];
+                                  } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                      // unsure what the response object is
+                                      DebugLog(@"response object: %@", (NSDictionary*)responseObject[@"response"]);
+                                      DebugLog(@"response string: %@", operation.responseString);
+                                      
+                                      NSError *error;
+                                      NSData *data = [operation.responseString dataUsingEncoding:NSUTF8StringEncoding];
+                                      NSDictionary *response = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+                                      completeBlock(response);
+                                  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                      completeBlock(nil);
+                                  }];
+    [op start];
+}
+
+
 //Response should be a string of URL, nil if upload failed
 - (void)helpAsyncUploadImageToGroupMe:(id)image usingBlock:(void(^)(NSString* imageURL))completeBlock
 {

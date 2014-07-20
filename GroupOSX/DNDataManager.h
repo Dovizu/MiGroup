@@ -54,6 +54,8 @@
 
 - (void)fetchFormerGroups;
 
+- (NSImage*)getImageFromMessage:(NSString*) messageID;
+
 #pragma mark methods called by DNServerInterface
 
 - (void)didFetchAllGroups:(NSArray*)groups;

@@ -63,7 +63,13 @@
      *  In future releases, this section is supposed to process attachments and replace text emoji's.
      */
     NSAssert(text && groupID, @"Message text or group cannot be nil");
-    [_server sendNewMessage:text toGroup:groupID withAttachments:nil];
+    // for testing
+    NSURL* imageURL = [NSURL URLWithString:@"IMG_0209.JPG"];
+    NSDictionary* imageAttachment = @{@"type":@"image", @"url":imageURL};
+    NSArray* testAttachments = [NSArray arrayWithObject:imageAttachment];
+    // for testing
+    
+    [_server sendNewMessage:text toGroup:groupID withAttachments:testAttachments];
 }
 
 #pragma mark - Data Management
@@ -351,6 +357,8 @@
         if ([attachment[k_attachment_type] isEqualToString:k_attach_type_image]) {
             newAttachment.type = k_attach_type_image;
             newAttachment.url = attachment[k_url];
+            DebugLog(@"from helpProcessAttachmentArray inside data manager. url: %@", newAttachment.url);
+
         }else if ([attachment[k_attachment_type] isEqualToString:k_attach_type_location]){
             //feature not yet supported
         }else if ([attachment[k_attachment_type] isEqualToString:k_attach_type_emoji]){
@@ -367,6 +375,19 @@
     NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];
     Group *dbGroup = [Group findFirstByAttribute:@"group_id" withValue:groupID inContext:currentContext];
     return dbGroup.last_message.message_id;
+}
+
+- (NSImage*)getImageFromMessage:(NSString*) messageID {
+    NSImage *sentImage;
+    NSManagedObjectContext *currentContext = [NSManagedObjectContext defaultContext];;
+    Message *msg = [Message findFirstByAttribute:@"message_id" withValue: messageID inContext:currentContext];
+    NSAssert(msg, @"message cannot be nil");
+    Attachment *dbAttachment = [Attachment findFirstByAttribute:@"Message" withValue: msg inContext:currentContext];
+    
+    NSAssert(dbAttachment.url, @"image url in database cannot be nil");
+    NSURL *imageURL = (NSURL*)dbAttachment.url;
+    sentImage = [[NSImage alloc] initWithContentsOfURL:imageURL];
+    return sentImage;
 }
 
 @end

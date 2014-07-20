@@ -405,7 +405,6 @@ enum DNJSONDictionaryType {
     }
     //MESSAGES BY ANOTHER MEMBER
     else{
-        //No attachment support yet
         NSString* lastMessageID = [_dataManager getLastMessageIDForGroupID:identifierGroupID];
         [self fetch20MostRecentMessagesSinceMessageID:lastMessageID inGroup:identifierGroupID];
         [_notificationCenter postNotificationName:noteNewMessage
@@ -446,19 +445,52 @@ enum DNJSONDictionaryType {
 - (void)sendNewMessage:(NSString*)message
                toGroup:(NSString*)groupID
        withAttachments:(NSArray*)attachments {
-    [API MessagesCreateInGroup:groupID
-                          text:message
-                   attachments:nil
-              andCompleteBlock:^(NSDictionary *sentMessage) {
-                  if (sentMessage) {
-                      //should fetch the last 20 messages;
-                      sentMessage = [self helpConvertRawDictionary:sentMessage ofType:DNMessageJSONDictionary];
-                      NSArray* messages =[NSArray arrayWithObject:sentMessage];
-                      [_dataManager didReceiveMessages:messages forGroup:groupID];
-                  } else {
-                      DebugLog(@"Failed to send message: %@", message);
-                  }
-              }];
+    if (attachments) {
+        for (NSDictionary* attachment in attachments) {
+            //if ([attachment[k_attachment_type] isEqualToString:k_attach_type_image])
+            // construct attachment dictionary with groupme format in server interface instead of data manager
+            if ([attachment[@"type"]  isEqualToString: @"image"]) {
+                NSString *urlString = [(NSURL*)attachment[@"url"] absoluteString];
+                NSString *imagePath = [NSHomeDirectory() stringByAppendingPathComponent:urlString];  //NSHomeDirectory() may not be necessary when getting file path from user interface
+                [API uploadImage:imagePath withBlock:^(NSDictionary *response) {
+                    if (response) {
+                        NSString* imageURL = response[@"payload"][@"url"];
+                        DebugLog(@"imageURL from server interface: %@", imageURL);
+                        NSDictionary* imageAttachment = @{@"type":@"image", @"url":imageURL};
+                        NSArray* imageAttachArray = [NSArray arrayWithObject:imageAttachment];
+                        [API MessagesCreateInGroup:groupID
+                                              text:message
+                                       attachments: imageAttachArray
+                                  andCompleteBlock:^(NSDictionary *sentMessage) {
+                                      if (sentMessage) {
+                                          sentMessage = [self helpConvertRawDictionary:sentMessage ofType:DNMessageJSONDictionary];
+                                          NSArray* messages =[NSArray arrayWithObject:sentMessage];
+                                          [_dataManager didReceiveMessages:messages forGroup:groupID];
+                                      } else {
+                                          DebugLog(@"Failed to send message: %@", message);
+                                      }
+                                  }];
+                    } else {
+                        DebugLog(@"Failed to upload image: %@", urlString);
+                    }
+                    
+                }];
+            }
+        }
+    } else {
+        [API MessagesCreateInGroup:groupID
+                              text:message
+                       attachments: attachments
+                  andCompleteBlock:^(NSDictionary *sentMessage) {
+                      if (sentMessage) {
+                          sentMessage = [self helpConvertRawDictionary:sentMessage ofType:DNMessageJSONDictionary];
+                          NSArray* messages =[NSArray arrayWithObject:sentMessage];
+                          [_dataManager didReceiveMessages:messages forGroup:groupID];
+                      } else {
+                          DebugLog(@"Failed to send message: %@", message);
+                      }
+                  }];
+    }
 }
 
 - (void)fetch20MessagesBeforeMessageID:(NSString*)beforeID
