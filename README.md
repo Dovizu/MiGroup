@@ -1,11 +1,6 @@
 ### Enjoy your chat time with your buddies, natively.
 MiGroup is a lightweight OS X GroupMe client that supports basic features such as sending/receiving messages, group profile and member avatars, and offline viewing. In addition, MiGroup takes advantage of OS X 10.9's new "quick reply" notification feature to provide native message notifications and allow you to reply without ever leaving your working window.
 
-
-[![Download on App Store](http://i.imgur.com/6ye2kiE.png)](https://itunes.apple.com/us/app/migroup/id803526621?mt=12)
-
-Download MiGroup on the Mac App Store today!
-
 ### Screenshots
 ![Application Demo](https://raw.github.com/dovizu/MiGroup/master/Graphics/Marketing/App%20screenshot.png)
 ![Notifications Demo](https://raw.github.com/dovizu/MiGroup/master/Graphics/Marketing/Notification%20Demo.png)
